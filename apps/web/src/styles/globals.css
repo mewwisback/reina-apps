@@ -1,0 +1,175 @@
+/* ============================================================
+   REINA APP — globals.css
+   Mockup-derived theme: Zen Kaku Gothic / Zen Old Mincho / JetBrains Mono
+   Dark #0D0B10, cream #EDE7DC, crimson #E03C4E. Hard clip-paths.
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=Zen+Old+Mincho:wght@600;700;900&family=JetBrains+Mono:wght@400;500&display=swap');
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  /* ---- Colors ---- */
+  --bg:        #0D0B10;
+  --bg-deep:   #08060A;
+  --surface:   #100C14;
+  --surface-2: #17121B;
+  --cream:     #EDE7DC;
+  --cream-bright: #F5F1E8;
+  --cream-dim: rgba(237, 231, 220, 0.55);
+  --cream-faint: rgba(237, 231, 220, 0.35);
+  --crimson:   #E03C4E;
+  --crimson-bright: #E0596A;
+  --crimson-deep: #8C1420;
+  --wine:      #5C1119;
+  --gold:      #F0C08A;
+
+  /* ---- Eas -- provider colors ---- */
+  --google:    #4F8FE8;
+  --twitter:   #F5F1E8;
+  --discord:   #8C6FD8;
+
+  /* ---- Typography ---- */
+  --font-body: 'Zen Kaku Gothic New', sans-serif;
+  --font-display: 'Zen Old Mincho', serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  /* ---- Spacing (4px base) ---- */
+  --sp-1: 4px;   --sp-2: 8px;   --sp-3: 12px;
+  --sp-4: 16px;  --sp-5: 20px;  --sp-6: 24px;
+  --sp-8: 32px;  --sp-10: 40px; --sp-12: 48px;
+  --sp-16: 64px; --sp-20: 80px; --sp-24: 96px;
+}
+
+html {
+  color-scheme: dark;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--cream);
+  background: var(--bg);
+  min-height: 100dvh;
+}
+
+a {
+  color: var(--crimson-bright);
+  text-decoration: none;
+}
+a:hover { color: var(--gold); }
+
+input, textarea, select {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+  outline: none;
+}
+input::placeholder { color: var(--cream-faint); }
+input:focus { outline: none; border-color: var(--crimson); }
+
+button { font: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+
+img, svg { display: block; max-width: 100%; }
+
+ul, ol { list-style: none; }
+
+/* ---- Style utilities ---- */
+.mono-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.24em;
+  color: var(--crimson);
+  text-transform: uppercase;
+}
+
+.reina-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.reina-logo-mark {
+  width: 30px;
+  height: 30px;
+  background: var(--crimson);
+  clip-path: polygon(30% 0, 100% 0, 100% 70%, 70% 100%, 0 100%, 0 30%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+}
+.reina-logo-mark span {
+  font-weight: 900;
+  font-size: 15px;
+  color: #0F0C16;
+}
+.reina-logo-word {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: 0.28em;
+  font-size: 14px;
+  color: var(--cream);
+}
+
+/* Social auth button (clip-path wedge) */
+.social-btn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: var(--surface);
+  border-left: 3px solid var(--social-color);
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+  padding: 14px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--cream);
+  transition: background 0.2s;
+  cursor: pointer;
+}
+.social-btn:hover { background: var(--surface-2); }
+
+/* Primary crimson wedge button */
+.btn-crimson {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: var(--crimson);
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+  padding: 14px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: #0F0C16;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.btn-crimson:hover { background: var(--crimson-bright); }
+
+/* ---- Preloader / card shine (from mockup) ---- */
+@keyframes cardShine {
+  0%   { transform: translateX(-130%) skewX(-12deg); }
+  100% { transform: translateX(230%) skewX(-12deg); }
+}
+
+:focus-visible {
+  outline: 2px solid var(--crimson);
+  outline-offset: 2px;
+}

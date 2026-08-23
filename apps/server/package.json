@@ -1,0 +1,10 @@
+{
+  "name": "@reina/server",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Reina backend API (placeholder — not built yet)",
+  "scripts": {
+    "dev": "echo 'server not built yet'",
+    "build": "echo 'server not built yet'"
+  }
+}
