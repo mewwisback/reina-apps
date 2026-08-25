@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice">
+<defs>
+  <linearGradient id="sky" x2="0" y2="1"><stop stop-color="#080b16"/><stop offset=".46" stop-color="#17111d"/><stop offset="1" stop-color="#08090e"/></linearGradient>
+  <linearGradient id="stone" x2="0" y2="1"><stop stop-color="#40343b"/><stop offset=".5" stop-color="#211e29"/><stop offset="1" stop-color="#12131c"/></linearGradient>
+  <linearGradient id="water" x2="1"><stop stop-color="#322b48"/><stop offset=".5" stop-color="#a27582"/><stop offset="1" stop-color="#221c39"/></linearGradient>
+  <radialGradient id="moon"><stop stop-color="#f3dca9" stop-opacity=".55"/><stop offset="1" stop-color="#b07c84" stop-opacity="0"/></radialGradient>
+  <pattern id="grain" width="80" height="80" patternUnits="userSpaceOnUse"><path d="M0 17h80M0 54h80" stroke="#fff" stroke-opacity=".025"/><path d="M12 0v80M61 0v80" stroke="#000" stroke-opacity=".035"/></pattern>
+  <filter id="blur"><feGaussianBlur stdDeviation="18"/></filter>
+</defs>
+<rect width="1920" height="1080" fill="url(#sky)"/>
+<circle cx="420" cy="180" r="260" fill="url(#moon)" filter="url(#blur)"/>
+<!-- distant shrine silhouette -->
+<path d="M0 330h240l45-100h170l45 100h230l42-135h120l42 135h260l60-170h150l60 170h246v190H0z" fill="#0a0b13"/>
+<path d="M0 365h1920v70H0z" fill="#6b3a46" opacity=".25"/>
+<path d="M120 330v230M1800 330v230M255 280v280M1665 280v280" stroke="#8d535e" stroke-width="18" opacity=".55"/>
+<!-- courtyard slab -->
+<path d="M205 440L960 395l755 45 165 640H40z" fill="url(#stone)" stroke="#a67e69" stroke-opacity=".55" stroke-width="5"/>
+<!-- perspective paving -->
+<g fill="none" stroke="#b28d79" stroke-opacity=".18" stroke-width="3">
+ <path d="M205 440L40 1080M400 428L350 1080M630 414L620 1080M850 401L860 1080M1070 401L1060 1080M1290 414L1300 1080M1520 428L1570 1080M1715 440L1880 1080"/>
+ <path d="M145 585Q960 530 1775 585M105 735Q960 665 1815 735M70 900Q960 810 1850 900"/>
+</g>
+<!-- five recessed seals per side -->
+<g fill="#b28b5620" stroke="#d3ad6b" stroke-opacity=".38" stroke-width="5">
+ <path d="M400 474l78-4 38 35-43 40-78 4-38-35z"/><path d="M650 460l78-3 38 35-43 40-78 3-38-35z"/><path d="M900 452h78l38 35-38 38h-78l-38-38z"/><path d="M1150 460l78 3 38 35-38 35-78-3-38-35z"/><path d="M1400 474l78 4 43 36-38 35-78-4-43-40z"/>
+ <path d="M400 865l78 4 38-35-43-40-78-4-38 35z"/><path d="M650 880l78 3 38-35-43-40-78-3-38 35z"/><path d="M900 890h78l38-35-38-38h-78l-38 38z"/><path d="M1150 880l78-3 38-35-38-35-78 3-38 35z"/><path d="M1400 865l78-4 43-36-38-35-78 4-43 40z"/>
+</g>
+<!-- central water duel line -->
+<path d="M70 685Q960 600 1850 685L1858 742Q960 650 62 742z" fill="url(#water)" opacity=".72"/>
+<path d="M62 714Q960 625 1858 714" fill="none" stroke="#e0b27d" stroke-opacity=".48" stroke-width="3"/>
+<!-- foreground altars -->
+<g fill="#17121b" stroke="#ac8068" stroke-opacity=".7" stroke-width="5"><path d="M55 870h190l32 40v130H25V910z"/><path d="M1675 870h190l32 40v130h-252V910z"/></g>
+<g fill="#cfaa72" opacity=".36"><circle cx="150" cy="950" r="38"/><circle cx="1770" cy="950" r="38"/></g>
+<!-- banners -->
+<path d="M102 0v365l90 45-90 54-90-54 90-45zM1818 0v365l90 45-90 54-90-54 90-45z" fill="#7d2d43" opacity=".75"/>
+<path d="M102 0v365M1818 0v365" stroke="#c79c67" stroke-width="7"/>
+<rect width="1920" height="1080" fill="url(#grain)"/>
+<rect width="1920" height="1080" fill="none" stroke="#000" stroke-width="80" opacity=".35"/>
+</svg>
