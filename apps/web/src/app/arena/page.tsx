@@ -1,53 +1,152 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { AppShell } from '../../components/layout/app-shell';
 import './arena.css';
 
-type Kind='HERO'|'SPELL'|'TRAP'; type Phase='DRAW'|'MAIN'|'BATTLE'; type Rarity='COMMON'|'RARE'|'EPIC'; type Action='SUMMON'|'DEFENSE'|'ACTIVATE'|'SET'|null;
-type Card={id:string;name:string;kind:Kind;atk:number;def:number;mark:string;color:string;rarity:Rarity;face?:boolean;used?:boolean;ready?:number;setAt?:number;defense?:boolean};
-type Side={deck:Card[];hand:Card[];front:(Card|null)[];back:(Card|null)[];grave:Card[];lp:number}; type Economy={summon:number;set:number;spell:number};
-const base=[
- ['rei','REI // ZERO','HERO',2200,1200,'crown','#9e3347','EPIC'],['chise','CHISE // BLADE','HERO',1750,1100,'blade','#ad7540','RARE'],['yuri','YURI // SCOUT','HERO',1100,900,'scout','#a84d38','COMMON'],['tari','TARI // GUARD','HERO',900,1700,'guard','#85333d','COMMON'],['mira','MIRA // VEIL','HERO',1350,1400,'veil','#586f8d','RARE'],
- ['surge','CRIMSON SURGE','SPELL',0,0,'surge','#397b74','RARE'],['edge','QUEEN’S EDGE','SPELL',0,0,'edge','#956039','EPIC'],['seal','COUNTER SEAL','TRAP',0,0,'seal','#684e82','RARE'],['mirror','MIRROR WARD','TRAP',0,0,'mirror','#526783','COMMON'],['pulse','LAST PULSE','SPELL',0,0,'pulse','#39726c','COMMON'],
-] as const;
-const makeDeck=(enemy=false):Card[]=>[...base,...base].map((x,i)=>({id:`${enemy?'e':'p'}-${x[0]}-${i}`,name:enemy&&x[2]==='HERO'?`SILENT ${x[1]}`:x[1],kind:x[2],atk:x[3]+(enemy&&x[2]==='HERO'?50:0),def:x[4],mark:x[5],color:x[6],rarity:x[7]} as Card));
-const fresh=(enemy=false):Side=>({deck:makeDeck(enemy),hand:[],front:Array(5).fill(null),back:Array(5).fill(null),grave:[],lp:4000});
-const emptyEco=():Economy=>({summon:0,set:0,spell:0});
-const stage=(turn:number)=>turn<3?{name:'OPENING',slots:1,cap:1400}:turn<5?{name:'ESCALATION',slots:3,cap:1800}:{name:'REIGN',slots:5,cap:Infinity};
-const summonReason=(c:Card,s:Side,turn:number,eco:Economy)=>{const g=stage(turn);if(eco.summon)return'Summon allowance used (1/1).';if(s.front.filter(Boolean).length>=g.slots)return`${g.name}: maximum ${g.slots} active hero${g.slots>1?'es':''}.`;if(turn<3&&(c.atk>1400||!['COMMON','RARE'].includes(c.rarity)))return'Opening: Common/Rare hero with 1400 ATK or less only.';if(turn<5&&c.atk>1800)return'Escalation: hero above 1800 ATK requires fusion.';const tribute=c.atk<=1400?0:c.atk<=2000?1:2;if(s.front.filter(Boolean).length<tribute)return c.atk>2000?'Requires two tributes or fusion.':`Requires ${tribute} tribute.`;return''};
-const count=(s:Side)=>({field:s.front.filter(Boolean).length+s.back.filter(Boolean).length,total:s.deck.length+s.hand.length+s.front.filter(Boolean).length+s.back.filter(Boolean).length+s.grave.length});
+type Card = { id: string; name: string; kind: 'HERO' | 'SPELL' | 'TRAP'; rank: string; atk: number; def: number; hue: string; sigil: string; text: string; faceDown?: boolean; spent?: boolean };
+type Slot = Card | null;
 
-export default function ArenaPage(){
- const [screen,setScreen]=useState<'search'|'found'|'duel'>('search'),[p,setP]=useState(()=>fresh()),[e,setE]=useState(()=>fresh(true));
- const [phase,setPhase]=useState<Phase>('DRAW'),[turn,setTurn]=useState(1),[mine,setMine]=useState(true),[sel,setSel]=useState<Card|null>(null),[action,setAction]=useState<Action>(null),[att,setAtt]=useState<number|null>(null),[message,setMessage]=useState('Opponent signal acquired.'),[opening,setOpening]=useState(false),[eco,setEco]=useState<Economy>(emptyEco),[enemyEco,setEnemyEco]=useState<Economy>(emptyEco),[deckOut,setDeckOut]=useState<'REINA'|'SILENTINDEX'|null>(null);
- const winner=p.lp<=0?'SILENTINDEX':e.lp<=0?'REINA':deckOut,g=stage(turn);
- useEffect(()=>{if(screen==='search'){const t=setTimeout(()=>setScreen('found'),1200);return()=>clearTimeout(t)}},[screen]);
- const draw=(who:'p'|'e')=>{const setter=who==='p'?setP:setE;setter(s=>{if(!s.deck.length){setDeckOut(who==='p'?'SILENTINDEX':'REINA');setMessage(`${who==='p'?'REINA':'SILENTINDEX'} cannot draw — deck out.`);return s}const c=s.deck[0];return{...s,deck:s.deck.slice(1),hand:[...s.hand,c]}})};
- const accept=()=>{let a=fresh(),b=fresh(true);a={...a,hand:a.deck.slice(0,5),deck:a.deck.slice(5)};b={...b,hand:b.deck.slice(0,5),deck:b.deck.slice(5)};setP(a);setE(b);setOpening(true);setScreen('duel');setMessage('Opening draw complete. Five cards in hand.');setTimeout(()=>setOpening(false),1000)};
- const startMain=()=>{if(!mine||phase!=='DRAW')return;draw('p');setPhase('MAIN');setMessage(`${g.name} — choose one card action.`)};
- const endTurn=()=>{if(!mine||winner)return;setSel(null);setAction(null);setAtt(null);setMine(false);setMessage('SILENTINDEX turn.');};
- const tribute=(s:Side,n:number)=>{const victims=s.front.map((c,i)=>({c,i})).filter(x=>x.c).slice(0,n);const front=[...s.front],grave=[...s.grave];victims.forEach(x=>{front[x.i]=null;grave.push(x.c!)});return{...s,front,grave}};
- const place=(i:number)=>{if(!sel||phase!=='MAIN'||!mine)return;if(action==='SUMMON'||action==='DEFENSE'){const reason=summonReason(sel,p,turn,eco);if(reason){setMessage(reason);return}const cost=sel.atk<=1400?0:sel.atk<=2000?1:2;setP(s=>{let q=tribute(s,cost),front=[...q.front];front[i]={...sel,defense:action==='DEFENSE',ready:turn+1};return{...q,hand:q.hand.filter(x=>x.id!==sel.id),front}});setEco(x=>({...x,summon:1}));setMessage(`${sel.name} summoned${cost?` using ${cost} tribute${cost>1?'s':''}`:''}. Summoning sickness active.`)}else if(action==='SET'){if(eco.set){setMessage('Set allowance used (1/1).');return}setP(s=>{const back=[...s.back];back[i]={...sel,face:true,setAt:turn};return{...s,hand:s.hand.filter(x=>x.id!==sel.id),back}});setEco(x=>({...x,set:1}));setMessage(`${sel.name} set. Armed for opponent turn.`)}setSel(null);setAction(null)};
- const activate=()=>{if(!sel||sel.kind!=='SPELL')return;if(eco.spell){setMessage('Direct spell allowance used (1/1).');return}if(turn<3){setMessage('Opening: direct damage spells unavailable.');return}const damage=sel.name.includes('EDGE')?500:300;setE(s=>({...s,lp:Math.max(0,s.lp-damage)}));setP(s=>({...s,hand:s.hand.filter(x=>x.id!==sel.id),grave:[...s.grave,sel]}));setEco(x=>({...x,spell:1}));setMessage(`${sel.name} resolves — ${damage} direct damage.`);setSel(null);setAction(null)};
- const attack=(target:number|null)=>{if(!mine||winner||phase!=='BATTLE'||att===null)return;if(turn===1){setMessage('Opening turn: attacks unavailable.');return}const hero=p.front[att];if(!hero||hero.used)return;if((hero.ready??0)>turn){setMessage('Summoning sickness: hero attacks next own turn.');return}if(target===null&&e.front.some(Boolean)){setMessage('Direct attack blocked while enemy hero remains.');return}const trap=e.back.findIndex(x=>x?.kind==='TRAP'&&(x.setAt??turn)<turn);if(trap>=0){setE(s=>{const back=[...s.back],c=back[trap]!;back[trap]=null;return{...s,back,grave:[...s.grave,c]}});setMessage('Counter trap revealed — attack negated.')}else if(target===null){setE(s=>({...s,lp:Math.max(0,s.lp-hero.atk)}));setMessage(`Direct attack lands — ${hero.atk} damage.`)}else{const v=e.front[target];if(!v)return;const power=v.defense?v.def:v.atk;if(hero.atk>=power){setE(s=>{const front=[...s.front];front[target]=null;return{...s,front,grave:[...s.grave,v]}});setMessage(`${v.name} destroyed. ${hero.atk} vs ${power}.`)}else{const damage=power-hero.atk;setP(s=>({...s,lp:Math.max(0,s.lp-damage)}));setMessage(`Attack repelled — ${damage} damage to REINA.`)}}setP(s=>{const front=[...s.front];front[att]={...hero,used:true};return{...s,front}});setAtt(null)};
- useEffect(()=>{if(mine||screen!=='duel'||winner)return;let stop=false;const wait=()=>new Promise(r=>setTimeout(r,650));const run=async()=>{setEnemyEco(emptyEco());setPhase('DRAW');await wait();if(stop)return;draw('e');setPhase('MAIN');await wait();if(stop)return;
-  let summoned=false;setE(s=>{const heroes=s.hand.filter(c=>c.kind==='HERO').sort((a,b)=>a.atk-b.atk);const c=heroes.find(c=>!summonReason(c,s,turn,emptyEco()));if(!c)return s;const i=s.front.findIndex((x,j)=>!x&&j<g.slots);if(i<0)return s;const cost=c.atk<=1400?0:c.atk<=2000?1:2;let q=tribute(s,cost),front=[...q.front];front[i]={...c,ready:turn+1};summoned=true;setMessage(`SILENTINDEX summons ${c.name}.`);return{...q,hand:q.hand.filter(x=>x.id!==c.id),front}});if(summoned)setEnemyEco(x=>({...x,summon:1}));await wait();if(stop)return;
-  setE(s=>{const c=s.hand.find(x=>x.kind==='TRAP'||(x.kind==='SPELL'&&turn<3));if(!c)return s;const i=s.back.findIndex(x=>!x);if(i<0)return s;const back=[...s.back];back[i]={...c,face:true,setAt:turn};setEnemyEco(x=>({...x,set:1}));setMessage('SILENTINDEX sets one support.');return{...s,hand:s.hand.filter(x=>x.id!==c.id),back}});await wait();if(stop)return;
-  if(turn>=3){setE(s=>{const c=s.hand.find(x=>x.kind==='SPELL');if(!c)return s;const damage=c.name.includes('EDGE')?500:300;setP(q=>({...q,lp:Math.max(0,q.lp-damage)}));setEnemyEco(x=>({...x,spell:1}));setMessage(`SILENTINDEX activates ${c.name} — ${damage} damage.`);return{...s,hand:s.hand.filter(x=>x.id!==c.id),grave:[...s.grave,c]}});await wait();if(stop)return}
-  setPhase('BATTLE');const attacker=turn===1?-1:e.front.findIndex(x=>x&&!x.used&&(x.ready??0)<=turn);if(attacker>=0){setE(s=>{const h=s.front[attacker]!;const front=[...s.front];front[attacker]={...h,used:true};const targets=p.front.map((c,i)=>({c,i})).filter(x=>x.c);if(!targets.length){setP(q=>({...q,lp:Math.max(0,q.lp-h.atk)}));setMessage(`${h.name} attacks directly — ${h.atk}.`)}else{const t=targets.sort((a,b)=>(a.c!.defense?a.c!.def:a.c!.atk)-(b.c!.defense?b.c!.def:b.c!.atk))[0],power=t.c!.defense?t.c!.def:t.c!.atk;const trap=p.back.findIndex(x=>x?.kind==='TRAP'&&(x.setAt??turn)<=turn);if(trap>=0){setP(q=>{const back=[...q.back],c=back[trap]!;back[trap]=null;return{...q,back,grave:[...q.grave,c]}});setMessage('REINA trap negates attack.')}else if(h.atk>=power){setP(q=>{const f=[...q.front];f[t.i]=null;return{...q,front:f,grave:[...q.grave,t.c!]}});setMessage(`${t.c!.name} destroyed.`)}}return{...s,front}})}await wait();if(stop)return;setTurn(t=>t+1);setP(s=>({...s,front:s.front.map(x=>x?{...x,used:false}:x)}));setE(s=>({...s,front:s.front.map(x=>x?{...x,used:false}:x)}));setEco(emptyEco());setPhase('DRAW');setMine(true);setMessage('Your turn. Draw, then act.');};run();return()=>{stop=true}},[mine,screen,winner,turn,g.slots]);
- const reason=useMemo(()=>!sel?'':sel.kind==='HERO'?summonReason(sel,p,turn,eco):sel.kind==='SPELL'?(turn<3?'Opening: direct damage spells unavailable.':eco.spell?'Spell allowance used (1/1).':''):eco.set?'Set allowance used (1/1).':'',[sel,p,turn,eco]);
- const preview=att===null?'':!e.front.some(Boolean)?`${p.front[att]?.atk??0} direct damage`: 'Choose target to compare ATK against battle value';const pc=count(p),ec=count(e);
- if(screen!=='duel')return <AppShell><main className="arena-lobby"><div className="crest" aria-label="Reina crest"><i/><i/><i/></div><p>REINA ARENA / RANKED</p><h1>{screen==='search'?'Searching the night…':'Opponent found'}</h1><div className="signal">{screen==='search'?'◌ MATCHMAKING':'SILENTINDEX · DIAMOND II'}</div>{screen==='found'&&<button onClick={accept}>ACCEPT DUEL <span>15</span></button>}</main></AppShell>;
- return <AppShell><main className="arena"><header><div><small>REINA ARENA / M-5521</small><h1>Queen’s Quiet Courtyard</h1></div><div className="turn"><b>TURN {turn} · {g.name}</b><span>{mine?'REINA':'SILENTINDEX'} / {phase}</span></div></header><section className={`duel ${opening?'opening':''}`}>
-  <Stats enemy side={e} c={ec}/><div className="board"><Piles side={e} enemy/><Zone cards={e.back} back enemy/><Zone cards={e.front} enemy onCard={i=>attack(i)} targetable={mine&&turn>1&&att!==null}/><div className="axis"><i className="reina-seal" aria-hidden="true"/><span>{winner?`${winner} WINS`:message}</span></div><Zone cards={p.front} onEmpty={i=>place(i)} onCard={i=>mine&&turn>1&&phase==='BATTLE'&&setAtt(i)} selected={att} valid={!!sel&&(action==='SUMMON'||action==='DEFENSE')}/><Zone cards={p.back} back onEmpty={i=>place(i)} valid={!!sel&&action==='SET'}/><Piles side={p}/></div><Stats side={p} c={pc}/>
-  <div className="perimeter"><b>SUMMON {eco.summon}/1</b><b>SET {eco.set}/1</b><b>SPELL {eco.spell}/1</b><span>{g.slots} hero slots · normal cap {g.cap===Infinity?'OPEN':g.cap}</span></div>
-  <div className="hand">{p.hand.map((c,i)=><CardView key={c.id} card={c} hand index={i} active={sel?.id===c.id} onClick={()=>{if(mine&&phase==='MAIN'){setSel(c);setAction(null)}}}/>)}</div>
-  <aside className="inspect">{sel?<><CardView card={sel}/><div><h2>{sel.name}</h2><p>{sel.rarity} · {sel.kind}</p>{sel.kind==='HERO'?<><button disabled={!!reason} onClick={()=>setAction('SUMMON')}>SUMMON</button><button disabled={!!reason} onClick={()=>setAction('DEFENSE')}>SET DEFENSE</button></>:sel.kind==='SPELL'?<><button disabled={!!reason} onClick={()=>{setAction('ACTIVATE');activate()}}>ACTIVATE</button><button disabled={!!eco.set} onClick={()=>setAction('SET')}>SET</button></>:<button disabled={!!eco.set} onClick={()=>setAction('SET')}>SET</button>}<button onClick={()=>{setSel(null);setAction(null)}}>CANCEL</button>{reason&&<em>{reason}</em>}</div></>:<p>Select hand card for contextual actions.</p>}</aside>
-  <div className="commands">{phase==='DRAW'&&mine&&<button onClick={startMain}>DRAW &amp; MAIN</button>}{phase==='MAIN'&&mine&&<button onClick={()=>{setPhase('BATTLE');setSel(null);setAction(null);setMessage(turn===1?'First turn: attacks unavailable. End turn when ready.':'Battle phase. Select attacker.')}}>BATTLE</button>}<button disabled={!mine||!!winner} onClick={endTurn}>END TURN</button>{att!==null&&!e.front.some(Boolean)&&turn>1&&<button onClick={()=>attack(null)}>DIRECT ATTACK</button>}<span>{turn===1?'First own turn: no attacks.':preview}</span></div>
- </section></main></AppShell>;
+const cards: Card[] = [
+  { id: 'yuri', name: 'YURI', kind: 'HERO', rank: 'COMMON', atk: 620, def: 580, hue: '#d76c42', sigil: '斥', text: 'Quick scout. Gains 200 ATK when summoned beside a face-down card.' },
+  { id: 'chise', name: 'CHISE', kind: 'HERO', rank: 'RARE', atk: 1380, def: 1120, hue: '#d7ad63', sigil: '刃', text: 'A disciplined blade whose attack cannot be reduced during your turn.' },
+  { id: 'surge', name: 'SURGE PROTOCOL', kind: 'SPELL', rank: 'SPELL', atk: 0, def: 0, hue: '#4eaaa1', sigil: '術', text: 'Deal 400 direct damage to opponent.' },
+  { id: 'seal', name: 'COUNTER SEAL', kind: 'TRAP', rank: 'TRAP', atk: 0, def: 0, hue: '#8d6cc1', sigil: '罠', text: 'Set face-down. Negates next attack.' },
+  { id: 'tari', name: 'TARI', kind: 'HERO', rank: 'COMMON', atk: 760, def: 910, hue: '#b65050', sigil: '盾', text: 'Vanguard with high defensive value.' },
+];
+
+const initialEnemy: Slot[] = [
+  null,
+  { id: 'odna', name: 'ODNA', kind: 'HERO', rank: 'RARE', atk: 1260, def: 1050, hue: '#617fa3', sigil: '槍', text: 'SilentIndex core attacker.' },
+  { id: 'hidden', name: 'UNKNOWN', kind: 'TRAP', rank: 'SET', atk: 0, def: 0, hue: '#766487', sigil: '?', text: 'Identity concealed.', faceDown: true },
+  null,
+  { id: 'mira', name: 'MIRA', kind: 'HERO', rank: 'ELITE', atk: 1700, def: 1450, hue: '#4f9a87', sigil: '守', text: 'Sentinel commander.' },
+];
+const initialPlayer: Slot[] = [null, null, { ...cards[4], id: 'field-tari' }, null, null];
+
+export default function ArenaPage() {
+  const [hand, setHand] = useState(cards.slice(0, 4));
+  const [player, setPlayer] = useState<Slot[]>(initialPlayer);
+  const [enemy, setEnemy] = useState<Slot[]>(initialEnemy);
+  const [selected, setSelected] = useState<string[]>([]);
+  const [attacker, setAttacker] = useState<number | null>(null);
+  const [playerLp, setPlayerLp] = useState(4000);
+  const [enemyLp, setEnemyLp] = useState(4000);
+  const [turn, setTurn] = useState(3);
+  const [phase, setPhase] = useState('MAIN');
+  const [notice, setNotice] = useState('Select a card from your hand.');
+  const [impact, setImpact] = useState<'enemy' | 'player' | null>(null);
+  const [trapArmed, setTrapArmed] = useState(false);
+
+  const selectedCards = useMemo(() => hand.filter((c) => selected.includes(c.id)), [hand, selected]);
+  const reset = () => {
+    setHand(cards.slice(0, 4)); setPlayer(initialPlayer); setEnemy(initialEnemy); setSelected([]); setAttacker(null);
+    setPlayerLp(4000); setEnemyLp(4000); setTurn(3); setPhase('MAIN'); setNotice('Select a card from your hand.'); setTrapArmed(false);
+  };
+  const flash = (side: 'enemy' | 'player') => { setImpact(side); window.setTimeout(() => setImpact(null), 420); };
+  const toggleHand = (id: string) => {
+    setAttacker(null);
+    setSelected((s) => s.includes(id) ? s.filter((x) => x !== id) : s.length < 2 ? [...s, id] : [id]);
+    setNotice('Choose an empty field slot, or select two heroes to fuse.');
+  };
+  const summon = (slot: number) => {
+    if (player[slot] || selectedCards.length !== 1) return;
+    const card = selectedCards[0];
+    if (card.kind === 'SPELL') {
+      setEnemyLp((lp) => Math.max(0, lp - 400)); setHand((h) => h.filter((c) => c.id !== card.id)); flash('enemy'); setSelected([]); setNotice('Surge Protocol resolves. SilentIndex loses 400 LP.'); return;
+    }
+    if (card.kind === 'TRAP') {
+      setTrapArmed(true); setHand((h) => h.filter((c) => c.id !== card.id)); setSelected([]); setNotice('Counter Seal set face-down behind your field.'); return;
+    }
+    setPlayer((f) => f.map((c, i) => i === slot ? { ...card, id: `field-${card.id}` } : c));
+    setHand((h) => h.filter((c) => c.id !== card.id)); setSelected([]); setNotice(`${card.name} summoned. Select it to declare an attack.`);
+  };
+  const fuse = () => {
+    if (selectedCards.length !== 2 || selectedCards.some((c) => c.kind !== 'HERO')) return;
+    const fused: Card = { id: 'rei-fused', name: 'REI', kind: 'HERO', rank: 'ELITE FUSION', atk: 2100, def: 1650, hue: '#e9c665', sigil: '零', text: 'Born from aligned speed and blade attributes.' };
+    setHand((h) => [...h.filter((c) => !selected.includes(c.id)), fused]); setSelected([fused.id]); setNotice('Fusion complete: REI. Choose an empty field slot.');
+  };
+  const chooseAttacker = (index: number) => {
+    const card = player[index]; if (!card || card.spent) return;
+    setSelected([]); setAttacker(index); setPhase('BATTLE'); setNotice(`${card.name} ready. Select an enemy card as target.`);
+  };
+  const attack = (target: number) => {
+    if (attacker === null || !enemy[target]) return;
+    const source = player[attacker]!; const victim = enemy[target]!;
+    if (victim.faceDown) {
+      setEnemy((f) => f.map((c, i) => i === target ? null : c)); setNotice(`${source.name} reveals and destroys Counter Seal.`);
+    } else if (source.atk >= victim.def) {
+      const damage = source.atk - victim.def;
+      setEnemy((f) => f.map((c, i) => i === target ? null : c)); setEnemyLp((lp) => Math.max(0, lp - damage)); flash('enemy');
+      setNotice(`${source.name} defeats ${victim.name}. ${damage} battle damage.`);
+    } else {
+      const damage = victim.def - source.atk;
+      setPlayerLp((lp) => Math.max(0, lp - damage)); flash('player'); setNotice(`${victim.name} holds. You take ${damage} battle damage.`);
+    }
+    setPlayer((f) => f.map((c, i) => i === attacker && c ? { ...c, spent: true } : c)); setAttacker(null);
+  };
+  const directAttack = () => {
+    if (attacker === null || enemy.some(Boolean)) return;
+    const source = player[attacker]!; setEnemyLp((lp) => Math.max(0, lp - source.atk)); flash('enemy');
+    setPlayer((f) => f.map((c, i) => i === attacker && c ? { ...c, spent: true } : c)); setAttacker(null); setNotice(`Direct attack. SilentIndex loses ${source.atk} LP.`);
+  };
+  const endTurn = () => {
+    const incoming = trapArmed ? 0 : 360;
+    if (incoming) { setPlayerLp((lp) => Math.max(0, lp - incoming)); flash('player'); }
+    setTrapArmed(false); setPlayer((f) => f.map((c) => c ? { ...c, spent: false } : c)); setTurn((t) => t + 1); setPhase('DRAW'); setSelected([]); setAttacker(null);
+    setNotice(trapArmed ? 'Counter Seal negates enemy attack. Your next draw begins.' : 'Enemy attacks directly for 360. Your next draw begins.');
+    window.setTimeout(() => setPhase('MAIN'), 700);
+  };
+
+  return <AppShell>
+    <main className="fm-arena">
+      <header className="fm-header">
+        <div><span>RANKED DUEL / M-5521</span><h1>Ruins of the First Queen</h1></div>
+        <div className="fm-turn"><b>TURN {turn}</b><span>{phase} PHASE</span></div>
+      </header>
+
+      <section className={`fm-stage ${impact ? `impact-${impact}` : ''}`}>
+        <div className="fm-atmosphere" />
+        <Duelist enemy name="SILENTINDEX" rank="DIAMOND II" lp={enemyLp} />
+        <div className="fm-perspective">
+          <div className="fm-stone-board">
+            <div className="fm-row enemy-row">{enemy.map((card, i) => <FieldCard key={i} card={card} enemy selected={attacker !== null && !!card} onClick={() => attack(i)} />)}</div>
+            <div className="fm-seal"><span>REINA</span><i>王</i></div>
+            <div className="fm-row player-row">{player.map((card, i) => <FieldCard key={i} card={card} selected={attacker === i} onClick={() => card ? chooseAttacker(i) : summon(i)} />)}</div>
+            {trapArmed && <div className="fm-set-trap">COUNTER SEAL / SET</div>}
+          </div>
+        </div>
+        <Duelist name="KAIBA99" rank="GOLD III" lp={playerLp} />
+
+        <div className="fm-command">
+          <div className="fm-message"><span>{phase}</span>{notice}</div>
+          <div className="fm-actions">
+            {selectedCards.length === 2 && <button onClick={fuse}>FUSE SELECTED</button>}
+            {attacker !== null && !enemy.some(Boolean) && <button onClick={directAttack}>DIRECT ATTACK</button>}
+            <button onClick={endTurn}>END TURN</button><button className="quiet" onClick={reset}>RESET DUEL</button>
+          </div>
+        </div>
+
+        <div className="fm-hand" aria-label="Your hand">
+          {hand.map((card, i) => <HandCard key={card.id} card={card} index={i} selected={selected.includes(card.id)} onClick={() => toggleHand(card.id)} />)}
+        </div>
+      </section>
+      <p className="fm-help">HAND: select card · FIELD: summon or attack · ENEMY: choose target · two HERO cards: fusion</p>
+    </main>
+  </AppShell>;
 }
-function Stats({side,c,enemy}:{side:Side;c:{field:number;total:number};enemy?:boolean}){return <aside className={`stats ${enemy?'enemy':''}`}><div><small>{enemy?'OPPONENT':'DUELIST'}</small><strong>{enemy?'SILENTINDEX':'REINA'}</strong></div><b>LP {String(side.lp).padStart(4,'0')}</b><dl><dt>DECK</dt><dd>{side.deck.length}</dd><dt>HAND</dt><dd>{side.hand.length}</dd><dt>FIELD</dt><dd>{c.field}</dd><dt>GRAVE</dt><dd>{side.grave.length}</dd><dt>TOTAL</dt><dd>{c.total}</dd></dl>{enemy&&<div className="hidden-hand">{side.hand.map(x=><i key={x.id}/>)}</div>}</aside>}
-function Piles({side,enemy}:{side:Side;enemy?:boolean}){return <div className={`piles ${enemy?'enemy':''}`}><div className="pile deck"><b>{side.deck.length}</b><span>DECK</span></div><div className="pile grave"><b>{side.grave.length}</b><span>GRAVE</span></div></div>}
-function Zone({cards,back,enemy,onEmpty,onCard,selected,valid,targetable}:{cards:(Card|null)[];back?:boolean;enemy?:boolean;onEmpty?:(i:number)=>void;onCard?:(i:number)=>void;selected?:number|null;valid?:boolean;targetable?:boolean}){return <div className={`zone ${back?'back':''}`}>{cards.map((c,i)=><button key={i} className={`slot ${selected===i?'selected':''} ${!c&&valid?'valid':''} ${c&&targetable?'targetable':''}`} onClick={()=>c?onCard?.(i):onEmpty?.(i)}>{c?<CardView card={c} hidden={enemy&&c.face}/>:<span aria-hidden="true"/>}</button>)}</div>}
-function CardView({card,hidden,hand,index=0,active,onClick}:{card:Card;hidden?:boolean;hand?:boolean;index?:number;active?:boolean;onClick?:()=>void}){return <button onClick={onClick} className={`card ${hand?'in-hand':''} ${active?'active':''} ${card.used?'used':''} ${hidden?'concealed':''}`} style={{'--tone':card.color,'--i':index} as React.CSSProperties}><small>{hidden?'SET':`${card.rarity} · ${card.kind}`}</small><div className={`card-art art-${card.mark}`} aria-hidden="true"><i/><i/><i/></div><strong>{hidden?'UNKNOWN':card.name}</strong>{!hidden&&<em>{card.kind==='HERO'?`${card.defense?'DEF':'ATK'} ${card.defense?card.def:card.atk} · ${card.atk}/${card.def}`:'TACTICAL CARD'}</em>}</button>}
+
+function Duelist({ enemy, name, rank, lp }: { enemy?: boolean; name: string; rank: string; lp: number }) {
+  return <div className={`fm-duelist ${enemy ? 'enemy' : 'player'}`}><div><small>{enemy ? 'OPPONENT' : 'DUELIST'}</small><strong>{name}</strong><em>{rank}</em></div><div className="fm-lp"><small>LIFE POINTS</small><b>{String(lp).padStart(4, '0')}</b><i style={{ width: `${Math.max(0, lp / 40)}%` }} /></div></div>;
+}
+function FieldCard({ card, enemy, selected, onClick }: { card: Slot; enemy?: boolean; selected?: boolean; onClick: () => void }) {
+  return <button aria-label={card ? card.name : 'Empty field slot'} onClick={onClick} className={`fm-field-card ${card ? 'occupied' : ''} ${card?.faceDown ? 'face-down' : ''} ${card?.spent ? 'spent' : ''} ${selected ? 'targeted' : ''}`} style={card ? { '--hue': card.hue } as React.CSSProperties : undefined}>
+    {card ? <><div className="card-art"><span>{card.faceDown ? '封' : card.sigil}</span></div><div className="card-name">{card.faceDown ? 'SET CARD' : card.name}</div>{!card.faceDown && <div className="card-stats">ATK {card.atk} · DEF {card.def}</div>}</> : <span className="empty-mark">◇</span>}
+  </button>;
+}
+function HandCard({ card, index, selected, onClick }: { card: Card; index: number; selected: boolean; onClick: () => void }) {
+  const angle = (index - 1.5) * 6;
+  return <button onClick={onClick} className={`fm-hand-card ${selected ? 'selected' : ''}`} style={{ '--hue': card.hue, '--angle': `${angle}deg`, '--offset': `${Math.abs(index - 1.5) * 4}px` } as React.CSSProperties}>
+    <div className="hand-rank">{card.rank}</div><div className="hand-art"><span>{card.sigil}</span></div><strong>{card.name}</strong><div className="hand-stats">{card.kind === 'HERO' ? `${card.atk} / ${card.def}` : card.kind}</div><p>{card.text}</p>
+  </button>;
+}
