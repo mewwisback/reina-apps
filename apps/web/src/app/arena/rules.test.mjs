@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import {attackOutcome,battleOutcome,resultWinner,spellDamage,trapOutcome,tributeIndices} from './rules.mjs';
+import {attackOutcome,battleOutcome,resultWinner,spellDamage,trapOutcome,tributeIndices,tributeUpgrade} from './rules.mjs';
 
 test('spell damage is deterministic',()=>{
  assert.equal(spellDamage('QUEEN’S EDGE'),500);
@@ -12,6 +12,13 @@ test('bot tributes weakest current battle value, not slot order',()=>{
  const field=[{atk:2200,def:1200},{atk:900,def:1700,defense:true},{atk:1100,def:900,defense:true}];
  assert.deepEqual(tributeIndices(field,1),[2]);
  assert.deepEqual(tributeIndices(field,2),[2,1]);
+});
+
+test('bot refuses tribute summons that downgrade its field',()=>{
+ const field=[{atk:2200,def:1200},{atk:1750,def:1100}];
+ assert.equal(tributeUpgrade({atk:1350,def:1400},field,1),false);
+ assert.equal(tributeUpgrade({atk:2300,def:1000},field,1),true);
+ assert.equal(tributeUpgrade({atk:2200,def:1200},field,1),false);
 });
 
 test('LP and deck-out winner priority',()=>{

@@ -7,6 +7,8 @@ export const tributeIndices=(front,count)=>front
  .slice(0,count)
  .map(x=>x.index);
 
+export const tributeUpgrade=(candidate,front,count)=>{const ids=tributeIndices(front,count),strongest=Math.max(...front.filter(Boolean).map(card=>card.defense?card.def:card.atk));return ids.length===count&&candidate.atk>strongest};
+
 export const resultWinner=(playerLp,enemyLp,deckOut)=>playerLp<=0?'SILENTINDEX':enemyLp<=0?'REINA':deckOut;
 
 export const battleOutcome=(attackerAtk,target)=>{
