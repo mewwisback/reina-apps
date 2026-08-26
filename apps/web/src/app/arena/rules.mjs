@@ -19,3 +19,8 @@ export const trapOutcome=(name,attackerAtk,turn,setAt)=>{
  const armed=setAt<turn;
  return{armed,reflected:armed&&name==='MIRROR WARD'?attackerAtk:0};
 };
+
+export const attackOutcome=(attackerAtk,target,trap,turn)=>{
+ if(trap){const effect=trapOutcome(trap.name,attackerAtk,turn,trap.setAt);if(effect.armed)return{negated:true,reflected:effect.reflected,destroyed:false,damage:0}}
+ return{negated:false,reflected:0,...battleOutcome(attackerAtk,target)};
+};

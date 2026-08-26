@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import {battleOutcome,resultWinner,spellDamage,trapOutcome,tributeIndices} from './rules.mjs';
+import {attackOutcome,battleOutcome,resultWinner,spellDamage,trapOutcome,tributeIndices} from './rules.mjs';
 
 test('spell damage is deterministic',()=>{
  assert.equal(spellDamage('QUEEN’S EDGE'),500);
@@ -30,4 +30,10 @@ test('traps have distinct effects and require an earlier turn',()=>{
  assert.deepEqual(trapOutcome('COUNTER SEAL',2200,3,2),{armed:true,reflected:0});
  assert.deepEqual(trapOutcome('MIRROR WARD',2200,3,2),{armed:true,reflected:2200});
  assert.deepEqual(trapOutcome('MIRROR WARD',2200,3,3),{armed:false,reflected:0});
+});
+
+test('armed trap resolves before direct attack damage',()=>{
+ assert.deepEqual(attackOutcome(2200,null,{name:'COUNTER SEAL',setAt:2},3),{negated:true,reflected:0,destroyed:false,damage:0});
+ assert.deepEqual(attackOutcome(2200,null,{name:'MIRROR WARD',setAt:2},3),{negated:true,reflected:2200,destroyed:false,damage:0});
+ assert.deepEqual(attackOutcome(2200,null,null,3),{negated:false,reflected:0,destroyed:false,damage:2200});
 });
