@@ -8,3 +8,14 @@ export const tributeIndices=(front,count)=>front
  .map(x=>x.index);
 
 export const resultWinner=(playerLp,enemyLp,deckOut)=>playerLp<=0?'SILENTINDEX':enemyLp<=0?'REINA':deckOut;
+
+export const battleOutcome=(attackerAtk,target)=>{
+ if(!target)return{destroyed:false,damage:attackerAtk};
+ const power=target.defense?target.def:target.atk;
+ return attackerAtk>=power?{destroyed:true,damage:0}:{destroyed:false,damage:power-attackerAtk};
+};
+
+export const trapOutcome=(name,attackerAtk,turn,setAt)=>{
+ const armed=setAt<turn;
+ return{armed,reflected:armed&&name==='MIRROR WARD'?attackerAtk:0};
+};
