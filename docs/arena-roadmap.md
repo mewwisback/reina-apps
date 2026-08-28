@@ -1,6 +1,6 @@
 # Arena Correctness and Delivery Roadmap
 
-Baseline: `main` at `0f813291`. Existing deterministic rules cover spell damage, tribute selection and downgrade prevention, winner priority, stance comparison, trap arming, and trap-first direct attacks. Browser coverage and centralized runtime resolution are absent.
+Baseline: `main` at `0745bce`. Deterministic rules now cover spell damage, tribute selection and downgrade prevention, automatic draws, winner priority, terminal damage, battle stance and tie semantics, attack-position battle damage, trap arming, and trap-first direct attacks. Browser coverage remains absent.
 
 Severity measures player-impact risk. Priority controls execution order.
 
@@ -8,9 +8,9 @@ Severity measures player-impact risk. Priority controls execution order.
 
 | Severity | Work item | Acceptance criteria | Depends on |
 | --- | --- | --- | --- |
-| Critical | Centralize lethal resolution | Direct attacks, combat damage, reflected damage, and player/bot spells clamp LP to zero, resolve exactly one winner, and prevent every queued turn/state transition after lethal. | None |
+| Critical | Centralize lethal resolution — completed in #2 | Direct attacks, combat damage, reflected damage, and player/bot spells clamp LP to zero, resolve exactly one winner, and prevent every queued turn/state transition after lethal. | None |
 | Critical | Complete deck-out runtime flow | Final draw and empty deck resolve once for both sides; result dialog identifies winner; bot sequence stops; rematch resets deck-out state. Covered end-to-end. | Central result resolver |
-| High | Define equal battle outcomes | Owner confirms proposed rule: ATK vs ATK tie destroys both; ATK vs DEF tie destroys neither. Pure rules and runtime match the decision. | Owner decision |
+| High | Define equal battle outcomes — completed in #2 | ATK vs ATK tie destroys both; ATK vs DEF tie destroys neither. Pure rules and runtime match the decision. | Completed |
 | High | Add permanent browser regression | Repository-owned Playwright coverage exercises matchmaking, draw, summon, one/two-card tribute, deselect/cancel, battle, trap, lethal, deck-out, result dialog, and rematch. | Lethal and equal rules |
 | High | Audit async state races | Stress repeated summon, trap reflection, result, rematch, and bot timing. No stale attacker, duplicate result, or post-result mutation. Pending timers are cancellable. | Central resolver; browser harness |
 
