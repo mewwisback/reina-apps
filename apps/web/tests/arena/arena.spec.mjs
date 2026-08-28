@@ -7,11 +7,13 @@ const enterDuel=async(page,fixture='final-draw')=>{
 };
 
 test('matchmaking starts only after selecting a duel category',async({page})=>{
- await page.goto('/arena?arenaFixture=final-draw');
+ await page.goto('/arena');
  await expect(page.getByRole('heading',{name:'Choose your fight'})).toBeVisible();
  await expect(page.getByText('Searching the courtyard')).toHaveCount(0);
  await page.getByRole('button',{name:/CASUAL/}).click();
  await expect(page.getByRole('heading',{name:/Searching the courtyard|Duelist found/})).toBeVisible();
+ await expect(page.locator('.queue-orbit')).toHaveCount(0);
+ await expect(page.locator('.match-loader')).toHaveAttribute('src','/arena/loading/tail-spin.svg');
  await expect(page.locator('.game-topbar')).toContainText('CASUAL DUEL');
 });
 
