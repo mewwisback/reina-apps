@@ -65,10 +65,25 @@ test('found opponent shows complete profile without clipping',async({page})=>{
  await expect(page.getByText('CONTROL / SENTINEL')).toBeVisible();
  await expect(page.getByText('53% WR')).toBeVisible();
  await expect(page.getByText('128 DUELS')).toBeVisible();
+ const readyLabels=page.getByText('READY',{exact:true});
+ await expect(readyLabels).toHaveCount(2);
+ for(const ready of await readyLabels.all()){
+  const readyBox=await ready.boundingBox();
+  const parentBox=await ready.locator('..').boundingBox();
+  expect(readyBox).not.toBeNull();
+  expect(parentBox).not.toBeNull();
+  expect(readyBox.x).toBeGreaterThanOrEqual(parentBox.x-.5);
+  expect(readyBox.x+readyBox.width).toBeLessThanOrEqual(parentBox.x+parentBox.width+.5);
+  expect(readyBox.y).toBeGreaterThanOrEqual(parentBox.y-.5);
+  expect(readyBox.y+readyBox.height).toBeLessThanOrEqual(parentBox.y+parentBox.height+.5);
+ }
  const profile=page.locator('.match-duelist');
  const box=await profile.boundingBox();
+ const navBox=await page.locator('.matchmaking-nav').boundingBox();
  const viewport=page.viewportSize();
  expect(box).not.toBeNull();
+ expect(navBox).not.toBeNull();
+ expect(box.y).toBeGreaterThanOrEqual(navBox.y+navBox.height);
  expect(box.x).toBeGreaterThanOrEqual(0);
  expect(box.x+box.width).toBeLessThanOrEqual(viewport.width);
  expect(await profile.evaluate(node=>node.scrollWidth<=node.clientWidth&&node.scrollHeight<=node.clientHeight)).toBe(true);
