@@ -95,6 +95,15 @@ test('duel controls use one command rail and card inspect stays inside viewport'
  await expect(page.locator('.arena .game-topbar,.arena .arena-header')).toHaveCount(0);
  await expect(page.locator('.resource-strip')).toHaveCount(1);
  await expect(page.locator('.resource-strip>span')).toHaveCount(4);
+ await expect(page.locator('.reina-seal')).toHaveCount(0);
+ await expect(page.locator('.gameplay-information')).toHaveCount(1);
+ await expect(page.locator('.duelist-information')).toHaveCount(2);
+ await expect(page.locator('.duelist-information.enemy')).toContainText('SILENTINDEX');
+ await expect(page.locator('.duelist-information:not(.enemy)')).toContainText('REINA');
+ await expect(page.locator('.duelist-information')).toContainText(['LP 4000','LP 4000']);
+ const gameplayText=page.locator('.gameplay-information strong');
+ await expect(gameplayText).toBeVisible();
+ expect(Number.parseFloat(await gameplayText.evaluate(node=>getComputedStyle(node).fontSize))).toBeGreaterThanOrEqual(12);
  await expect(page.locator('.commands')).toContainText('ENTER BATTLE');
  await expect(page.locator('.commands')).toContainText('END TURN');
  await page.locator('.hand .card').first().click();
