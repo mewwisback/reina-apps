@@ -17,6 +17,23 @@ test('matchmaking starts only after selecting a duel category',async({page})=>{
  await expect(page.locator('.game-topbar')).toContainText('CASUAL DUEL');
 });
 
+test('found opponent shows complete profile without clipping',async({page})=>{
+ await page.goto('/arena?arenaFixture=matchmaking');
+ await page.getByRole('button',{name:/RANKED/}).click();
+ await expect(page.getByRole('heading',{name:'SILENTINDEX'})).toBeVisible();
+ await expect(page.getByText('DIAMOND II / 2,510 MMR')).toBeVisible();
+ await expect(page.getByText('CONTROL / SENTINEL')).toBeVisible();
+ await expect(page.getByText('53% WR')).toBeVisible();
+ await expect(page.getByText('128 DUELS')).toBeVisible();
+ const profile=page.locator('.match-duelist');
+ const box=await profile.boundingBox();
+ const viewport=page.viewportSize();
+ expect(box).not.toBeNull();
+ expect(box.x).toBeGreaterThanOrEqual(0);
+ expect(box.x+box.width).toBeLessThanOrEqual(viewport.width);
+ expect(await profile.evaluate(node=>node.scrollWidth<=node.clientWidth&&node.scrollHeight<=node.clientHeight)).toBe(true);
+});
+
 test('opening hand draws automatically exactly once',async({page})=>{
  await enterDuel(page);
  await expect(page.locator('.phase-label')).toHaveText('MAIN PHASE');
