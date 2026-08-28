@@ -19,7 +19,7 @@ export const battleOutcome=(attackerAtk,target)=>{
  if(!target)return{attackerDestroyed:false,targetDestroyed:false,damage:attackerAtk};
  const power=target.defense?target.def:target.atk;
  if(attackerAtk===power)return{attackerDestroyed:!target.defense,targetDestroyed:!target.defense,damage:0};
- return attackerAtk>power?{attackerDestroyed:false,targetDestroyed:true,damage:0}:{attackerDestroyed:false,targetDestroyed:false,damage:power-attackerAtk};
+ return attackerAtk>power?{attackerDestroyed:false,targetDestroyed:true,damage:target.defense?0:attackerAtk-power}:{attackerDestroyed:false,targetDestroyed:false,damage:power-attackerAtk};
 };
 
 export const trapOutcome=(name,attackerAtk,turn,setAt)=>{

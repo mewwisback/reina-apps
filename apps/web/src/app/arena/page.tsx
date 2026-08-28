@@ -58,8 +58,8 @@ export default function ArenaPage(){
    if(target===null){damage('e',outcome.damage);setMessage(`Direct attack lands — ${outcome.damage} damage.`)}
    else{
     if(outcome.targetDestroyed)setE(s=>{const front=[...s.front];front[target]=null;return{...s,front,grave:[...s.grave,defender!]}});
-    if(outcome.damage)damage('p',outcome.damage);
-    setMessage(outcome.attackerDestroyed?`${hero.name} and ${defender!.name} destroyed.`:outcome.targetDestroyed?`${defender!.name} destroyed.`:outcome.damage?`Attack repelled — ${outcome.damage} damage to REINA.`:'Equal battle — no hero destroyed.');
+    if(outcome.damage)damage(outcome.targetDestroyed?'e':'p',outcome.damage);
+    setMessage(outcome.attackerDestroyed?`${hero.name} and ${defender!.name} destroyed.`:outcome.targetDestroyed?`${defender!.name} destroyed — ${outcome.damage} damage to SILENTINDEX.`:outcome.damage?`Attack repelled — ${outcome.damage} damage to REINA.`:'Equal battle — no hero destroyed.');
     if(outcome.attackerDestroyed)setP(s=>{const front=[...s.front];front[attacker]=null;return{...s,front,grave:[...s.grave,hero]}});
    }
   }
@@ -100,8 +100,8 @@ export default function ArenaPage(){
     }else{
      const target=targets.sort((a,b)=>(a.card!.defense?a.card!.def:a.card!.atk)-(b.card!.defense?b.card!.def:b.card!.atk))[0],outcome=battleOutcome(hero.atk,target.card!);
      if(outcome.targetDestroyed)setP(q=>{const front=[...q.front];front[target.index]=null;return{...q,front,grave:[...q.grave,target.card!]}});
-     if(outcome.damage){const result=damageOutcome(enemyLpRef.current,outcome.damage);enemyLpRef.current=result.lp;next={...next,lp:result.lp};if(result.lethal)finish('REINA')}
-     setMessage(outcome.attackerDestroyed?`${hero.name} and ${target.card!.name} destroyed.`:outcome.targetDestroyed?`${target.card!.name} destroyed.`:outcome.damage?`Attack repelled — ${outcome.damage} damage to SILENTINDEX.`:'Equal battle — no hero destroyed.');
+     if(outcome.damage){if(outcome.targetDestroyed)damage('p',outcome.damage);else{const result=damageOutcome(enemyLpRef.current,outcome.damage);enemyLpRef.current=result.lp;next={...next,lp:result.lp};if(result.lethal)finish('REINA')}}
+     setMessage(outcome.attackerDestroyed?`${hero.name} and ${target.card!.name} destroyed.`:outcome.targetDestroyed?`${target.card!.name} destroyed — ${outcome.damage} damage to REINA.`:outcome.damage?`Attack repelled — ${outcome.damage} damage to SILENTINDEX.`:'Equal battle — no hero destroyed.');
      if(outcome.attackerDestroyed){const front=[...next.front];front[attacker]=null;return{...next,front,grave:[...next.grave,hero]}}
     }
     if(winnerRef.current)return next;

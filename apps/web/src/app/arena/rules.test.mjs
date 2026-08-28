@@ -41,9 +41,14 @@ test('all damage sources clamp LP and report lethal results',()=>{
 });
 
 test('battle compares attack against current stance',()=>{
- assert.deepEqual(battleOutcome(1750,{atk:1100,def:900,defense:false}),{attackerDestroyed:false,targetDestroyed:true,damage:0});
+ assert.deepEqual(battleOutcome(1750,{atk:1100,def:900,defense:false}),{attackerDestroyed:false,targetDestroyed:true,damage:650});
  assert.deepEqual(battleOutcome(1100,{atk:900,def:1700,defense:true}),{attackerDestroyed:false,targetDestroyed:false,damage:600});
  assert.deepEqual(battleOutcome(2200,null),{attackerDestroyed:false,targetDestroyed:false,damage:2200});
+});
+
+test('destroyed attack-position hero takes battle damage but defense-position hero does not',()=>{
+ assert.deepEqual(battleOutcome(2200,{atk:1750,def:1100,defense:false}),{attackerDestroyed:false,targetDestroyed:true,damage:450});
+ assert.deepEqual(battleOutcome(2200,{atk:1750,def:1100,defense:true}),{attackerDestroyed:false,targetDestroyed:true,damage:0});
 });
 
 test('equal ATK battle destroys both attacking heroes',()=>{
