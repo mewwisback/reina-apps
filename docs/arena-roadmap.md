@@ -1,6 +1,6 @@
 # Arena Correctness and Delivery Roadmap
 
-Baseline: `main` at `0745bce`. Deterministic rules now cover spell damage, tribute selection and downgrade prevention, automatic draws, winner priority, terminal damage, battle stance and tie semantics, attack-position battle damage, trap arming, and trap-first direct attacks. Browser coverage remains absent.
+Baseline: `main` at `98901d1`. Deterministic rules cover spell damage, tribute selection and downgrade prevention, automatic draws, winner priority, terminal damage, battle stance and tie semantics, attack-position battle damage, trap arming, and trap-first direct attacks. Playwright covers category-gated matchmaking, automatic draws, deck-out, terminal-state stability, and rematch.
 
 Severity measures player-impact risk. Priority controls execution order.
 
@@ -9,9 +9,9 @@ Severity measures player-impact risk. Priority controls execution order.
 | Severity | Work item | Acceptance criteria | Depends on |
 | --- | --- | --- | --- |
 | Critical | Centralize lethal resolution — completed in #2 | Direct attacks, combat damage, reflected damage, and player/bot spells clamp LP to zero, resolve exactly one winner, and prevent every queued turn/state transition after lethal. | None |
-| Critical | Complete deck-out runtime flow | Final draw and empty deck resolve once for both sides; result dialog identifies winner; bot sequence stops; rematch resets deck-out state. Covered end-to-end. | Central result resolver |
+| Critical | Complete deck-out runtime flow — completed in #3 | Final draw and empty deck resolve once for both sides; result dialog identifies winner; bot sequence stops; rematch resets deck-out state. Covered end-to-end. | Central result resolver |
 | High | Define equal battle outcomes — completed in #2 | ATK vs ATK tie destroys both; ATK vs DEF tie destroys neither. Pure rules and runtime match the decision. | Completed |
-| High | Add permanent browser regression | Repository-owned Playwright coverage exercises matchmaking, draw, summon, one/two-card tribute, deselect/cancel, battle, trap, lethal, deck-out, result dialog, and rematch. | Lethal and equal rules |
+| High | Add permanent browser regression — baseline completed in #3 | Repository-owned Playwright coverage exercises category-gated matchmaking, draw, deck-out, result dialog, and rematch. Summon, tribute, battle, trap, and lethal browser paths remain incremental follow-up coverage. | Lethal and equal rules |
 | High | Audit async state races | Stress repeated summon, trap reflection, result, rematch, and bot timing. No stale attacker, duplicate result, or post-result mutation. Pending timers are cancellable. | Central resolver; browser harness |
 
 ## P1: Strategy, Rules, and Interaction
@@ -30,7 +30,7 @@ Severity measures player-impact risk. Priority controls execution order.
 
 | Severity | Work item | Acceptance criteria | Depends on |
 | --- | --- | --- | --- |
-| Medium | Matchmaking interaction audit | Repeated Find Another, cancel, and Enter Duel produce no layout shift, duplicate timer, or stale match. | Browser harness |
+| Medium | Matchmaking interaction audit — initial flow completed in #4 | Casual, Ranked, and Event selection gates queue entry; repeated Find Another, cancel, and Enter Duel still need race and layout-stability stress coverage. | Browser harness |
 | Medium | Accessibility audit | Keyboard-only flow works; transitions restore logical focus; result dialog traps and restores focus; labels and contrast pass automated checks. | Stable interaction flow |
 | Low | Strong duel feedback | Tribute candidates, destroyed cards, trap triggers, damage sources, and invalid actions have distinct visual and text feedback. | Final resolution events |
 | High | Split Arena page and introduce reducer/state machine | Extract pure resolution and bot-turn orchestration from `page.tsx`; one event owns each transition; behavior remains covered. | Regression suite |
@@ -38,10 +38,10 @@ Severity measures player-impact risk. Priority controls execution order.
 
 ## Execution Sequence
 
-1. Central lethal/result resolver and terminal-state cancellation.
-2. Owner decision and implementation for equal battle outcomes.
-3. Permanent Playwright regression, including deck-out and rematch.
-4. Async race audit and reducer/state-machine extraction.
+1. Central lethal/result resolver and terminal-state cancellation — completed in #2.
+2. Owner decision and implementation for equal battle outcomes — completed in #2.
+3. Permanent Playwright baseline for matchmaking, deck-out, and rematch — completed in #3 and #4.
+4. Async race audit and incremental browser combat coverage.
 5. Bot targeting, tribute UX, and support/chain semantics.
 6. Card identities and complete card text.
 7. Mobile, matchmaking, feedback, and accessibility audits.
