@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import './arena.css';
 import {battleOutcome,damageOutcome,drawOutcome,spellDamage,trapOutcome,tributeIndices,tributeUpgrade} from './rules.mjs';
+import {cancellableDelay} from './async-control.mjs';
 
 type Kind='HERO'|'SPELL'|'TRAP'; type Phase='DRAW'|'MAIN'|'BATTLE'; type Rarity='COMMON'|'RARE'|'EPIC'; type Action='SUMMON'|'DEFENSE'|'ACTIVATE'|'SET'|null; type MatchCategory='casual'|'ranked'|'event';
 type Card={id:string;name:string;kind:Kind;atk:number;def:number;mark:string;color:string;rarity:Rarity;face?:boolean;used?:boolean;ready?:number;setAt?:number;defense?:boolean};
@@ -34,7 +35,8 @@ export default function ArenaPage(){
  const damage=(who:'p'|'e',amount:number)=>{if(winnerRef.current)return;const lpRef=who==='p'?playerLpRef:enemyLpRef,result=damageOutcome(lpRef.current,amount);lpRef.current=result.lp;if(result.lethal)finish(who==='p'?'SILENTINDEX':'REINA');const setter=who==='p'?setP:setE;setter(side=>({...side,lp:result.lp}))};
  useEffect(()=>{if(screen!=='search')return;setQueueTime(0);sound('connecting');const testFixture=process.env.NODE_ENV!=='production'&&new URLSearchParams(location.search).has('arenaFixture'),tick=setInterval(()=>setQueueTime(t=>t+1),1000),found=setTimeout(()=>{setScreen('found');sound('open')},testFixture?0:4200);return()=>{clearInterval(tick);clearTimeout(found)}},[screen]);
  const draw=(who:'p'|'e')=>{if(winnerRef.current)return false;const side=who==='p'?p:e,result=drawOutcome(side.deck,side.hand);if(result.deckOut){finish(who==='p'?'SILENTINDEX':'REINA');setMessage(`${who==='p'?'REINA':'SILENTINDEX'} cannot draw — deck out.`);return false}const setter=who==='p'?setP:setE;setter(s=>({...s,deck:result.deck,hand:result.hand}));return true};
- const accept=()=>{let a=fresh(),b=fresh(true);const fixture=process.env.NODE_ENV==='production'?null:new URLSearchParams(location.search).get('arenaFixture');if(fixture&&!fixtureUsedRef.current){fixtureUsedRef.current=true;a={...a,deck:a.deck.slice(0,fixture==='deck-out'?5:6)}}playerLpRef.current=a.lp;enemyLpRef.current=b.lp;a={...a,hand:a.deck.slice(0,5),deck:a.deck.slice(5)};b={...b,hand:b.deck.slice(0,5),deck:b.deck.slice(5)};setP(a);setE(b);setOpening(true);setScreen('duel');setDuelRun(x=>x+1);setMessage('Opening draw complete. Five cards in hand.');setTimeout(()=>setOpening(false),1000)};
+ const accept=()=>{let a=fresh(),b=fresh(true);const fixture=process.env.NODE_ENV==='production'?null:new URLSearchParams(location.search).get('arenaFixture');if(fixture&&!fixtureUsedRef.current){fixtureUsedRef.current=true;a={...a,deck:a.deck.slice(0,fixture==='deck-out'?5:6)}}playerLpRef.current=a.lp;enemyLpRef.current=b.lp;a={...a,hand:a.deck.slice(0,5),deck:a.deck.slice(5)};b={...b,hand:b.deck.slice(0,5),deck:b.deck.slice(5)};setP(a);setE(b);setOpening(true);setScreen('duel');setDuelRun(x=>x+1);setMessage('Opening draw complete. Five cards in hand.')};
+ useEffect(()=>{if(!opening)return;const delay=cancellableDelay(1000);void delay.promise.then(active=>{if(active)setOpening(false)});return delay.cancel},[opening,duelRun]);
  const resetDuel=(next:'duel'|'category')=>{winnerRef.current=null;playerLpRef.current=4000;enemyLpRef.current=4000;playerDrawnTurnRef.current=0;setWinner(null);setP(fresh());setE(fresh(true));setPhase('DRAW');setTurn(1);setMine(true);setSel(null);setAction(null);setAtt(null);setTributePick([]);setOpening(false);setEco(emptyEco());setEnemyEco(emptyEco());setMessage(next==='duel'?'Rematch ready. Opening hands dealt.':'Choose a duel category.');setScreen(next);if(next==='duel')accept()};
  const endTurn=()=>{if(!mine||winner)return;setSel(null);setAction(null);setAtt(null);setTributePick([]);setMine(false);setMessage('SILENTINDEX turn.');};
  useEffect(()=>{if(screen!=='duel'||!mine||phase!=='DRAW'||winnerRef.current||playerDrawnTurnRef.current===turn)return;playerDrawnTurnRef.current=turn;if(draw('p')){setPhase('MAIN');setMessage(`${g.name} — card drawn automatically. Choose one card action.`)}},[screen,mine,phase,turn,duelRun]);
@@ -76,17 +78,18 @@ export default function ArenaPage(){
   if(mine||screen!=='duel'||winner)return;
   let stop=false;
   const halted=()=>stop||winnerRef.current!==null;
-  const wait=()=>new Promise(r=>setTimeout(r,650));
+  let delay:ReturnType<typeof cancellableDelay>|null=null;
+  const wait=async()=>{delay=cancellableDelay(650);return delay.promise};
   const run=async()=>{
-   setEnemyEco(emptyEco());setPhase('DRAW');if(!draw('e'))return;setPhase('MAIN');await wait();if(halted())return;
+   setEnemyEco(emptyEco());setPhase('DRAW');if(!draw('e'))return;setPhase('MAIN');if(!await wait()||halted())return;
    let summoned=false;
    setE(s=>{if(winnerRef.current)return s;const heroes=s.hand.filter(c=>c.kind==='HERO').sort((a,b)=>b.atk-a.atk);const c=heroes.find(c=>{if(summonReason(c,s,turn,emptyEco()))return false;const cost=tributeCost(c);return !cost||tributeUpgrade(c,s.front,cost)});if(!c)return s;const cost=tributeCost(c),q=tribute(s,cost),i=cost?q.slot:q.side.front.findIndex((x,j)=>!x&&j<g.slots);if(i<0)return s;const front=[...q.side.front];front[i]={...c,ready:turn+1};summoned=true;setMessage(`SILENTINDEX summons ${c.name}.`);return{...q.side,hand:q.side.hand.filter(x=>x.id!==c.id),front}});
-   if(summoned)setEnemyEco(x=>({...x,summon:1}));await wait();if(halted())return;
+   if(summoned)setEnemyEco(x=>({...x,summon:1}));if(!await wait()||halted())return;
    setE(s=>{if(winnerRef.current)return s;const c=s.hand.find(x=>x.kind==='TRAP'||(x.kind==='SPELL'&&turn<3));if(!c)return s;const i=s.back.findIndex(x=>!x);if(i<0)return s;const back=[...s.back];back[i]={...c,face:true,setAt:turn};setEnemyEco(x=>({...x,set:1}));setMessage('SILENTINDEX sets one support.');return{...s,hand:s.hand.filter(x=>x.id!==c.id),back}});
-   await wait();if(halted())return;
+   if(!await wait()||halted())return;
    if(turn>=3){
     setE(s=>{if(winnerRef.current)return s;const c=s.hand.find(x=>x.kind==='SPELL');if(!c)return s;const amount=spellDamage(c.name);damage('p',amount);setEnemyEco(x=>({...x,spell:1}));setMessage(`SILENTINDEX activates ${c.name} — ${amount} damage.`);return{...s,hand:s.hand.filter(x=>x.id!==c.id),grave:[...s.grave,c]}});
-    await wait();if(halted())return;
+    if(!await wait()||halted())return;
    }
    setPhase('BATTLE');
    setE(s=>{
@@ -113,10 +116,10 @@ export default function ArenaPage(){
     if(winnerRef.current)return next;
     const front=[...next.front];front[attacker]={...hero,used:true};return{...next,front};
    });
-   await wait();if(halted())return;
+   if(!await wait()||halted())return;
    setTurn(t=>t+1);setP(s=>({...s,front:s.front.map(x=>x?{...x,used:false}:x)}));setE(s=>({...s,front:s.front.map(x=>x?{...x,used:false}:x)}));setEco(emptyEco());setPhase('DRAW');setMine(true);setMessage('Your turn. Draw, then act.');
   };
-  run();return()=>{stop=true};
+  run();return()=>{stop=true;delay?.cancel()};
  },[mine,screen,winner,turn,g.slots]);
  const reason=useMemo(()=>!sel?'':sel.kind==='HERO'?summonReason(sel,p,turn,eco):sel.kind==='SPELL'?(turn<3?'Opening: direct damage spells unavailable.':eco.spell?'Spell allowance used (1/1).':''):eco.set?'Set allowance used (1/1).':'',[sel,p,turn,eco]);
  const preview=att===null?'':!e.front.some(Boolean)?`${p.front[att]?.atk??0} direct damage`: 'Choose target to compare ATK against battle value';const pc=count(p),ec=count(e);

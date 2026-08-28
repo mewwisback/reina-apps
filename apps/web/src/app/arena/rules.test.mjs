@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import {cancellableDelay} from './async-control.mjs';
 import {attackOutcome,battleOutcome,damageOutcome,drawOutcome,resultWinner,spellDamage,trapOutcome,tributeIndices,tributeUpgrade} from './rules.mjs';
 
 test('spell damage is deterministic',()=>{
@@ -69,4 +70,13 @@ test('armed trap resolves before direct attack damage',()=>{
  assert.deepEqual(attackOutcome(2200,null,{name:'COUNTER SEAL',setAt:2},3),{negated:true,reflected:0,attackerDestroyed:false,targetDestroyed:false,damage:0});
  assert.deepEqual(attackOutcome(2200,null,{name:'MIRROR WARD',setAt:2},3),{negated:true,reflected:2200,attackerDestroyed:false,targetDestroyed:false,damage:0});
  assert.deepEqual(attackOutcome(2200,null,null,3),{negated:false,reflected:0,attackerDestroyed:false,targetDestroyed:false,damage:2200});
+});
+
+test('cancellable delay clears pending timer and never resumes stale sequence',async()=>{
+ let resumed=false;
+ const delay=cancellableDelay(25);
+ delay.promise.then(active=>{if(active)resumed=true});
+ delay.cancel();
+ await new Promise(resolve=>setTimeout(resolve,40));
+ assert.equal(resumed,false);
 });
