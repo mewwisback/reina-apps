@@ -19,6 +19,9 @@ test('matchmaking starts only after selecting a duel category',async({page})=>{
  await page.goto('/arena');
  await expect(page.getByRole('heading',{name:'Choose your fight'})).toBeVisible();
  await expect(page.getByText('Searching the courtyard')).toHaveCount(0);
+ await expect(page.locator('.match-mode')).toHaveCount(0);
+ await expect(page.locator('.duel-entry')).toHaveCount(3);
+ await expect(page.locator('.duel-entry')).toContainText(['CASUAL','RANKED','EVENT']);
  await page.getByRole('button',{name:/CASUAL/}).click();
  await expect(page.getByRole('heading',{name:/Searching the courtyard|Duelist found/})).toBeVisible();
  await expect(page.locator('.queue-orbit')).toHaveCount(0);
