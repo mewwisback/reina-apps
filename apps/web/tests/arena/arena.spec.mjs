@@ -1,0 +1,33 @@
+import {expect,test} from '@playwright/test';
+
+const enterDuel=async(page,fixture='final-draw')=>{
+ await page.goto(`/arena?arenaFixture=${fixture}`);
+ await page.getByRole('button',{name:'ENTER DUEL'}).click();
+};
+
+test('opening hand draws automatically exactly once',async({page})=>{
+ await enterDuel(page);
+ await expect(page.locator('.phase-label')).toHaveText('MAIN PHASE');
+ await expect(page.locator('.hand .card')).toHaveCount(6);
+ await expect(page.locator('.stats:not(.enemy) dl dd').nth(0)).toHaveText('0');
+ await page.waitForTimeout(500);
+ await expect(page.locator('.hand .card')).toHaveCount(6);
+});
+
+test('empty deck resolves once and stops turn progression',async({page})=>{
+ await enterDuel(page,'deck-out');
+ await expect(page.getByRole('dialog')).toContainText('SILENTINDEX wins');
+ await expect(page.locator('.turn b')).toContainText('TURN 1');
+ await page.waitForTimeout(1500);
+ await expect(page.getByRole('dialog')).toHaveCount(1);
+ await expect(page.locator('.turn b')).toContainText('TURN 1');
+});
+
+test('rematch clears terminal state and resumes automatic draw',async({page})=>{
+ await enterDuel(page,'deck-out');
+ await page.getByRole('button',{name:'REMATCH'}).click();
+ await expect(page.getByRole('dialog')).toHaveCount(0);
+ await expect(page.locator('.phase-label')).toHaveText('MAIN PHASE');
+ await expect(page.locator('.hand .card')).toHaveCount(6);
+ await expect(page.locator('.turn b')).toContainText('TURN 1');
+});
