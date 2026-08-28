@@ -3,6 +3,7 @@ export function spellDamage(name:string):number;
 export function tributeIndices(front:(BattleCard|null)[],count:number):number[];
 export function tributeUpgrade(candidate:BattleCard,front:(BattleCard|null)[],count:number):boolean;
 export function resultWinner(playerLp:number,enemyLp:number,deckOut:'REINA'|'SILENTINDEX'|null):'REINA'|'SILENTINDEX'|null;
+export function terminalWinner(playerLp:number,enemyLp:number,deckOut:'REINA'|'SILENTINDEX'|null,requested:'REINA'|'SILENTINDEX'):'REINA'|'SILENTINDEX'|null;
 export function drawOutcome<T>(deck:T[],hand:T[]):{deck:T[];hand:T[];deckOut:boolean};
 export function damageOutcome(lp:number,damage:number):{lp:number;lethal:boolean};
 export function battleOutcome(attackerAtk:number,target:BattleCard|null):{attackerDestroyed:boolean;targetDestroyed:boolean;damage:number};

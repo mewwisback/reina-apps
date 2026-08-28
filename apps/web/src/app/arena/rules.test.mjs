@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import {cancellableDelay} from './async-control.mjs';
-import {attackOutcome,battleOutcome,damageOutcome,drawOutcome,resultWinner,spellDamage,trapOutcome,tributeIndices,tributeUpgrade} from './rules.mjs';
+import {attackOutcome,battleOutcome,damageOutcome,drawOutcome,resultWinner,spellDamage,terminalWinner,trapOutcome,tributeIndices,tributeUpgrade} from './rules.mjs';
 
 test('spell damage is deterministic',()=>{
  assert.equal(spellDamage('QUEEN’S EDGE'),500);
@@ -26,6 +26,16 @@ test('LP and deck-out winner priority',()=>{
  assert.equal(resultWinner(0,4000,null),'SILENTINDEX');
  assert.equal(resultWinner(4000,0,null),'REINA');
  assert.equal(resultWinner(4000,4000,'REINA'),'REINA');
+ assert.equal(resultWinner(1,1,null),null);
+ assert.equal(resultWinner(4000,4000,null),null);
+});
+
+test('winner request is rejected while both LP and decks remain live',()=>{
+ assert.equal(terminalWinner(4000,4000,null,'REINA'),null);
+ assert.equal(terminalWinner(1,2500,null,'SILENTINDEX'),null);
+ assert.equal(terminalWinner(0,2500,null,'SILENTINDEX'),'SILENTINDEX');
+ assert.equal(terminalWinner(2500,0,null,'REINA'),'REINA');
+ assert.equal(terminalWinner(2500,2500,'REINA','REINA'),'REINA');
 });
 
 test('turn draw moves the top card into hand or reports deck-out',()=>{
