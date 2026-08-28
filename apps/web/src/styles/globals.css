@@ -4,7 +4,6 @@
    Dark #0D0B10, cream #EDE7DC, crimson #E03C4E. Hard clip-paths.
    ============================================================ */
 
-@import url('https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=Zen+Old+Mincho:wght@600;700;900&family=JetBrains+Mono:wght@400;500&display=swap');
 
 *,
 *::before,
@@ -36,9 +35,9 @@
   --discord:   #8C6FD8;
 
   /* ---- Typography ---- */
-  --font-body: 'Zen Kaku Gothic New', sans-serif;
-  --font-display: 'Zen Old Mincho', serif;
-  --font-mono: 'JetBrains Mono', monospace;
+  --font-body: var(--font-zen-kaku), 'Zen Kaku Gothic New', sans-serif;
+  --font-display: var(--font-zen-mincho), 'Zen Old Mincho', serif;
+  --font-mono: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
 
   /* ---- Spacing (4px base) ---- */
   --sp-1: 4px;   --sp-2: 8px;   --sp-3: 12px;

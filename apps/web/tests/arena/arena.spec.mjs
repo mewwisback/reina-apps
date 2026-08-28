@@ -18,17 +18,27 @@ test('dashboard to Arena uses a loading fade before route content appears',async
 test('matchmaking starts only after selecting a duel category',async({page})=>{
  await page.goto('/arena');
  await expect(page.getByRole('heading',{name:'Choose your fight'})).toBeVisible();
+ await expect(page.locator('.matchmaking-nav')).toHaveCount(1);
+ await expect(page.locator('.matchmaking-brand')).toContainText('REINA');
+ await expect(page.locator('.matchmaking-region')).toContainText('ASIA PACIFIC');
+ await expect(page.locator('.matchmaking-region')).toContainText('38 MS');
+ await expect(page.locator('.matchmaking-nav')).not.toContainText('/');
  await expect(page.getByText('Searching the courtyard')).toHaveCount(0);
  await expect(page.locator('.match-mode,.duel-ledger')).toHaveCount(0);
  await expect(page.locator('.match-ruleset')).toHaveCount(3);
  await expect(page.locator('.match-ruleset')).toContainText(['CASUAL','RANKED','EVENT']);
  await expect(page.locator('.matchmaking-composition')).toHaveCSS('background-color','rgb(13, 11, 16)');
  await expect(page.locator('.matchmaking-signal')).toHaveCSS('background-color','rgb(224, 60, 78)');
+ const headingFont=await page.getByRole('heading',{name:'Choose your fight'}).evaluate(node=>getComputedStyle(node).fontFamily);
+ const modeFont=await page.getByRole('button',{name:/CASUAL/}).locator('.ruleset-copy b').evaluate(node=>getComputedStyle(node).fontFamily);
+ expect(headingFont).toContain('Zen Old Mincho');
+ expect(modeFont).toContain('Zen Kaku Gothic New');
+ expect(modeFont).not.toBe(headingFont);
  await page.getByRole('button',{name:/CASUAL/}).click();
  await expect(page.getByRole('heading',{name:/Searching the courtyard|Duelist found/})).toBeVisible();
  await expect(page.locator('.queue-orbit')).toHaveCount(0);
  await expect(page.locator('.match-loader')).toHaveAttribute('src','/arena/loading/tail-spin.svg');
- await expect(page.locator('.game-topbar')).toContainText('CASUAL DUEL');
+ await expect(page.locator('.matchmaking-brand')).toContainText('CASUAL DUEL');
 });
 
 test('ruleset hover moves its surface and text while reduced motion stays still',async({page})=>{
