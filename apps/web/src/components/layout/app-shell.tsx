@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useState, type ReactNode } from 'react';
 
 const NAV_ITEMS = [
@@ -25,7 +25,9 @@ export function AppShell({ children }: AppShellProps) {
   const [username, setUsername] = useState('Kaiba99');
   const [usernameInput, setUsernameInput] = useState('Kaiba99');
   const [walletInput, setWalletInput] = useState('');
+  const [enteringArena, setEnteringArena] = useState(false);
   const pathname = usePathname();
+  const router = useRouter();
 
   const expanded = !collapsed;
   const asideWidth = collapsed ? '72px' : '238px';
@@ -106,6 +108,12 @@ export function AppShell({ children }: AppShellProps) {
               <Link
                 key={item.href}
                 href={item.href}
+                onClick={(event) => {
+                  if (item.href !== '/arena' || active || enteringArena) return;
+                  event.preventDefault();
+                  setEnteringArena(true);
+                  window.setTimeout(() => router.push(item.href), 320);
+                }}
                 style={{
                   display: 'flex',
                   alignItems: 'center',
@@ -187,6 +195,13 @@ export function AppShell({ children }: AppShellProps) {
           )}
         </div>
       </aside>
+
+      {enteringArena && (
+        <div className="arena-route-exit" role="status" aria-label="Entering Arena" aria-live="polite">
+          <img src="/arena/loading/tail-spin.svg" alt="" aria-hidden="true" />
+          <span>ENTERING ARENA</span>
+        </div>
+      )}
 
       {/* ============ PROFILE MODAL ============ */}
       {profileOpen && (

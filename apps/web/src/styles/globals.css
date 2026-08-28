@@ -169,6 +169,43 @@ ul, ol { list-style: none; }
   100% { transform: translateX(230%) skewX(-12deg); }
 }
 
+@keyframes arenaRouteCover {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes arenaRouteReveal {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.arena-route-exit,
+.arena-route-loading {
+  position: fixed;
+  z-index: 100;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 18px;
+  color: var(--gold);
+  background: #08060a;
+  font: 700 10px var(--font-mono);
+  letter-spacing: .22em;
+}
+
+.arena-route-exit { animation: arenaRouteCover 320ms ease-out both; }
+.arena-route-loading { animation: arenaRouteCover 180ms ease-out both; }
+.arena-route-exit img,
+.arena-route-loading img { width: 48px; height: 48px; }
+.arena-route-enter { animation: arenaRouteReveal 420ms ease-out both; }
+
+@media (prefers-reduced-motion: reduce) {
+  .arena-route-exit,
+  .arena-route-loading,
+  .arena-route-enter { animation-duration: 1ms; }
+}
+
 :focus-visible {
   outline: 2px solid var(--crimson);
   outline-offset: 2px;

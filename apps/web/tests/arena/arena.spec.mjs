@@ -6,6 +6,15 @@ const enterDuel=async(page,fixture='final-draw')=>{
  await page.getByRole('button',{name:'ENTER DUEL'}).click();
 };
 
+test('dashboard to Arena uses a loading fade before route content appears',async({page})=>{
+ await page.goto('/dashboard');
+ await page.getByRole('link',{name:'Arena'}).click();
+ await expect(page.getByRole('status',{name:'Entering Arena'})).toBeVisible();
+ await expect(page).toHaveURL(/\/arena$/);
+ await expect(page.getByRole('heading',{name:'Choose your fight'})).toBeVisible();
+ await expect(page.locator('.arena-route-enter')).toHaveCount(1);
+});
+
 test('matchmaking starts only after selecting a duel category',async({page})=>{
  await page.goto('/arena');
  await expect(page.getByRole('heading',{name:'Choose your fight'})).toBeVisible();
