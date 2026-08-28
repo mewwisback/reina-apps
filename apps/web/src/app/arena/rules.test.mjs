@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import {attackOutcome,battleOutcome,damageOutcome,resultWinner,spellDamage,trapOutcome,tributeIndices,tributeUpgrade} from './rules.mjs';
+import {attackOutcome,battleOutcome,damageOutcome,drawOutcome,resultWinner,spellDamage,trapOutcome,tributeIndices,tributeUpgrade} from './rules.mjs';
 
 test('spell damage is deterministic',()=>{
  assert.equal(spellDamage('QUEEN’S EDGE'),500);
@@ -25,6 +25,12 @@ test('LP and deck-out winner priority',()=>{
  assert.equal(resultWinner(0,4000,null),'SILENTINDEX');
  assert.equal(resultWinner(4000,0,null),'REINA');
  assert.equal(resultWinner(4000,4000,'REINA'),'REINA');
+});
+
+test('turn draw moves the top card into hand or reports deck-out',()=>{
+ const card={id:'top'};
+ assert.deepEqual(drawOutcome([card,{id:'next'}],[]),{deck:[{id:'next'}],hand:[card],deckOut:false});
+ assert.deepEqual(drawOutcome([], [card]),{deck:[],hand:[card],deckOut:true});
 });
 
 test('all damage sources clamp LP and report lethal results',()=>{

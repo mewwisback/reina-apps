@@ -11,6 +11,8 @@ export const tributeUpgrade=(candidate,front,count)=>{const ids=tributeIndices(f
 
 export const resultWinner=(playerLp,enemyLp,deckOut)=>playerLp<=0?'SILENTINDEX':enemyLp<=0?'REINA':deckOut;
 
+export const drawOutcome=(deck,hand)=>deck.length?{deck:deck.slice(1),hand:[...hand,deck[0]],deckOut:false}:{deck,hand,deckOut:true};
+
 export const damageOutcome=(lp,damage)=>{const next=Math.max(0,lp-damage);return{lp:next,lethal:next===0}};
 
 export const battleOutcome=(attackerAtk,target)=>{
