@@ -2,8 +2,18 @@ import {expect,test} from '@playwright/test';
 
 const enterDuel=async(page,fixture='final-draw')=>{
  await page.goto(`/arena?arenaFixture=${fixture}`);
+ await page.getByRole('button',{name:/RANKED/}).click();
  await page.getByRole('button',{name:'ENTER DUEL'}).click();
 };
+
+test('matchmaking starts only after selecting a duel category',async({page})=>{
+ await page.goto('/arena?arenaFixture=final-draw');
+ await expect(page.getByRole('heading',{name:'Choose duel category'})).toBeVisible();
+ await expect(page.getByText('Finding opponent')).toHaveCount(0);
+ await page.getByRole('button',{name:/CASUAL/}).click();
+ await expect(page.getByRole('heading',{name:/Finding opponent|Opponent found/})).toBeVisible();
+ await expect(page.locator('.game-topbar')).toContainText('CASUAL DUEL');
+});
 
 test('opening hand draws automatically exactly once',async({page})=>{
  await enterDuel(page);
