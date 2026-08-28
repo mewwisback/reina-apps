@@ -89,6 +89,46 @@ test('found opponent shows complete profile without clipping',async({page})=>{
  expect(await profile.evaluate(node=>node.scrollWidth<=node.clientWidth&&node.scrollHeight<=node.clientHeight)).toBe(true);
 });
 
+test('duel controls use one command rail and card inspect stays inside viewport',async({page})=>{
+ await enterDuel(page);
+ await expect(page.locator('.arena-duel-nav')).toHaveCount(1);
+ await expect(page.locator('.arena .game-topbar,.arena .arena-header')).toHaveCount(0);
+ await expect(page.locator('.resource-strip')).toHaveCount(1);
+ await expect(page.locator('.resource-strip>span')).toHaveCount(4);
+ await expect(page.locator('.commands')).toContainText('ENTER BATTLE');
+ await expect(page.locator('.commands')).toContainText('END TURN');
+ await page.locator('.hand .card').first().click();
+ await expect(page.locator('.inspect')).toHaveClass(/has-card/);
+ await expect(page.locator('.inspect')).toContainText('CARD INSPECT');
+ const viewport=page.viewportSize();
+ for(const selector of ['.inspect','.commands','.resource-strip','.hand']){
+  const box=await page.locator(selector).boundingBox();
+  expect(box).not.toBeNull();
+  expect(box.x).toBeGreaterThanOrEqual(0);
+  expect(box.x+box.width).toBeLessThanOrEqual(viewport.width+.5);
+  expect(box.y).toBeGreaterThanOrEqual(0);
+  expect(box.y+box.height).toBeLessThanOrEqual(viewport.height+.5);
+ }
+ const commandBox=await page.locator('.commands').boundingBox();
+ const handBox=await page.locator('.hand').boundingBox();
+ const inspectBox=await page.locator('.inspect').boundingBox();
+ const playerStatsBox=await page.locator('.stats:not(.enemy)').boundingBox();
+ expect(commandBox.x).toBeGreaterThanOrEqual(handBox.x+handBox.width);
+ expect(inspectBox.y).toBeGreaterThanOrEqual(playerStatsBox.y+playerStatsBox.height);
+});
+
+test('mobile hand remains clickable and controls follow board flow',async({page})=>{
+ await page.setViewportSize({width:390,height:844});
+ await enterDuel(page);
+ await page.locator('.hand .card').first().click();
+ await expect(page.locator('.inspect')).toHaveClass(/has-card/);
+ const handBox=await page.locator('.hand').boundingBox();
+ const inspectBox=await page.locator('.inspect').boundingBox();
+ const commandsBox=await page.locator('.commands').boundingBox();
+ expect(inspectBox.y).toBeGreaterThanOrEqual(handBox.y+handBox.height);
+ expect(commandsBox.y).toBeGreaterThanOrEqual(inspectBox.y+inspectBox.height);
+});
+
 test('opening hand draws automatically exactly once',async({page})=>{
  await enterDuel(page);
  await expect(page.locator('.phase-label')).toHaveText('MAIN PHASE');
@@ -101,10 +141,10 @@ test('opening hand draws automatically exactly once',async({page})=>{
 test('empty deck resolves once and stops turn progression',async({page})=>{
  await enterDuel(page,'deck-out');
  await expect(page.getByRole('dialog')).toContainText('SILENTINDEX wins');
- await expect(page.locator('.turn b')).toContainText('TURN 1');
+ await expect(page.locator('.duel-state')).toContainText('TURN1');
  await page.waitForTimeout(1500);
  await expect(page.getByRole('dialog')).toHaveCount(1);
- await expect(page.locator('.turn b')).toContainText('TURN 1');
+ await expect(page.locator('.duel-state')).toContainText('TURN1');
 });
 
 test('rematch clears terminal state and resumes automatic draw',async({page})=>{
@@ -113,5 +153,5 @@ test('rematch clears terminal state and resumes automatic draw',async({page})=>{
  await expect(page.getByRole('dialog')).toHaveCount(0);
  await expect(page.locator('.phase-label')).toHaveText('MAIN PHASE');
  await expect(page.locator('.hand .card')).toHaveCount(6);
- await expect(page.locator('.turn b')).toContainText('TURN 1');
+ await expect(page.locator('.duel-state')).toContainText('TURN1');
 });
