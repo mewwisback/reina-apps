@@ -7,18 +7,20 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test:arena": "node --test src/app/arena/rules.test.mjs"
+    "test:arena": "node --test src/app/arena/rules.test.mjs",
+    "test:arena:e2e": "playwright test"
   },
   "dependencies": {
+    "framer-motion": "^12.0.0",
+    "lucide-react": "^0.469.0",
     "next": "^15.3.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "lucide-react": "^0.469.0",
-    "framer-motion": "^12.0.0",
     "swr": "^2.4.1",
     "zustand": "^5.0.13"
   },
   "devDependencies": {
+    "@playwright/test": "^1.62.1",
     "@types/node": "^22.0.0",
     "@types/react": "^19.1.0",
     "@types/react-dom": "^19.1.0",
