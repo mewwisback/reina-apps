@@ -31,6 +31,22 @@ test('matchmaking starts only after selecting a duel category',async({page})=>{
  await expect(page.locator('.game-topbar')).toContainText('CASUAL DUEL');
 });
 
+test('ruleset hover moves its surface and text while reduced motion stays still',async({page})=>{
+ await page.goto('/arena');
+ const casual=page.getByRole('button',{name:/CASUAL/});
+ const title=casual.locator('.ruleset-copy b');
+ await casual.hover();
+ await page.waitForTimeout(180);
+ expect(await casual.evaluate(node=>getComputedStyle(node).transform)).not.toBe('none');
+ expect(await title.evaluate(node=>getComputedStyle(node).transform)).not.toBe('none');
+ await page.emulateMedia({reducedMotion:'reduce'});
+ await page.reload();
+ const reducedCasual=page.getByRole('button',{name:/CASUAL/});
+ await reducedCasual.hover();
+ await page.waitForTimeout(180);
+ expect(await reducedCasual.evaluate(node=>getComputedStyle(node).transform)).toBe('none');
+});
+
 test('found opponent shows complete profile without clipping',async({page})=>{
  await page.goto('/arena?arenaFixture=matchmaking');
  await page.getByRole('button',{name:/RANKED/}).click();
