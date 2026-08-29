@@ -85,4 +85,15 @@
 .arena [data-battlefield-system="tactical-table"] .support-zone .slot{border-top-color:#d1aa7a78!important;border-bottom:1px solid #d1aa7a52!important;background:#21181470!important}
 .arena [data-battlefield-system="tactical-table"] .support-zone .slot>span{border-color:#d1aa7a70!important}
 .arena [data-battlefield-system="tactical-table"] .support-zone .zone-label{z-index:2;color:#e2c49ebd!important;font-size:8px!important;line-height:1.2!important}
-@media(max-height:820px) and (min-width:901px){.arena [data-battlefield-system="tactical-table"] .board{top:40%!important;padding-block:20px!important;grid-template-rows:32px 70px 90px 42px 90px 70px 32px!important}.arena [data-battlefield-system="tactical-table"] .hero-zone .slot{height:90px!important}.arena [data-battlefield-system="tactical-table"] .support-zone .slot{height:70px!important}}
+@media(max-height:820px) and (min-width:901px){.arena [data-battlefield-system="tactical-table"] .board{top:39%!important;padding-block:20px!important;grid-template-rows:32px 96px 96px 24px 96px 96px 32px!important}.arena [data-battlefield-system="tactical-table"] .hero-zone .slot,.arena [data-battlefield-system="tactical-table"] .support-zone .slot{height:96px!important}}
+
+/* Board lanes share one rhythm; occupied cards never escape their slot. */
+.arena [data-battlefield-system="tactical-table"] .board{row-gap:8px!important}
+.arena [data-battlefield-system="tactical-table"] .hero-zone .slot,.arena [data-battlefield-system="tactical-table"] .support-zone .slot{height:96px!important}
+.arena [data-battlefield-system="tactical-table"] .slot>.board-card{inset:4px auto auto 50%!important;width:64px!important;height:88px!important;min-width:64px!important;min-height:88px!important;transform:translateX(-50%)!important;padding:8px 5px!important;display:flex!important;flex-direction:column!important;justify-content:flex-end!important;gap:5px!important;overflow:hidden!important}
+.arena [data-battlefield-system="tactical-table"] .slot>.board-card:hover,.arena [data-battlefield-system="tactical-table"] .slot>.board-card:focus-visible{transform:translateX(-50%)!important}
+.arena [data-battlefield-system="tactical-table"] .board-card strong{position:static!important;width:100%;font-size:8px!important;line-height:1.08!important;white-space:normal!important;text-align:center!important}
+.arena [data-battlefield-system="tactical-table"] .board-card em{position:static!important;font-size:7px!important;line-height:1!important;white-space:nowrap!important}
+.arena [data-battlefield-system="tactical-table"] .battle-axis{height:24px;border-top:1px solid #d1aa7a44;align-self:center}
+@media(max-width:900px){.arena [data-battlefield-system="tactical-table"] .hero-zone .slot,.arena [data-battlefield-system="tactical-table"] .support-zone .slot{height:78px!important}.arena [data-battlefield-system="tactical-table"] .slot>.board-card{inset:4px auto auto 50%!important;width:50px!important;height:70px!important;min-width:50px!important;min-height:70px!important}}
+.arena [data-battlefield-system="tactical-table"] .command-status{color:#ede7dc8c!important;font-size:12px!important;line-height:1.25!important;letter-spacing:.04em!important}

@@ -119,6 +119,26 @@ test('production support cards stay portrait on the board',async({page})=>{
  expect(supportBox.height/supportBox.width).toBeGreaterThanOrEqual(1.3);
 });
 
+test('production board cards stay inside equal slots without decorative separators or center status strip',async({page})=>{
+ await page.goto('/arena?arenaFixture=final-draw');
+ await page.getByRole('button',{name:/RANKED/}).click();
+ await page.getByRole('button',{name:'ENTER DUEL'}).click();
+ await page.getByRole('button',{name:/Select YURI/}).first().click();
+ await page.getByRole('button',{name:'SUMMON'}).click();
+ await page.getByLabel('Player hero line').locator('.slot.valid').first().click();
+ const slot=page.getByLabel('Player hero line').locator('.slot').filter({has:page.locator('.card')});
+ const card=slot.locator('.card');
+ const [slotBox,cardBox]=await Promise.all([slot.boundingBox(),card.boundingBox()]);
+ expect(cardBox.x).toBeGreaterThanOrEqual(slotBox.x);
+ expect(cardBox.y).toBeGreaterThanOrEqual(slotBox.y);
+ expect(cardBox.x+cardBox.width).toBeLessThanOrEqual(slotBox.x+slotBox.width+.5);
+ expect(cardBox.y+cardBox.height).toBeLessThanOrEqual(slotBox.y+slotBox.height+.5);
+ await expect(card.locator('.card-art')).toHaveCount(0);
+ await expect(card.locator('small')).toHaveCount(0);
+ await expect(page.locator('.board>.gameplay-information')).toHaveCount(0);
+ expect(await page.locator('body').innerText()).not.toContain('//');
+});
+
 test('production support rows stay visually distinct and clear of the hand',async({page})=>{
  await page.goto('/arena?arenaFixture=final-draw');
  await page.getByRole('button',{name:/RANKED/}).click();
