@@ -119,6 +119,26 @@ test('production support cards stay portrait on the board',async({page})=>{
  expect(supportBox.height/supportBox.width).toBeGreaterThanOrEqual(1.3);
 });
 
+test('production support rows stay visually distinct and clear of the hand',async({page})=>{
+ await page.goto('/arena?arenaFixture=final-draw');
+ await page.getByRole('button',{name:/RANKED/}).click();
+ await page.getByRole('button',{name:'ENTER DUEL'}).click();
+ const rows=page.locator('.support-zone');
+ await expect(rows).toHaveCount(2);
+ for(const row of await rows.all()){
+  const cue=await row.locator('.slot').first().evaluate(node=>{
+   const style=getComputedStyle(node),label=getComputedStyle(node.closest('.zone-wrap').querySelector('.zone-label'));
+   return{borderTop:style.borderTopColor,borderBottom:style.borderBottomColor,label:label.color};
+  });
+  expect(cue.borderTop).not.toBe('rgba(0, 0, 0, 0)');
+  expect(cue.label).not.toBe('rgba(0, 0, 0, 0)');
+ }
+ const playerRow=page.getByLabel('Player support row');
+ const hand=page.getByLabel('Player hand');
+ const [rowBox,handBox]=await Promise.all([playerRow.boundingBox(),hand.boundingBox()]);
+ expect(handBox.y).toBeGreaterThanOrEqual(rowBox.y+rowBox.height);
+});
+
 test('production battlefield contains board and isolates hand overflow across target viewports',async({page})=>{
  for(const viewport of [{width:390,height:844},{width:768,height:1024},{width:1280,height:720},{width:1440,height:900}]){
   await page.setViewportSize(viewport);
