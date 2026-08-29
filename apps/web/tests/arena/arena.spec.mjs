@@ -95,6 +95,7 @@ test('duel controls use one command rail and card inspect stays inside viewport'
  await expect(page.locator('.arena .game-topbar,.arena .arena-header')).toHaveCount(0);
  await expect(page.locator('.resource-strip')).toHaveCount(1);
  await expect(page.locator('.resource-strip>span')).toHaveCount(4);
+ expect(await page.locator('.board').evaluate(node=>getComputedStyle(node,'::before').display)).toBe('none');
  await expect(page.locator('.reina-seal')).toHaveCount(0);
  await expect(page.locator('.gameplay-information')).toHaveCount(1);
  await expect(page.locator('.duelist-information')).toHaveCount(2);
