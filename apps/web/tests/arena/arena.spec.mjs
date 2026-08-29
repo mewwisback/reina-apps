@@ -101,6 +101,13 @@ test('duel controls use one command rail and card inspect stays inside viewport'
  await expect(page.locator('.duelist-information.enemy')).toContainText('SILENTINDEX');
  await expect(page.locator('.duelist-information:not(.enemy)')).toContainText('REINA');
  await expect(page.locator('.duelist-information')).toContainText(['LP 4000','LP 4000']);
+ const duelistRails=await page.locator('.duelist-information').evaluateAll(nodes=>nodes.map(node=>{
+  const style=getComputedStyle(node),box=node.getBoundingClientRect();
+  return {width:box.width,height:box.height,borderLeft:style.borderLeftWidth,borderRight:style.borderRightWidth,after:getComputedStyle(node,'::after').display};
+ }));
+ expect(Math.abs(duelistRails[0].width-duelistRails[1].width)).toBeLessThanOrEqual(.5);
+ expect(Math.abs(duelistRails[0].height-duelistRails[1].height)).toBeLessThanOrEqual(.5);
+ expect(duelistRails.every(rail=>rail.borderLeft==='0px'&&rail.borderRight==='0px'&&rail.after==='none')).toBe(true);
  const gameplayText=page.locator('.gameplay-information strong');
  await expect(gameplayText).toBeVisible();
  expect(Number.parseFloat(await gameplayText.evaluate(node=>getComputedStyle(node).fontSize))).toBeGreaterThanOrEqual(12);
