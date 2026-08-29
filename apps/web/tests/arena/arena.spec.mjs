@@ -108,6 +108,13 @@ test('duel controls use one command rail and card inspect stays inside viewport'
  expect(Math.abs(duelistRails[0].width-duelistRails[1].width)).toBeLessThanOrEqual(.5);
  expect(Math.abs(duelistRails[0].height-duelistRails[1].height)).toBeLessThanOrEqual(.5);
  expect(duelistRails.every(rail=>rail.borderLeft==='0px'&&rail.borderRight==='0px'&&rail.after==='none')).toBe(true);
+ for(const rail of await page.locator('.duelist-information').all()){
+  const telemetry=rail.locator('dl');
+  await expect(telemetry.locator('dt')).toHaveText(['DECK','HAND','FIELD','GRAVE','TOTAL']);
+  const cells=await telemetry.locator('div').evaluateAll(nodes=>nodes.map(node=>({width:node.getBoundingClientRect().width,textAlign:getComputedStyle(node).textAlign,borderRight:getComputedStyle(node).borderRightWidth})));
+  expect(Math.max(...cells.map(cell=>cell.width))-Math.min(...cells.map(cell=>cell.width))).toBeLessThanOrEqual(.5);
+  expect(cells.every(cell=>cell.textAlign==='center'&&cell.borderRight==='0px')).toBe(true);
+ }
  const gameplayText=page.locator('.gameplay-information strong');
  await expect(gameplayText).toBeVisible();
  expect(Number.parseFloat(await gameplayText.evaluate(node=>getComputedStyle(node).fontSize))).toBeGreaterThanOrEqual(12);
