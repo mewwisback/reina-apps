@@ -97,3 +97,13 @@
 .arena [data-battlefield-system="tactical-table"] .battle-axis{height:24px;border-top:1px solid #d1aa7a44;align-self:center}
 @media(max-width:900px){.arena [data-battlefield-system="tactical-table"] .hero-zone .slot,.arena [data-battlefield-system="tactical-table"] .support-zone .slot{height:78px!important}.arena [data-battlefield-system="tactical-table"] .slot>.board-card{inset:4px auto auto 50%!important;width:50px!important;height:70px!important;min-width:50px!important;min-height:70px!important}}
 .arena [data-battlefield-system="tactical-table"] .command-status{color:#ede7dc8c!important;font-size:12px!important;line-height:1.25!important;letter-spacing:.04em!important}
+
+/* Keep battlefield surfaces quiet and gameplay controls outside lane geometry. */
+.arena>.duel[data-battlefield-system="tactical-table"]:before{content:none!important;background:none!important}
+.arena [data-battlefield-system="tactical-table"] .perimeter{top:4px!important}
+.arena [data-battlefield-system="tactical-table"] .commands{right:18px!important;left:auto!important;width:272px!important;min-width:272px!important;max-width:272px!important;overflow:visible!important;transform:none!important}
+.arena [data-battlefield-system="tactical-table"] .commands button{min-height:38px!important;padding:9px 12px!important;overflow:visible!important;font-size:10px!important;line-height:1.2!important;white-space:nowrap!important}
+.arena [data-battlefield-system="tactical-table"] .board-card{justify-content:stretch!important;padding:5px!important}
+.arena [data-battlefield-system="tactical-table"] .board-card .card-art{position:relative!important;inset:auto!important;display:block!important;width:100%!important;height:48px!important;min-height:48px!important;margin:0!important;flex:0 0 48px!important;overflow:hidden!important}
+.arena [data-battlefield-system="tactical-table"] .board-card strong{margin-top:auto!important}
+@media(max-height:820px) and (min-width:901px){.arena [data-battlefield-system="tactical-table"] .board{top:43.5%!important;grid-template-rows:24px 82px 82px 20px 82px 82px 24px!important}.arena [data-battlefield-system="tactical-table"] .hero-zone .slot,.arena [data-battlefield-system="tactical-table"] .support-zone .slot{height:82px!important}.arena [data-battlefield-system="tactical-table"] .slot>.board-card{inset:3px auto auto 50%!important;width:56px!important;height:76px!important;min-width:56px!important;min-height:76px!important}.arena [data-battlefield-system="tactical-table"] .board-card .card-art{height:38px!important;min-height:38px!important;flex-basis:38px!important}}
