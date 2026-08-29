@@ -92,6 +92,11 @@ test('found opponent shows complete profile without clipping',async({page})=>{
 test('duel controls use one command rail and card inspect stays inside viewport',async({page})=>{
  await enterDuel(page);
  await expect(page.locator('.arena-duel-nav')).toHaveCount(1);
+ const navCentering=await page.locator('.arena-duel-nav').evaluate(nav=>{
+  const identity=nav.querySelector('.duel-identity').getBoundingClientRect(),box=nav.getBoundingClientRect();
+  return Math.abs(identity.x+identity.width/2-(box.x+box.width/2));
+ });
+ expect(navCentering).toBeLessThanOrEqual(.5);
  await expect(page.locator('.arena .game-topbar,.arena .arena-header')).toHaveCount(0);
  await expect(page.locator('.resource-strip')).toHaveCount(1);
  await expect(page.locator('.resource-strip>span')).toHaveCount(4);
@@ -162,6 +167,11 @@ test('tall viewport keeps opponent and gameplay rails clear of support rows',asy
 test('mobile hand remains clickable and controls follow board flow',async({page})=>{
  await page.setViewportSize({width:390,height:844});
  await enterDuel(page);
+ const mobileNavCentering=await page.locator('.arena-duel-nav').evaluate(nav=>{
+  const identity=nav.querySelector('.duel-identity').getBoundingClientRect(),box=nav.getBoundingClientRect();
+  return Math.abs(identity.x+identity.width/2-(box.x+box.width/2));
+ });
+ expect(mobileNavCentering).toBeLessThanOrEqual(.5);
  await page.locator('.hand .card').first().click();
  await expect(page.locator('.inspect')).toHaveClass(/has-card/);
  const handBox=await page.locator('.hand').boundingBox();
