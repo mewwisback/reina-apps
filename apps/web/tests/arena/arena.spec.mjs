@@ -103,18 +103,18 @@ test('duel controls use one command rail and card inspect stays inside viewport'
  await expect(page.locator('.duelist-information:not(.enemy)')).toContainText('REINA');
  await expect(page.locator('.duelist-information')).toContainText(['LP 4000','LP 4000']);
  const duelistRails=await page.locator('.duelist-information').evaluateAll(nodes=>nodes.map(node=>{
-  const style=getComputedStyle(node),box=node.getBoundingClientRect();
-  return {width:box.width,height:box.height,borderLeft:style.borderLeftWidth,borderRight:style.borderRightWidth,after:getComputedStyle(node,'::after').display};
+  const style=getComputedStyle(node),signal=getComputedStyle(node,'::before'),box=node.getBoundingClientRect();
+  return {width:box.width,height:box.height,background:style.backgroundColor,borders:[style.borderTopWidth,style.borderRightWidth,style.borderBottomWidth,style.borderLeftWidth],signalDisplay:signal.display,signalWidth:Number.parseFloat(signal.width),after:getComputedStyle(node,'::after').display};
  }));
  expect(Math.abs(duelistRails[0].width-duelistRails[1].width)).toBeLessThanOrEqual(.5);
  expect(Math.abs(duelistRails[0].height-duelistRails[1].height)).toBeLessThanOrEqual(.5);
- expect(duelistRails.every(rail=>rail.borderLeft==='0px'&&rail.borderRight==='0px'&&rail.after==='none')).toBe(true);
+ expect(duelistRails.every(rail=>rail.background==='rgba(0, 0, 0, 0)'&&rail.borders.every(width=>width==='0px')&&rail.signalDisplay==='block'&&rail.signalWidth<=56&&rail.after==='none')).toBe(true);
  for(const rail of await page.locator('.duelist-information').all()){
   const telemetry=rail.locator('dl');
   await expect(telemetry.locator('dt')).toHaveText(['DECK','HAND','FIELD','GRAVE','TOTAL']);
-  const cells=await telemetry.locator('div').evaluateAll(nodes=>nodes.map(node=>({width:node.getBoundingClientRect().width,textAlign:getComputedStyle(node).textAlign,borderRight:getComputedStyle(node).borderRightWidth})));
-  expect(Math.max(...cells.map(cell=>cell.width))-Math.min(...cells.map(cell=>cell.width))).toBeLessThanOrEqual(.5);
-  expect(cells.every(cell=>cell.textAlign==='center'&&cell.borderRight==='0px')).toBe(true);
+  expect(await telemetry.evaluate(node=>getComputedStyle(node).display)).toBe('flex');
+  const cells=await telemetry.locator('div').evaluateAll(nodes=>nodes.map(node=>({display:getComputedStyle(node).display,textAlign:getComputedStyle(node).textAlign,borderRight:getComputedStyle(node).borderRightWidth})));
+  expect(cells.every(cell=>cell.display==='flex'&&cell.textAlign==='left'&&cell.borderRight==='0px')).toBe(true);
  }
  const gameplayText=page.locator('.gameplay-information strong');
  await expect(gameplayText).toBeVisible();
