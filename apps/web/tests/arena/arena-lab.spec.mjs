@@ -85,6 +85,40 @@ test('production card selection couples command and legal board targets',async({
  await expect(page.getByRole('status')).toContainText('summoned');
 });
 
+test('production summon targets keep exact pointer ownership and board cards stay portrait',async({page})=>{
+ await page.goto('/arena?arenaFixture=final-draw');
+ await page.getByRole('button',{name:/RANKED/}).click();
+ await page.getByRole('button',{name:'ENTER DUEL'}).click();
+ await page.getByRole('button',{name:/Select YURI/}).first().click();
+ await page.getByRole('button',{name:'SUMMON'}).click();
+ const heroTargets=page.getByLabel('Player hero line').locator('.slot.valid');
+ await expect(heroTargets).toHaveCount(5);
+ for(let index=0;index<5;index++){
+  const target=heroTargets.nth(index);
+  const ownsCenter=await target.evaluate(node=>{
+   const box=node.getBoundingClientRect();
+   return document.elementFromPoint(box.x+box.width/2,box.y+box.height/2)?.closest('.slot')===node;
+  });
+  expect(ownsCenter,`hero slot ${index+1} owns its pointer center`).toBe(true);
+ }
+ await heroTargets.first().click();
+ const heroCard=page.getByLabel('Player hero line').locator('.card');
+ const heroBox=await heroCard.boundingBox();
+ expect(heroBox.height/heroBox.width).toBeGreaterThanOrEqual(1.3);
+});
+
+test('production support cards stay portrait on the board',async({page})=>{
+ await page.goto('/arena?arenaFixture=final-draw');
+ await page.getByRole('button',{name:/RANKED/}).click();
+ await page.getByRole('button',{name:'ENTER DUEL'}).click();
+ await page.getByRole('button',{name:/Select CRIMSON SURGE/}).click();
+ await page.getByRole('button',{name:'SET SUPPORT'}).click();
+ const supportCard=page.getByLabel('Player support row').locator('.card');
+ await expect(supportCard).toBeVisible();
+ const supportBox=await supportCard.boundingBox();
+ expect(supportBox.height/supportBox.width).toBeGreaterThanOrEqual(1.3);
+});
+
 test('production battlefield contains board and isolates hand overflow across target viewports',async({page})=>{
  for(const viewport of [{width:390,height:844},{width:768,height:1024},{width:1280,height:720},{width:1440,height:900}]){
   await page.setViewportSize(viewport);
