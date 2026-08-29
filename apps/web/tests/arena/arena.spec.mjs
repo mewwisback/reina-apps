@@ -100,6 +100,18 @@ test('duel controls use one command rail and card inspect stays inside viewport'
  await expect(page.locator('.arena .game-topbar,.arena .arena-header')).toHaveCount(0);
  await expect(page.locator('.resource-strip')).toHaveCount(1);
  await expect(page.locator('.resource-strip>span')).toHaveCount(4);
+ const allowanceNotation=await page.locator('.resource-strip').evaluate(node=>{
+  const style=getComputedStyle(node),signal=getComputedStyle(node,'::before');
+  const items=[...node.children].map(item=>{const itemStyle=getComputedStyle(item),box=item.getBoundingClientRect();return{display:itemStyle.display,background:itemStyle.backgroundColor,borders:[itemStyle.borderTopWidth,itemStyle.borderRightWidth,itemStyle.borderBottomWidth,itemStyle.borderLeftWidth],x:box.x,right:box.right}});
+  return{display:style.display,background:style.backgroundColor,borders:[style.borderTopWidth,style.borderRightWidth,style.borderBottomWidth,style.borderLeftWidth],signalDisplay:signal.display,signalWidth:Number.parseFloat(signal.width),items};
+ });
+ expect(allowanceNotation.display).toBe('flex');
+ expect(allowanceNotation.background).toBe('rgba(0, 0, 0, 0)');
+ expect(allowanceNotation.borders.every(width=>width==='0px')).toBe(true);
+ expect(allowanceNotation.signalDisplay).toBe('block');
+ expect(allowanceNotation.signalWidth).toBeLessThanOrEqual(48);
+ expect(allowanceNotation.items.every(item=>item.display==='flex'&&item.background==='rgba(0, 0, 0, 0)'&&item.borders.every(width=>width==='0px'))).toBe(true);
+ expect(allowanceNotation.items[3].x).toBeGreaterThan(allowanceNotation.items[2].right);
  expect(await page.locator('.board').evaluate(node=>getComputedStyle(node,'::before').display)).toBe('none');
  await expect(page.locator('.reina-seal')).toHaveCount(0);
  await expect(page.locator('.gameplay-information')).toHaveCount(1);
