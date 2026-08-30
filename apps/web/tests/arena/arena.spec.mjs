@@ -208,6 +208,54 @@ test('support cards match hero card dimensions and turn two commands remain read
  }
 });
 
+const responsiveViewports=[
+ {name:'full-hd',width:1920,height:1080},
+ {name:'laptop-wide',width:1536,height:864},
+ {name:'laptop',width:1366,height:768},
+ {name:'short-desktop',width:1280,height:720},
+ {name:'tablet-landscape',width:1024,height:768},
+ {name:'tablet-portrait',width:820,height:1180},
+ {name:'phone-large',width:430,height:932},
+ {name:'phone',width:390,height:844},
+ {name:'phone-small',width:360,height:800},
+ {name:'phone-landscape',width:844,height:390},
+];
+
+for(const viewport of responsiveViewports)test(`responsive duel geometry stays usable at ${viewport.name} ${viewport.width}x${viewport.height}`,async({page})=>{
+ await page.setViewportSize({width:viewport.width,height:viewport.height});
+ await page.emulateMedia({reducedMotion:'reduce'});
+ await enterDuel(page);
+ const supportCard=page.locator('.hand .card').filter({hasText:'CRIMSON SURGE'}).first();
+ await supportCard.focus();
+ await supportCard.press('Enter');
+ const setSupport=page.getByRole('button',{name:'SET SUPPORT'});
+ await setSupport.focus();
+ await setSupport.press('Enter');
+ const support=page.locator('.support-zone:not(.enemy-zone) .card').first();
+ await expect(support).toBeVisible();
+ await page.evaluate(()=>{const source=document.querySelector('.support-zone:not(.enemy-zone) .card');document.querySelector('.hero-zone:not(.enemy-zone) .slot').append(source.cloneNode(true))});
+ const hero=page.locator('.hero-zone:not(.enemy-zone) .card').first();
+ await expect(hero).toBeVisible();
+ const dimensions=async card=>card.evaluate(node=>({width:node.offsetWidth,height:node.offsetHeight}));
+ expect(await dimensions(support)).toEqual(await dimensions(hero));
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=document.documentElement.clientWidth)).toBe(true);
+ for(const button of await page.locator('.commands button').all()){
+  const metrics=await button.evaluate(node=>({height:node.getBoundingClientRect().height,fits:node.scrollWidth<=node.clientWidth&&node.scrollHeight<=node.clientHeight}));
+  expect(metrics.height).toBeGreaterThanOrEqual(40);
+  expect(metrics.fits).toBe(true);
+ }
+ const supportBox=await page.locator('.support-zone:not(.enemy-zone)').boundingBox();
+ const handBox=await page.locator('.hand').boundingBox();
+ if(viewport.width>900)expect(supportBox.y+supportBox.height).toBeLessThanOrEqual(handBox.y+.5);
+ else{
+  await page.locator('.hand .card').first().click();
+  await expect(page.locator('.inspect')).toHaveClass(/has-card/);
+  const inspectBox=await page.locator('.inspect').boundingBox(),commandsBox=await page.locator('.commands').boundingBox();
+  expect(inspectBox.y).toBeGreaterThanOrEqual(handBox.y+handBox.height);
+  expect(commandsBox.y).toBeGreaterThanOrEqual(inspectBox.y+inspectBox.height);
+ }
+});
+
 test('mobile hand remains clickable and controls follow board flow',async({page})=>{
  await page.setViewportSize({width:390,height:844});
  await enterDuel(page);
