@@ -177,17 +177,22 @@ test('tall viewport keeps opponent and gameplay rails clear of support rows',asy
  expect(enemyBox.height).toBeLessThanOrEqual(160);
 });
 
-test('player support card stays portrait and turn two commands remain readable',async({page})=>{
+test('player support card matches opponent support presentation and turn two commands remain readable',async({page})=>{
  await page.setViewportSize({width:1280,height:720});
  await enterDuel(page);
  const supportCard=page.locator('.hand .card').filter({hasText:'CRIMSON SURGE'}).first();
  await supportCard.focus();
  await supportCard.press('Enter');
  await page.getByRole('button',{name:'SET SUPPORT'}).click();
- const placed=page.locator('.support-zone:not(.enemy-zone) .card').first();
- await expect(placed).toBeVisible();
- const supportBox=await placed.boundingBox();
- expect(supportBox.height/supportBox.width).toBeGreaterThanOrEqual(1.3);
+ const playerCard=page.locator('.support-zone:not(.enemy-zone) .card').first();
+ await expect(playerCard).toBeVisible();
+ await page.evaluate(()=>{const source=document.querySelector('.support-zone:not(.enemy-zone) .card'),slot=document.querySelector('.support-zone.enemy-zone .slot');slot.append(source.cloneNode(true))});
+ const opponentCard=page.locator('.support-zone.enemy-zone .card').first();
+ await expect(opponentCard).toBeVisible();
+ const presentation=async card=>card.evaluate(node=>{const style=getComputedStyle(node);return{width:node.offsetWidth,height:node.offsetHeight,position:style.position,art:Boolean(node.querySelector('.card-art')),strong:Boolean(node.querySelector('strong'))}});
+ const playerPresentation=await presentation(playerCard);
+ const opponentPresentation=await presentation(opponentCard);
+ expect(playerPresentation).toEqual(opponentPresentation);
  await page.getByRole('button',{name:/ENTER BATTLE/}).click();
  await page.getByRole('button',{name:/END TURN/}).click();
  await expect(page.locator('.duel-state')).toContainText('2');
