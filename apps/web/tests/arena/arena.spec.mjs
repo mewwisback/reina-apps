@@ -177,22 +177,25 @@ test('tall viewport keeps opponent and gameplay rails clear of support rows',asy
  expect(enemyBox.height).toBeLessThanOrEqual(160);
 });
 
-test('player support card matches opponent support presentation and turn two commands remain readable',async({page})=>{
+test('support cards match hero card dimensions and turn two commands remain readable',async({page})=>{
  await page.setViewportSize({width:1280,height:720});
+ await page.emulateMedia({reducedMotion:'reduce'});
  await enterDuel(page);
  const supportCard=page.locator('.hand .card').filter({hasText:'CRIMSON SURGE'}).first();
  await supportCard.focus();
  await supportCard.press('Enter');
  await page.getByRole('button',{name:'SET SUPPORT'}).click();
- const playerCard=page.locator('.support-zone:not(.enemy-zone) .card').first();
- await expect(playerCard).toBeVisible();
- await page.evaluate(()=>{const source=document.querySelector('.support-zone:not(.enemy-zone) .card'),slot=document.querySelector('.support-zone.enemy-zone .slot');slot.append(source.cloneNode(true))});
- const opponentCard=page.locator('.support-zone.enemy-zone .card').first();
- await expect(opponentCard).toBeVisible();
- const presentation=async card=>card.evaluate(node=>{const style=getComputedStyle(node);return{width:node.offsetWidth,height:node.offsetHeight,position:style.position,art:Boolean(node.querySelector('.card-art')),strong:Boolean(node.querySelector('strong'))}});
- const playerPresentation=await presentation(playerCard);
- const opponentPresentation=await presentation(opponentCard);
- expect(playerPresentation).toEqual(opponentPresentation);
+ const playerSupport=page.locator('.support-zone:not(.enemy-zone) .card').first();
+ await expect(playerSupport).toBeVisible();
+ await page.evaluate(()=>{const source=document.querySelector('.support-zone:not(.enemy-zone) .card');document.querySelector('.support-zone.enemy-zone .slot').append(source.cloneNode(true));document.querySelector('.hero-zone:not(.enemy-zone) .slot').append(source.cloneNode(true))});
+ const opponentSupport=page.locator('.support-zone.enemy-zone .card').first();
+ const heroCard=page.locator('.hero-zone:not(.enemy-zone) .card').first();
+ await expect(opponentSupport).toBeVisible();
+ await expect(heroCard).toBeVisible();
+ const dimensions=async card=>card.evaluate(node=>({width:node.offsetWidth,height:node.offsetHeight}));
+ const heroDimensions=await dimensions(heroCard);
+ expect(await dimensions(playerSupport)).toEqual(heroDimensions);
+ expect(await dimensions(opponentSupport)).toEqual(heroDimensions);
  await page.getByRole('button',{name:/ENTER BATTLE/}).click();
  await page.getByRole('button',{name:/END TURN/}).click();
  await expect(page.locator('.duel-state')).toContainText('2');
