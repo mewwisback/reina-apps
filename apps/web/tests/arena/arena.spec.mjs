@@ -90,6 +90,7 @@ test('found opponent shows complete profile without clipping',async({page})=>{
 });
 
 test('duel controls use one command rail and card inspect stays inside viewport',async({page})=>{
+ await page.emulateMedia({reducedMotion:'reduce'});
  await enterDuel(page);
  await expect(page.locator('.arena-duel-nav')).toHaveCount(1);
  const navCentering=await page.locator('.arena-duel-nav').evaluate(nav=>{
@@ -174,6 +175,29 @@ test('tall viewport keeps opponent and gameplay rails clear of support rows',asy
  expect(supportBoxes.every(box=>!overlaps(enemyBox,box))).toBe(true);
  expect(supportBoxes.every(box=>!overlaps(gameplayBox,box))).toBe(true);
  expect(enemyBox.height).toBeLessThanOrEqual(160);
+});
+
+test('player support card stays portrait and turn two commands remain readable',async({page})=>{
+ await page.setViewportSize({width:1280,height:720});
+ await enterDuel(page);
+ const supportCard=page.locator('.hand .card').filter({hasText:'CRIMSON SURGE'}).first();
+ await supportCard.focus();
+ await supportCard.press('Enter');
+ await page.getByRole('button',{name:'SET SUPPORT'}).click();
+ const placed=page.locator('.support-zone:not(.enemy-zone) .card').first();
+ await expect(placed).toBeVisible();
+ const supportBox=await placed.boundingBox();
+ expect(supportBox.height/supportBox.width).toBeGreaterThanOrEqual(1.3);
+ await page.getByRole('button',{name:/ENTER BATTLE/}).click();
+ await page.getByRole('button',{name:/END TURN/}).click();
+ await expect(page.locator('.duel-state')).toContainText('2');
+ for(const button of await page.locator('.commands button').all()){
+  const box=await button.boundingBox();
+  const metrics=await button.evaluate(node=>({fontSize:Number.parseFloat(getComputedStyle(node).fontSize),fits:node.scrollWidth<=node.clientWidth&&node.scrollHeight<=node.clientHeight}));
+  expect(box.height).toBeGreaterThanOrEqual(40);
+  expect(metrics.fontSize).toBeGreaterThanOrEqual(10);
+  expect(metrics.fits).toBe(true);
+ }
 });
 
 test('mobile hand remains clickable and controls follow board flow',async({page})=>{
