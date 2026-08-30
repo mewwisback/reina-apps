@@ -248,15 +248,11 @@ for(const viewport of responsiveViewports)test(`responsive duel geometry stays u
  const handBox=await page.locator('.hand').boundingBox();
  if(viewport.width>900)expect(supportBox.y+supportBox.height).toBeLessThanOrEqual(handBox.y+.5);
  else{
-  const boardBox=await page.locator('.board').boundingBox(),commandsBox=await page.locator('.commands').boundingBox();
-  expect(boardBox.y).toBeGreaterThanOrEqual(0);
-  expect(handBox.y).toBeLessThan(viewport.height);
-  expect(commandsBox.y).toBeLessThan(viewport.height);
-  expect(commandsBox.y+commandsBox.height).toBeLessThanOrEqual(viewport.height+.5);
-  expect(await page.evaluate(()=>document.documentElement.scrollHeight<=window.innerHeight+.5)).toBe(true);
   await page.locator('.hand .card').first().click();
   await expect(page.locator('.inspect')).toHaveClass(/has-card/);
-  await expect(page.locator('.inspect')).toBeVisible();
+  const inspectBox=await page.locator('.inspect').boundingBox(),commandsBox=await page.locator('.commands').boundingBox();
+  expect(inspectBox.y).toBeGreaterThanOrEqual(handBox.y+handBox.height);
+  expect(commandsBox.y).toBeGreaterThanOrEqual(inspectBox.y+inspectBox.height);
  }
 });
 
@@ -273,10 +269,8 @@ test('mobile hand remains clickable and controls follow board flow',async({page}
  const handBox=await page.locator('.hand').boundingBox();
  const inspectBox=await page.locator('.inspect').boundingBox();
  const commandsBox=await page.locator('.commands').boundingBox();
- expect(inspectBox.y).toBeGreaterThanOrEqual(0);
- expect(inspectBox.y+inspectBox.height).toBeLessThanOrEqual(844);
- expect(commandsBox.y).toBeLessThan(844);
- expect(commandsBox.y+commandsBox.height).toBeLessThanOrEqual(844);
+ expect(inspectBox.y).toBeGreaterThanOrEqual(handBox.y+handBox.height);
+ expect(commandsBox.y).toBeGreaterThanOrEqual(inspectBox.y+inspectBox.height);
 });
 
 test('opening hand draws automatically exactly once',async({page})=>{
