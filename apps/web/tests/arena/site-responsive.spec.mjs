@@ -269,6 +269,8 @@ test('Arena battlefield heroes expose attack or defense stance',async({page})=>{
  const hero=page.locator('.player-territory .hero-zone .card').first();
  await expect(hero).toHaveAttribute('data-stance','defense');
  await expect(hero).toContainText('DEF');
+ const geometry=await hero.evaluate(node=>{const card=node.getBoundingClientRect(),slot=node.parentElement?.getBoundingClientRect(),matrix=new DOMMatrixReadOnly(getComputedStyle(node).transform);return{landscape:card.width>card.height,rotation:Math.round(Math.atan2(matrix.b,matrix.a)*180/Math.PI),centered:Boolean(slot&&Math.abs(card.x+card.width/2-(slot.x+slot.width/2))<=1&&Math.abs(card.y+card.height/2-(slot.y+slot.height/2))<=1),slotPortrait:Boolean(slot&&slot.height>slot.width)}});
+ expect(geometry).toEqual({landscape:true,rotation:90,centered:true,slotPortrait:true});
 });
 
 test('Arena dense desktop hand uses one overlapping physical row',async({page})=>{
@@ -339,7 +341,7 @@ test('Arena battlefield renders recognizable portrait cards with visible stance'
  expect(geometry.portrait).toBe(true);
  expect(geometry.opacity).toBe(1);
  expect(geometry.art&&geometry.name&&geometry.stat).toBe(true);
- expect(geometry.height).toBeGreaterThan(geometry.width);
+ expect(geometry.width).toBeGreaterThan(geometry.height);
  expect(geometry.transform).not.toBe('none');
 });
 

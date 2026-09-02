@@ -110,7 +110,7 @@
     pointer-events: auto;
   }
   .arena .battlefield-semantics .slot > .card[data-stance="defense"] {
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%) rotate(90deg);
     box-shadow: inset 0 0 0 2px #82a6d9, 0 0 16px rgba(84, 130, 196, .42) !important;
   }
   .arena .battlefield-semantics .slot > .card .card-art {
