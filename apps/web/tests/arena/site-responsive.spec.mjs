@@ -49,13 +49,31 @@ test('deck builder renders every selected card in its deck list',async({page})=>
  await expect(page.locator('[data-deck-list-item]')).toHaveCount(8);
 });
 
-test('desktop application shell keeps persistent navigation',async({page})=>{
- await page.setViewportSize({width:1440,height:900});
- await page.goto('/dashboard');
- await expect(page.locator('[data-app-sidebar]')).toBeVisible();
- await expect(page.getByRole('button',{name:'Open navigation'})).toBeHidden();
- expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(1440);
-});
+for(const [label,width,height] of [['tablet',820,1180],['desktop',1440,900]]){
+ for(const route of shellRoutes){
+  test(`${route} keeps its ${label} shell and primary content contained`,async({page})=>{
+   await page.setViewportSize({width:Number(width),height:Number(height)});
+   await page.goto(route);
+   const shell=page.locator('.app-shell');
+   const main=page.locator('.app-main');
+   await expect(shell).toBeVisible();
+   await expect(main).toBeVisible();
+   const metrics=await page.evaluate(()=>{const visible=node=>{const style=getComputedStyle(node),box=node.getBoundingClientRect();return style.display!=='none'&&style.visibility!=='hidden'&&box.width>0&&box.height>0};const controls=[...document.querySelectorAll('main a,main button')].filter(visible);return{scrollWidth:document.documentElement.scrollWidth,main:document.querySelector('.app-main')?.getBoundingClientRect().toJSON(),smallTargets:controls.filter(node=>{const box=node.getBoundingClientRect();return box.width<40||box.height<40}).map(node=>node.getAttribute('aria-label')||node.textContent?.trim().slice(0,40)||node.tagName)}});
+   expect(metrics.scrollWidth).toBeLessThanOrEqual(Number(width));
+   expect(metrics.main?.left).toBeGreaterThanOrEqual(-.5);
+   expect(metrics.main?.right).toBeLessThanOrEqual(Number(width)+.5);
+   if(Number(width)<=900)expect(metrics.smallTargets,`${route} ${label} undersized controls`).toEqual([]);
+   const sidebar=page.locator('[data-app-sidebar]');
+   if(Number(width)<=700){
+    await expect(sidebar).toHaveAttribute('aria-hidden','true');
+    await expect(page.locator('.app-mobile-menu')).toBeVisible();
+   }else{
+    await expect(sidebar).toBeVisible();
+    await expect(page.getByRole('button',{name:'Open navigation'})).toBeHidden();
+   }
+  });
+ }
+}
 
 for(const handSize of [1,3,5,6,8,10]){
  test(`Arena renders and exposes every card in a ${handSize}-card hand`,async({page})=>{

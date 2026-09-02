@@ -20,6 +20,22 @@
 .deck-workspace { display: grid; gap: 20px; grid-template-columns: minmax(0, 1fr) 260px; margin-top: 20px; }
 .vault-grid { display: grid; gap: 8px; grid-template-columns: repeat(auto-fill, minmax(88px, 1fr)); margin-top: 16px; }
 
+@media (min-width: 701px) and (max-width: 900px) {
+  .app-main button,
+  .app-main a {
+    min-height: 40px;
+  }
+
+  .app-main button {
+    min-width: 40px;
+  }
+
+  .app-main a {
+    align-items: center;
+    display: inline-flex;
+  }
+}
+
 @media (max-width: 700px) {
   .app-main button,
   .app-main a {
