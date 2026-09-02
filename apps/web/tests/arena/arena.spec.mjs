@@ -3,6 +3,16 @@ import {expect,test} from '@playwright/test';
 
 const arenaSourceUrl=new URL('../../src/app/arena/page.tsx',import.meta.url);
 const arenaCssUrl=new URL('../../src/app/arena/arena.css',import.meta.url);
+const rootLayoutUrl=new URL('../../src/app/layout.tsx',import.meta.url);
+
+test('production fonts are local and require no build-time network access',async()=>{
+ const layout=await readFile(rootLayoutUrl,'utf8');
+ expect(layout).not.toContain('next/font/google');
+ expect(layout).toContain('next/font/local');
+ const fontPaths=[...layout.matchAll(/src:\s*['"]([^'"]+\.woff2)['"]/g)].map(([,path])=>new URL(`../../src/app/${path.replace(/^\.\//,'')}`,import.meta.url));
+ expect(fontPaths.length).toBeGreaterThanOrEqual(3);
+ await expect(Promise.all(fontPaths.map(path=>readFile(path)))).resolves.toHaveLength(fontPaths.length);
+});
 
 test('Arena owns one consolidated stylesheet with bounded cascade overrides',async()=>{
  const [source,css]=await Promise.all([

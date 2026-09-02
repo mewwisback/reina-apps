@@ -1,25 +1,28 @@
 import type { Metadata, Viewport } from 'next';
-import { JetBrains_Mono, Zen_Kaku_Gothic_New, Zen_Old_Mincho } from 'next/font/google';
+import localFont from 'next/font/local';
 import '../styles/globals.css';
 import '../styles/responsive-product.css';
 import type { ReactNode } from 'react';
 
-const bodyFont = Zen_Kaku_Gothic_New({
+const bodyFont = localFont({
+  src: './fonts/zen-kaku-gothic-new-latin.woff2',
   variable: '--font-zen-kaku',
-  subsets: ['latin'],
-  weight: ['400', '500', '700', '900'],
+  weight: '400 900',
+  display: 'swap',
 });
 
-const displayFont = Zen_Old_Mincho({
+const displayFont = localFont({
+  src: './fonts/zen-old-mincho-latin.woff2',
   variable: '--font-zen-mincho',
-  subsets: ['latin'],
-  weight: ['600', '700', '900'],
+  weight: '600 900',
+  display: 'swap',
 });
 
-const monoFont = JetBrains_Mono({
+const monoFont = localFont({
+  src: './fonts/jetbrains-mono-latin.woff2',
   variable: '--font-jetbrains-mono',
-  subsets: ['latin'],
-  weight: ['400', '500', '700'],
+  weight: '400 700',
+  display: 'swap',
 });
 
 export const metadata: Metadata = {
