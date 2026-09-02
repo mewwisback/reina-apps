@@ -2,7 +2,9 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { useState, type ReactNode } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
+import './app-shell.css';
+import './product-layout.css';
 
 const NAV_ITEMS = [
   { href: '/dashboard', key: 'D', label: 'Dashboard' },
@@ -21,6 +23,8 @@ interface AppShellProps {
 
 export function AppShell({ children }: AppShellProps) {
   const [collapsed, setCollapsed] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [mobileLayout, setMobileLayout] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const [username, setUsername] = useState('Kaiba99');
   const [usernameInput, setUsernameInput] = useState('Kaiba99');
@@ -32,10 +36,46 @@ export function AppShell({ children }: AppShellProps) {
   const expanded = !collapsed;
   const asideWidth = collapsed ? '72px' : '238px';
 
+  useEffect(() => {
+    const query = window.matchMedia('(max-width: 700px)');
+    const syncLayout = () => setMobileLayout(query.matches);
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setMobileOpen(false);
+    };
+    syncLayout();
+    query.addEventListener('change', syncLayout);
+    window.addEventListener('keydown', closeOnEscape);
+    return () => {
+      query.removeEventListener('change', syncLayout);
+      window.removeEventListener('keydown', closeOnEscape);
+    };
+  }, []);
+
   return (
-    <div style={{ display: 'flex', minHeight: '100vh' }}>
+    <div className="app-shell" style={{ display: 'flex', minHeight: '100vh' }}>
+      <header className="app-mobile-header">
+        <Link href="/" className="app-mobile-brand" aria-label="Reina home">
+          <span className="app-mobile-mark">R</span>
+          <span>REINA</span>
+        </Link>
+        <button
+          className="app-mobile-menu"
+          type="button"
+          aria-label={mobileOpen ? 'Close navigation' : 'Open navigation'}
+          aria-expanded={mobileOpen}
+          aria-controls="app-navigation"
+          onClick={() => setMobileOpen((open) => !open)}
+        >
+          <span aria-hidden="true">{mobileOpen ? '×' : 'Menu'}</span>
+        </button>
+      </header>
+      {mobileOpen && <button className="app-nav-backdrop" data-nav-backdrop type="button" aria-label="Close navigation" onClick={() => setMobileOpen(false)} />}
       {/* ============ SIDEBAR ============ */}
       <aside
+        id="app-navigation"
+        data-app-sidebar
+        data-mobile-open={mobileOpen ? 'true' : 'false'}
+        aria-hidden={mobileLayout && !mobileOpen ? true : undefined}
         style={{
           width: asideWidth,
           flex: 'none',
@@ -108,7 +148,9 @@ export function AppShell({ children }: AppShellProps) {
               <Link
                 key={item.href}
                 href={item.href}
+                aria-current={active ? 'page' : undefined}
                 onClick={(event) => {
+                  setMobileOpen(false);
                   if (item.href !== '/arena' || active || enteringArena) return;
                   event.preventDefault();
                   setEnteringArena(true);
@@ -178,7 +220,7 @@ export function AppShell({ children }: AppShellProps) {
                   {username}
                 </div>
                 <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9, fontWeight: 700, letterSpacing: '.1em', color: '#E8B45C' }}>
-                  GOLD III &middot; 1,840 MMR
+                  GOLD III, 1,840 MMR
                 </div>
               </div>
             )}
@@ -314,7 +356,7 @@ export function AppShell({ children }: AppShellProps) {
       )}
 
       {/* ============ MAIN ============ */}
-      <main style={{ flex: 1, minWidth: 0, padding: '0 0 60px' }}>{children}</main>
+      <main className="app-main" data-route={pathname} style={{ flex: 1, minWidth: 0, padding: '0 0 60px' }}>{children}</main>
     </div>
   );
 }

@@ -32,13 +32,13 @@ function Section({ id, tag, title, children }: { id: string; tag?: string; title
 }
 function TableGrid({ cols, rows, hueRows }: { cols: string[]; rows: (string | React.ReactNode)[][]; hueRows?: number[] }) {
   return (
-    <div style={{ marginTop: 22, border: '1px solid rgba(237,231,220,.14)' }}>
-      <div style={{ display: 'grid', gridTemplateColumns: `repeat(${cols.length},1fr)`, fontFamily: "'JetBrains Mono', monospace", fontSize: 10.5, letterSpacing: '.14em', color: 'rgba(237,231,220,.5)', padding: '10px 14px', borderBottom: '1px solid rgba(237,231,220,.14)' }}>
+    <div className="docs-table" style={{ marginTop: 22, border: '1px solid rgba(237,231,220,.14)' }}>
+      <div className="docs-table-head" style={{ gridTemplateColumns: `repeat(${cols.length},1fr)`, fontFamily: "'JetBrains Mono', monospace", fontSize: 10.5, letterSpacing: '.14em', color: 'rgba(237,231,220,.5)', padding: '10px 14px', borderBottom: '1px solid rgba(237,231,220,.14)' }}>
         {cols.map((c) => <div key={c}>{c}</div>)}
       </div>
       {rows.map((r, i) => (
-        <div key={i} style={{ display: 'grid', gridTemplateColumns: `repeat(${r.length},1fr)`, fontSize: 14, padding: '12px 14px', borderBottom: i < rows.length - 1 ? '1px solid rgba(237,231,220,.1)' : 'none' }}>
-          {r.map((cell, j) => <div key={j} style={hueRows?.includes(j) ? { color: String(cell), fontWeight: 700 } : undefined}>{String(cell)}</div>)}
+        <div className="docs-table-row" key={i} style={{ gridTemplateColumns: `repeat(${r.length},1fr)`, fontSize: 14, padding: '12px 14px', borderBottom: i < rows.length - 1 ? '1px solid rgba(237,231,220,.1)' : 'none' }}>
+          {r.map((cell, j) => <div key={j} data-label={cols[j]} style={hueRows?.includes(j) ? { color: String(cell), fontWeight: 700 } : undefined}>{String(cell)}</div>)}
         </div>
       ))}
     </div>
@@ -47,9 +47,9 @@ function TableGrid({ cols, rows, hueRows }: { cols: string[]; rows: (string | Re
 
 export default function DocsPage() {
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', background: '#14111A', color: '#E5E0D8', fontFamily: "'Zen Kaku Gothic New', sans-serif" }}>
+    <div className="docs-shell" style={{ background: '#14111A', color: '#E5E0D8', fontFamily: "'Zen Kaku Gothic New', sans-serif" }}>
       {/* docs sidebar */}
-      <aside style={{ position: 'sticky', top: 0, alignSelf: 'flex-start', height: '100vh', width: 264, flex: 'none', background: '#0F0C13', borderRight: '1px solid rgba(237,231,220,.1)', padding: '26px 20px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 26 }}>
+      <aside className="docs-sidebar" style={{ background: '#0F0C13', borderRight: '1px solid rgba(237,231,220,.1)' }}>
         <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           <div style={{ width: 28, height: 28, background: '#E03C4E', clipPath: 'polygon(30% 0,100% 0,100% 70%,70% 100%,0 100%,0 30%)', display: 'flex', alignItems: 'center', justifyContent: 'center', flex: 'none' }}>
             <span style={{ fontWeight: 900, fontSize: 14, color: '#0F0C16' }}>R</span>
@@ -57,7 +57,7 @@ export default function DocsPage() {
           <div style={{ fontFamily: "'Zen Old Mincho', serif", fontWeight: 700, letterSpacing: '.28em', fontSize: 13, color: '#EDE7DC' }}>REINA</div>
         </Link>
         <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9.5, letterSpacing: '.24em', color: 'rgba(237,231,220,.4)' }}>DOCUMENTATION</div>
-        <nav style={{ display: 'flex', flexDirection: 'column', gap: 2, fontSize: 13.5 }}>
+        <nav className="docs-nav" style={{ fontSize: 13.5 }}>
           {NAV.map((n) => (
             <a key={n.href} href={n.href} style={{ padding: '9px 10px', borderLeft: '2px solid transparent', color: 'rgba(237,231,220,.82)' }}>{n.label}</a>
           ))}
@@ -66,7 +66,7 @@ export default function DocsPage() {
       </aside>
 
       {/* content */}
-      <main style={{ flex: 1, minWidth: 0, padding: '64px clamp(24px,5vw,72px) 140px', maxWidth: 900 }}>
+      <main className="docs-content">
         <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10.5, letterSpacing: '.26em', color: '#E0596A' }}>REINA DOCS</div>
         <h1 style={{ margin: '14px 0 0', fontSize: 'clamp(34px,4.4vw,52px)', fontWeight: 900, letterSpacing: '-.03em', color: '#F5F1E8' }}>Everything you need to enter the arena.</h1>
         <p style={{ margin: '16px 0 0', maxWidth: 560, fontSize: 15.5, lineHeight: 1.75, color: 'rgba(237,231,220,.68)' }}>Collect heroes, build a speed deck, fuse your spares into something stronger, and battle. This reference covers the mechanics end to end.</p>
@@ -87,10 +87,10 @@ export default function DocsPage() {
             cols={['RARITY', 'STAT RANGE', 'SHARE OF ROSTER']}
             hueRows={[0]}
             rows={[
-              ['Common', '35&ndash;65', '50%'],
-              ['Rare', '50&ndash;80', '30%'],
-              ['Elite', '65&ndash;92', '15%'],
-              ['Legendary', '85&ndash;99', '5%'],
+              ['Common', '35–65', '50%'],
+              ['Rare', '50–80', '30%'],
+              ['Elite', '65–92', '15%'],
+              ['Legendary', '85–99', '5%'],
             ]}
           />
           <P small>Stats are ATK, DEF, SPD and LUCK. A small number of heroes, regardless of rarity, also carry a unique Special Ability: three of the five Legendaries have one, and at least one Common does too. Check a hero's own page in the Wiki to see if it has one.</P>
@@ -108,8 +108,8 @@ export default function DocsPage() {
             cols={['COMPATIBLE PAIR', 'OUTCOME ODDS']}
             hueRows={[0]}
             rows={[
-              ['Both Common', 'Common (70%) &middot; Rare (30%)'],
-              ['Either Rare', 'Rare (75%) &middot; Elite (25%)'],
+              ['Both Common', 'Common (70%), Rare (30%)'],
+              ['Either Rare', 'Rare (75%), Elite (25%)'],
               ['Either Elite', 'Elite (100%, stat-boosted)'],
             ]}
           />
@@ -117,7 +117,7 @@ export default function DocsPage() {
         </Section>
 
         <Section id="deck" tag="DECK" title="Building a deck">
-          <P>A deck is 20 to 30 cards, a speed format built for matches around 5&ndash;8 minutes. Heroes, Spells, and Traps all fill the same deck, there's no separate equip pool. You can rebuild your deck any time you aren't mid-match.</P>
+          <P>A deck is 20 to 30 cards, a speed format built for matches around 5–8 minutes. Heroes, Spells, and Traps all fill the same deck, there's no separate equip pool. You can rebuild your deck any time you aren't mid-match.</P>
         </Section>
 
         <Section id="arena" tag="ARENA" title="Battle & arena">
@@ -176,7 +176,7 @@ export default function DocsPage() {
 
 function CardExample({ type, hue, name, desc }: { type: string; hue: string; name: string; desc: string }) {
   return (
-    <div style={{ width: 200, border: `1px solid ${hue}`, padding: 14 }}>
+    <div className="docs-card-example" style={{ border: `1px solid ${hue}`, padding: 14 }}>
       <div style={{ fontSize: 9, fontWeight: 900, letterSpacing: '.14em', color: hue }}>{type}</div>
       <div style={{ fontWeight: 700, fontSize: 14, marginTop: 6 }}>{name}</div>
       <div style={{ fontSize: 12.5, color: 'rgba(237,231,220,.6)', marginTop: 4 }}>{desc}</div>
@@ -186,7 +186,7 @@ function CardExample({ type, hue, name, desc }: { type: string; hue: string; nam
 
 function ApiBlock({ method, hue, path, code }: { method: string; hue: string; path: string; code: string }) {
   return (
-    <div style={{ marginTop: 16, border: '1px solid rgba(237,231,220,.14)' }}>
+    <div className="docs-api-block" style={{ marginTop: 16, border: '1px solid rgba(237,231,220,.14)' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 14px', borderBottom: '1px solid rgba(237,231,220,.14)' }}>
         <span style={{ background: hue, color: '#0F0C16', fontSize: 10.5, fontWeight: 700, letterSpacing: '.1em', padding: '3px 8px' }}>{method}</span>
         <code style={{ fontSize: 13, color: 'rgba(237,231,220,.85)' }}>{path}</code>

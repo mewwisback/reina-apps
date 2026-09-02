@@ -63,7 +63,7 @@ export default function ShopPage() {
         <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(100deg,#120E12 0%,#120E12 36%,#5C1119 60%,#8C1420 76%,#120E12 94%)' }} />
         <div style={{ position: 'relative', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 24, flexWrap: 'wrap' }}>
           <div>
-            <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, letterSpacing: '.2em', color: '#F5C6CC' }}>LIMITED &middot; ENDS IN 2 DAYS 14H</div>
+            <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, letterSpacing: '.2em', color: '#F5C6CC' }}>LIMITED: ENDS IN 2 DAYS 14H</div>
             <div style={{ fontWeight: 900, fontSize: 26, marginTop: 10, color: '#F5F1E8' }}>Starter Bundle</div>
             <div style={{ fontSize: 13, color: 'rgba(237,231,220,.75)', marginTop: 6, maxWidth: 420 }}>1 Gold Pack, 1 guaranteed Blank Card, and the Crimson Card Back cosmetic. Priced below buying each alone.</div>
           </div>
@@ -78,7 +78,7 @@ export default function ShopPage() {
 
       {/* tabs + content */}
       <div style={{ padding: '0 clamp(20px,3.5vw,48px)' }}>
-        <div style={{ display: 'flex', gap: 0, marginTop: 8, borderBottom: '1px solid rgba(237,231,220,.16)' }}>
+        <div className="shop-tabs" style={{ borderBottom: '1px solid rgba(237,231,220,.16)' }}>
           {(['packs', 'pass', 'cosmetics'] as Tab[]).map((t) => {
             const active = tab === t;
             return (
@@ -90,7 +90,7 @@ export default function ShopPage() {
         </div>
 
         {tab === 'packs' && (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 24, marginTop: 32 }}>
+          <div className="shop-pack-grid">
             {PACKS.map((p) => (
               <div key={p.key} style={{ position: 'relative', display: 'flex', flexDirection: 'column', border: `1px solid rgba(237,231,220,.16)`, padding: 0, overflow: 'hidden' }}>
                 {p.best && <div style={{ position: 'absolute', top: 0, right: 0, background: p.hue, color: '#0F0C16', fontFamily: "'JetBrains Mono', monospace", fontSize: 9, fontWeight: 900, letterSpacing: '.1em', padding: '5px 10px', clipPath: 'polygon(15% 0,100% 0,100% 100%,0 100%)', zIndex: 2 }}>BEST VALUE</div>}
@@ -145,7 +145,7 @@ export default function ShopPage() {
             </div>
             <div style={{ position: 'relative', marginTop: 28, paddingTop: 22 }}>
               <div style={{ position: 'absolute', left: 'calc(60% - 1px)', top: 0, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 8.5, fontWeight: 900, letterSpacing: '.08em', color: '#E8B45C', whiteSpace: 'nowrap' }}>YOU &middot; TIER 6</div>
+                <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 8.5, fontWeight: 900, letterSpacing: '.08em', color: '#E8B45C', whiteSpace: 'nowrap' }}>YOU: TIER 6</div>
                 <div style={{ width: 0, height: 0, borderStyle: 'solid', borderWidth: '6px 5px 0 5px', borderColor: '#E8B45C transparent transparent transparent', marginTop: 4 }} />
               </div>
               <div style={{ display: 'flex', gap: 5, alignItems: 'flex-end' }}>
@@ -153,7 +153,7 @@ export default function ShopPage() {
                   const unlocked = i < 6;
                   return (
                     <div key={i} style={{ flex: 1, height: `${30 + (i % 3) * 8}px`, background: unlocked ? '#E8B45C' : 'repeating-linear-gradient(135deg,rgba(237,231,220,.08) 0 6px,rgba(237,231,220,.03) 6px 12px)', clipPath: 'polygon(0 0,100% 0,100% 100%,15% 100%)', display: 'flex', alignItems: 'flex-end', justifyContent: 'center', paddingBottom: 5, fontFamily: "'JetBrains Mono', monospace", fontSize: 8, fontWeight: 700, color: unlocked ? '#0F0C16' : 'rgba(237,231,220,.35)' }}>
-                      {i * 4 + 1}&ndash;{i * 4 + 4}
+                      {i * 4 + 1}–{i * 4 + 4}
                     </div>
                   );
                 })}
@@ -208,7 +208,7 @@ export default function ShopPage() {
                   })}
                 </div>
                 <button onClick={() => setModal(null)} style={{ cursor: 'pointer', marginTop: 22, width: '100%', textAlign: 'center', background: '#3FA893', color: '#0F0C16', fontSize: 13, fontWeight: 900, letterSpacing: '.08em', padding: 14, clipPath: 'polygon(0 0,100% 0,100% 62%,calc(100% - 12px) 100%,0 100%)' }}>
-                  CONFIRM TOP UP &middot; {topUpAmount} USDT
+                  CONFIRM TOP UP: {topUpAmount} USDT
                 </button>
               </>
             )}

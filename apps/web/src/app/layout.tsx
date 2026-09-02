@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import { JetBrains_Mono, Zen_Kaku_Gothic_New, Zen_Old_Mincho } from 'next/font/google';
 import '../styles/globals.css';
+import '../styles/responsive-product.css';
 import type { ReactNode } from 'react';
 
 const bodyFont = Zen_Kaku_Gothic_New({

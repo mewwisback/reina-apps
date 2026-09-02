@@ -49,7 +49,7 @@ export default function CollectionPage() {
 
       <div style={{ padding: '0 clamp(20px,3.5vw,48px)' }}>
         {/* rarity stats */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 16, marginTop: 28 }}>
+        <div className="collection-stats">
           {RANKS.filter((r) => r !== 'ALL').map((r) => {
             const owned = POOL.filter((c) => c.rank === r).length;
             return (
@@ -74,7 +74,7 @@ export default function CollectionPage() {
         </div>
 
         {/* card grid */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(104px,1fr))', gap: 10, marginTop: 20 }}>
+        <div className="collection-grid">
           {filtered.map((c) => (
             <div key={c.name} style={{ position: 'relative', background: '#100C14', border: '1px solid rgba(237,231,220,.16)', clipPath: 'polygon(0 0,100% 0,100% 88%,88% 100%,0 100%)', padding: 10 }}>
               {c.count > 1 && <div style={{ position: 'absolute', top: 6, right: 6, fontFamily: "'JetBrains Mono', monospace", fontSize: 9, fontWeight: 900, color: '#0F0C16', background: '#E8B45C', padding: '1px 5px' }}>x{c.count}</div>}

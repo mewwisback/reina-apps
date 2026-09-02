@@ -1,0 +1,552 @@
+REINA ASSET DESIGN BIBLE FOR GEMINI
+Version: 1.0
+Purpose: Generate a consistent full asset library for Reina across cards, characters, environments, battlefield surfaces, symbols, icons, and promotional artwork.
+
+CORE IDENTITY
+
+Reina is a dark ceremonial card-game world built around quiet authority, ancient thresholds, restrained danger, and beauty surviving decay.
+
+The visual formula is:
+- Cold forgotten world.
+- Warm unknown destination.
+- Crimson authority.
+- Cream information.
+- Weathered ceremonial materials.
+- Clear silhouettes and controlled detail.
+
+Every asset must feel like it belongs to one world. Avoid generic fantasy, generic anime UI, sci-fi dashboards, esports graphics, and colorful mobile-gacha styling.
+
+MASTER PALETTE
+
+Interface anchors:
+- Void black: #0D0B10
+- Deep black: #08060A
+- Primary surface: #100C14
+- Raised surface: #17121B
+- Main cream: #EDE7DC
+- Bright cream: #F5F1E8
+- Crimson: #E03C4E
+- Bright crimson: #E0596A
+- Deep crimson: #8C1420
+- Wine: #5C1119
+- Ceremonial gold: #F0C08A
+
+World and environment colors:
+- Blue-black shadow: #031014
+- Midnight teal: #09242A
+- Dark teal stone: #14383B
+- Slate cyan stone: #28565A
+- Muted sea green: #397363
+- Dusty turquoise highlight: #579081
+- Ochre reflection: #B0783D
+- Burnt orange light: #C56B31
+- Amber edge light: #D39A4E
+
+Palette balance:
+- Use 75 to 90 percent dark neutral, wine, teal, or blue-black values.
+- Use cream for readable focal information and pale material highlights.
+- Use crimson for authority, danger, active state, identity, and decisive accents.
+- Use gold or amber for rare, sacred, targetable, or supernatural emphasis.
+- Keep saturated color local. Never flood the entire asset with crimson, gold, or orange.
+- Avoid pure white, pure black without color bias, neon rainbow color, bright cyan UI glow, and broad purple gradients.
+
+LIGHTING
+
+Use one dominant narrative light source.
+
+Preferred setup:
+- Dim cool ambient fill.
+- Concealed warm light from a doorway, altar, spell, relic, card core, or distant chamber.
+- Crimson edge accents for Reina authority or combat intent.
+- Deep shadows merged into large readable masses.
+- Warm light catches edges, fractures, armor rims, card frames, stair lips, and selected details.
+
+Do not use:
+- Flat studio lighting.
+- Even illumination across the frame.
+- Multiple equal light sources.
+- Bright daylight exposure.
+- Excessive bloom.
+- Neon rim lighting around every object.
+
+MATERIAL LANGUAGE
+
+Primary materials:
+- Matte weathered stone.
+- Dark stained metal.
+- Oxidized bronze.
+- Aged parchment.
+- Black lacquer with restrained wear.
+- Dark leather.
+- Woven ceremonial cloth.
+- Cracked enamel.
+- Moss, ivy, roots, and ferns.
+
+Material rules:
+- Surfaces show age through cracks, chipped edges, faded pigment, tarnish, and selective abrasion.
+- Detail follows construction. Damage must reveal how the object was built.
+- Metal is dark and heavy, not mirror-polished chrome.
+- Stone uses large structural blocks, not random procedural noise.
+- Cloth has weight and controlled folds.
+- Organic growth crosses rigid architecture but never hides its main silhouette.
+- Gloss is rare and reserved for eyes, fresh blood-red enamel, polished card seals, or magical cores.
+
+SHAPE LANGUAGE
+
+Use:
+- Monumental arches.
+- Broad stairs.
+- Heavy masonry.
+- Broken classical columns.
+- Rectangular slabs.
+- Hard clipped corners.
+- Asymmetrical collapse.
+- Narrow crimson cuts.
+- Diamond and offset-square seals.
+- Strong verticals interrupted by diagonal damage.
+
+Avoid:
+- Rounded bubbly silhouettes.
+- Soft pill-shaped UI language.
+- Random spikes on every object.
+- Dense filigree covering all surfaces.
+- Perfect bilateral symmetry unless the asset is a formal seal or sacred emblem.
+- Thin decorative fantasy towers with no structural weight.
+
+COMPOSITION
+
+General composition rules:
+- Establish one clear focal point.
+- Keep the focal point slightly off-center unless the asset is a formal card portrait or emblem.
+- Use foreground, midground, and background separation.
+- Frame scenes with dark foliage, masonry, cloth, smoke, or shadow.
+- Build a visible route toward the destination or subject.
+- Peak detail and contrast near the focal point.
+- Simplify peripheral regions.
+- Preserve clear negative space for UI text when requested.
+
+For 16:9 environments:
+- Use foreground approach, middle transition, and framed destination.
+- Keep primary architecture readable at thumbnail size.
+- Reserve calm dark zones for interface overlays.
+- Do not place critical details at extreme edges.
+
+For portrait assets:
+- Head and upper torso remain readable at small card size.
+- Use one dominant silhouette and one secondary prop or effect.
+- Keep the face clear unless concealment is part of the character identity.
+- Avoid clutter behind the head.
+
+RENDERING STYLE
+
+Target style:
+- Stylized premium dark-fantasy illustration.
+- Painterly forms with graphic contour control.
+- Broad value masses.
+- Selective hard edges near focal details.
+- Soft atmospheric depth elsewhere.
+- Restrained surface texture.
+- Clear silhouette before micro-detail.
+- Slight illustrated or cel-informed edge discipline without flat anime rendering.
+
+Avoid:
+- Photoreal stock-image appearance.
+- Plastic 3D render surfaces.
+- Generic AI fantasy detail soup.
+- Uniform sharpness.
+- Excessive tiny ornaments.
+- Airbrushed faces without structure.
+- Over-smoothed skin.
+- Random illegible glyphs.
+- Fake text in generated images.
+
+CHARACTER ART RULES
+
+Character tone:
+- Composed, watchful, disciplined, dangerous.
+- Emotion is controlled rather than theatrical.
+- Power appears through posture, gaze, and material authority.
+- Clothing and armor must imply role, faction, and combat method.
+
+Character design:
+- Strong readable silhouette.
+- One dominant garment or armor mass.
+- One signature weapon, relic, veil, crest, or spell behavior.
+- Crimson appears as a controlled identity accent.
+- Cream or bone details identify hierarchy and sacred function.
+- Gold remains rare and meaningful.
+- Cool teal environmental light separates the shadow side.
+- Warm light defines face, hands, weapon edge, or ritual focus.
+
+Anatomy and pose:
+- Natural anatomy and believable weight.
+- Hands must be structurally correct and purposeful.
+- Combat poses show balance and intent.
+- Avoid floating limbs, twisted grips, impossible armor joints, and decorative straps without attachment points.
+
+Character exclusions:
+- No generic smiling mascot poses.
+- No school-uniform default unless explicitly required by story.
+- No bikini armor.
+- No excessive exposed skin as substitute for design.
+- No oversized random weapons that break balance.
+- No cyberpunk implants, holographic HUDs, or modern firearms unless a future faction explicitly requires them.
+
+CARD CHARACTER ARCHETYPES
+
+HERO cards:
+- Dominant figure or creature.
+- Strong vertical portrait composition.
+- Clear face or head silhouette.
+- Readable weapon, stance, or power source.
+- Background supports identity but remains secondary.
+- Attack-oriented art uses forward pressure, crimson diagonals, and harder lighting.
+- Defense-oriented art uses anchored stance, broad mass, cooler highlights, and stable geometry.
+
+SUPPORT cards:
+- Focus on relic, location, ritual, spell action, tactical event, or symbolic interaction.
+- Use object-centered or environmental composition.
+- Show causal action clearly.
+- Avoid making every support card another standing character portrait.
+
+LEGENDARY or high-rarity cards:
+- Add controlled gold, amber, sacred geometry, or environmental scale.
+- Increase narrative specificity, not decorative noise.
+- Preserve the same world palette.
+- Do not replace the Reina identity with rainbow foil effects.
+
+CARD ART CROPPING
+
+Generate card art without frames, text, stats, rarity labels, logos, or UI.
+
+Portrait master:
+- Aspect ratio: 2:3.
+- Keep face or focal object inside the central 70 percent.
+- Leave 8 percent safe margin around critical silhouette parts.
+- Keep lower 15 percent free of essential facial or weapon details because board cards may crop or cover it.
+- Ensure the image remains readable at approximately 58 by 82 pixels.
+- Test the silhouette mentally as a small thumbnail.
+
+Inspect master:
+- Provide enough detail for enlargement.
+- Avoid details that only work at full resolution.
+- Do not bake frame lighting that conflicts with card rarity treatments.
+
+CARD BACK RULES
+
+Card back identity:
+- Near-black lacquer or dark stone base.
+- Central Reina seal built from clipped square or diamond geometry.
+- Deep crimson structural lines.
+- Thin ceremonial gold restraint.
+- Strong rotational symmetry for face-down readability.
+- No text.
+- No character portrait.
+- No bright center glow that reveals orientation or looks like a face-up card.
+- High contrast at small size, restrained texture at full size.
+
+ENVIRONMENT RULES
+
+Core environment identity:
+- Ancient monumental construction.
+- Controlled ruin.
+- Nature reclaiming architecture.
+- Quiet threshold leading toward uncertain warmth.
+- Cool night exterior and concealed amber destination.
+
+Preferred elements:
+- Arches.
+- Broad ceremonial stairs.
+- Courtyards.
+- Colonnades.
+- Bridges.
+- Crypt entrances.
+- Palace ruins.
+- Ritual chambers.
+- Overgrown stone paths.
+- Secondary dark openings.
+- Floating motes.
+- Broken walls with readable construction.
+
+Environment exclusions:
+- Bright pastoral fields.
+- Clean castles.
+- Generic lava caves.
+- Floating islands without structural logic.
+- Dense crowds.
+- Modern street furniture.
+- Sci-fi corridors.
+- Orange light across the entire scene.
+- Vegetation so dense that circulation and architecture disappear.
+
+BATTLEFIELD ASSET RULES
+
+Battlefield assets support physical card placement. They must not compete with cards.
+
+Battlefield surfaces:
+- Quiet dark stone, lacquer, worn ceremonial flooring, or restrained cloth.
+- Broad low-contrast areas beneath card zones.
+- Sparse cracks and seams aligned with structural ownership.
+- Player and opponent territories may differ through subtle temperature, wear, or crimson edge direction.
+- Preserve planar presentation. Do not bake strong perspective into slot textures.
+- Avoid painted card outlines unless requested as separate overlays.
+- Avoid fake UI labels, numbers, scanlines, grids, or telemetry.
+
+Lane and zone backgrounds:
+- HERO lane feels structurally heavier and more exposed.
+- SUPPORT lane feels quieter, recessed, or partially sheltered.
+- Pile locations use physical recesses, plinths, or stone ledges.
+- Divider region can carry restrained crimson ritual seams.
+- Keep center and target areas readable under card art.
+
+UI BACKGROUND AND PANEL ASSETS
+
+Generated UI assets should be structural textures or motifs, not complete interfaces.
+
+Allowed:
+- Dark matte panel texture.
+- Clipped-corner border segments.
+- Crimson signal strip.
+- Weathered stone divider.
+- Small seal.
+- Subtle paper or lacquer grain.
+- Corner ornament with transparent center.
+
+Not allowed:
+- Generated buttons with text.
+- Generated labels.
+- Full dashboard mockups.
+- Fake data charts.
+- Generic floating cards.
+- Decorative scanlines.
+- Diagonal tactical grids.
+- Random HUD glyphs.
+- Excessive glow.
+
+ICONOGRAPHY
+
+Icons must be:
+- Simple.
+- Monochrome or two-color.
+- Readable at 16 to 24 pixels.
+- Built from solid geometry and controlled negative space.
+- Consistent in stroke or filled construction.
+- Slightly angular with clipped corners.
+
+Icon color usage:
+- Cream for neutral actions.
+- Crimson for active, dangerous, or destructive actions.
+- Gold for rare, legal target, or sacred state.
+- Cool blue only for defense stance.
+
+Avoid:
+- Emoji appearance.
+- Cartoon outline style.
+- Detailed miniature illustrations.
+- Rounded app-icon language.
+- Text inside icons.
+
+SEALS, CRESTS, AND FACTION MARKS
+
+Reina master seal:
+- Diamond or offset-square foundation.
+- Hard clipped corners.
+- Central vertical authority line.
+- Sparse horizontal cuts.
+- Crimson primary shape.
+- Gold secondary restraint.
+- Must remain readable in one color.
+- Must work as embossing, engraving, wax seal, card back, loading mark, and favicon.
+
+Faction marks:
+- Share Reina construction logic.
+- Change one structural feature, not the whole visual language.
+- Avoid animal-logo defaults unless the faction narrative requires one.
+- Avoid fake alphabets and illegible runes.
+
+VFX RULES
+
+Attack effects:
+- Directional.
+- Short-lived.
+- Crimson, ember, dark smoke, or pale cutting light.
+- Preserve visibility of attacker, defender, and card state.
+
+Defense effects:
+- Cool steel-blue edge.
+- Broad anchored shape.
+- Minimal particles.
+- No generic spherical force field unless mechanically required.
+
+Summon effects:
+- Begin from seal, fracture, shadow, threshold, or rising warm light.
+- Use controlled crimson and amber.
+- Avoid rainbow portals and vertical sci-fi beams.
+
+Spell effects:
+- Show a clear cause and target.
+- Use faction color as accent, not total-frame wash.
+- Keep silhouettes readable.
+
+PARTICLE RULES
+
+Preferred particles:
+- Dust motes.
+- Ash.
+- Small embers.
+- Pollen-like warm specks.
+- Fine stone fragments.
+- Short crimson paper or cloth fragments when narratively valid.
+
+Avoid:
+- Dense spark showers everywhere.
+- Star-shaped glitter.
+- Multicolor bokeh.
+- Particles covering faces or card identity.
+
+TYPOGRAPHY AND GENERATED TEXT
+
+Do not ask Gemini to render final text inside assets.
+
+Rules:
+- Generate blank banners, plaques, scrolls, seals, and panels.
+- Add all names, stats, labels, and logos in application code or design software.
+- Never accept misspelled decorative text as texture.
+- If a manuscript texture is needed, use abstract line blocks without alphabet-like glyphs.
+
+ASSET DELIVERY RULES
+
+Always request:
+- No text.
+- No watermark.
+- No logo unless generating an approved Reina mark.
+- No mockup frame.
+- No device screen.
+- No card border for raw card art.
+- Clean edges around isolated assets.
+- Transparent background for icons, seals, VFX, props, and decorative overlays.
+- Full-bleed background for environments.
+- Consistent lighting direction across asset batches.
+
+Recommended formats:
+- Environment master: 3840x2160, 16:9.
+- Card art master: 2048x3072, 2:3.
+- Character full body: 2048x3072, transparent or simple dark background.
+- Portrait: 2048x2048 or 1536x2048 depending crop.
+- Icon master: 1024x1024 transparent, then reduce manually.
+- Seal and crest: 2048x2048 transparent, centered.
+- VFX overlay: 2048x2048 transparent.
+- Texture tile: 2048x2048, seamless only when explicitly required.
+
+QUALITY GATE
+
+Reject an asset if any answer is no:
+
+1. Does it use Reina's dark neutral, teal, cream, crimson, and amber hierarchy?
+2. Is there one clear focal point?
+3. Does the silhouette remain readable at intended size?
+4. Does material construction make sense?
+5. Does damage follow structure rather than random noise?
+6. Is detail concentrated near the focal point?
+7. Does the asset avoid generic fantasy clutter?
+8. Does it avoid text, watermarks, and fake UI?
+9. Does it preserve negative space needed by the product?
+10. Does it match existing Reina assets without copying their exact composition?
+11. Are anatomy, hands, weapons, and object attachments structurally correct?
+12. Would the asset still be recognizable in grayscale or at thumbnail size?
+
+GLOBAL NEGATIVE PROMPT
+
+Use this negative prompt for every generation, then add asset-specific exclusions:
+
+bright cheerful daylight, generic high fantasy, generic anime game UI, mobile gacha aesthetic, esports graphics, cyberpunk HUD, sci-fi interface, holograms, neon rainbow lighting, broad purple gradients, glossy plastic, chrome surfaces, clean pristine architecture, random fantasy clutter, excessive filigree, decorative scanlines, tactical grids, floating UI panels, fake text, letters, numbers, watermark, logo, signature, frame, card border, mockup, oversaturated colors, excessive bloom, uniform sharpness, procedural texture noise, photoreal stock image, plastic 3D render, malformed anatomy, extra fingers, fused hands, impossible weapon grip, floating accessories, duplicated objects, crowded composition
+
+GEMINI MASTER PROMPT TEMPLATE
+
+Create [ASSET TYPE] for Reina, a dark ceremonial card-game world.
+
+Subject:
+[EXACT SUBJECT, ROLE, ACTION, AND NARRATIVE PURPOSE]
+
+Composition:
+[ASPECT RATIO, CAMERA, SUBJECT PLACEMENT, SAFE AREA, FOCAL POINT, NEGATIVE SPACE]
+
+Visual identity:
+Dark void-black, wine, midnight-teal, weathered stone, cream highlights, controlled crimson authority accents, and sparse amber-gold sacred light. Ancient monumental structure, matte aged materials, hard clipped geometry, asymmetrical damage, quiet danger, and restrained supernatural presence.
+
+Lighting:
+One concealed warm narrative source with dim cool ambient fill. Deep merged shadows. Warm edge light only on selected structural and subject details. Crimson reserved for active identity or combat intent.
+
+Rendering:
+Premium stylized dark-fantasy illustration, painterly broad value masses, graphic contour control, selective hard edges at the focal point, restrained texture, atmospheric depth, clear silhouette, no uniform micro-detail.
+
+Functional constraints:
+[THUMBNAIL READABILITY, TRANSPARENT BACKGROUND OR FULL BLEED, REQUIRED SAFE MARGINS, UI OVERLAY SPACE, LOOP OR TILE REQUIREMENT]
+
+Do not include:
+[PASTE GLOBAL NEGATIVE PROMPT PLUS ASSET-SPECIFIC EXCLUSIONS]
+
+Output:
+[RESOLUTION, FORMAT INTENT, BACKGROUND REQUIREMENT, VARIATION COUNT]
+
+CARD ART PROMPT TEMPLATE
+
+Create raw portrait card art for Reina.
+
+Card role: [HERO OR SUPPORT]
+Name concept: [NAME]
+Narrative function: [FUNCTION]
+Subject: [CHARACTER, CREATURE, RELIC, LOCATION, OR EVENT]
+Action: [ONE CLEAR ACTION OR STANCE]
+
+Use a 2:3 portrait composition. Keep the face or focal object inside the central 70 percent. Leave an 8 percent safe margin around critical silhouette parts. Keep the lower 15 percent free of essential details. The image must remain recognizable at 58 by 82 pixels.
+
+Use Reina's dark ceremonial palette: void black, wine, midnight teal, weathered stone, cream highlights, controlled crimson, and sparse amber-gold light. Use one clear focal point, a strong silhouette, matte aged materials, and selective detail around the face, weapon, relic, or spell source.
+
+No card frame, no border, no name, no stats, no rarity mark, no logo, no letters, no numbers, no watermark, no full UI, no rainbow foil effect.
+
+[PASTE GLOBAL NEGATIVE PROMPT]
+
+Output 2048x3072 portrait artwork.
+
+ENVIRONMENT PROMPT TEMPLATE
+
+Create a wide cinematic Reina environment.
+
+Location: [LOCATION]
+Narrative purpose: [LOBBY, MATCHMAKING, BATTLEFIELD BACKDROP, STORY SCENE, OR REWARD SPACE]
+Destination or threshold: [FOCAL DESTINATION]
+
+Use a 16:9 composition with a foreground approach, middle transition, and framed destination slightly off-center. Use ancient monumental architecture, readable structural damage, weathered matte stone, restrained vegetation, dark framing masses, and one concealed warm source beyond or within the destination.
+
+Dominant palette: blue-black, midnight teal, dark teal stone, muted jade, and cream-gray detail. Accent palette: sparse burnt orange, amber, crimson, and ceremonial gold. Keep most of the frame dark and quiet. Reserve the highest contrast and detail for the destination.
+
+Leave [LEFT, RIGHT, TOP, OR BOTTOM] region calm and dark for UI overlay. Do not place faces, text, or critical objects there.
+
+No modern objects, no crowds, no bright sky, no clean architecture, no glossy stone, no neon magic, no fake UI, no text, no watermark.
+
+Output 3840x2160 full-bleed artwork.
+
+ICON PROMPT TEMPLATE
+
+Create a single Reina interface icon representing [ACTION OR OBJECT].
+
+Use a centered solid geometric silhouette with controlled negative space, angular construction, and clipped corners. It must remain clear at 16 pixels. Use one-color cream by default, crimson for dangerous or active actions, gold for rare or legal-target state, and steel-blue only for defense.
+
+Transparent background. No text, no circle app badge, no gradient, no glow, no shadow, no ornamental frame, no tiny detail, no watermark.
+
+Output 1024x1024 centered transparent asset.
+
+CARD BACK PROMPT TEMPLATE
+
+Create a Reina card back with strict rotational symmetry.
+
+Use a near-black lacquer or dark weathered-stone base, a centered clipped-square or diamond Reina seal, deep crimson structural lines, and restrained ceremonial gold accents. Keep texture matte and subtle. Make the design readable at 58 by 82 pixels while retaining premium detail at full size.
+
+No text, no letters, no character portrait, no bright central glow, no orientation marker, no rainbow foil, no blue trading-card spiral, no watermark.
+
+Output 2048x3072 portrait artwork.
+
+FINAL CONSISTENCY STATEMENT
+
+Every Reina asset must communicate controlled authority inside a decaying ceremonial world. Darkness carries structure. Crimson marks intent. Cream carries clarity. Amber marks the unknown worth approaching. Detail serves function and narrative, never decoration alone.

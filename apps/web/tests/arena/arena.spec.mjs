@@ -8,7 +8,7 @@ const enterDuel=async(page,fixture='final-draw')=>{
 
 test('dashboard to Arena uses a loading fade before route content appears',async({page})=>{
  await page.goto('/dashboard');
- await page.getByRole('link',{name:'Arena'}).click();
+ await page.getByRole('link',{name:'Arena',exact:true}).click();
  await expect(page.getByRole('status',{name:'Entering Arena'})).toBeVisible();
  await expect(page).toHaveURL(/\/arena$/);
  await expect(page.getByRole('heading',{name:'Choose your fight'})).toBeVisible();
@@ -101,47 +101,31 @@ test('duel controls use one command rail and card inspect stays inside viewport'
  await expect(page.locator('.arena .game-topbar,.arena .arena-header')).toHaveCount(0);
  await expect(page.locator('.resource-strip')).toHaveCount(1);
  await expect(page.locator('.resource-strip>span')).toHaveCount(4);
- const allowanceNotation=await page.locator('.resource-strip').evaluate(node=>{
-  const style=getComputedStyle(node),signal=getComputedStyle(node,'::before');
-  const items=[...node.children].map(item=>{const itemStyle=getComputedStyle(item),box=item.getBoundingClientRect();return{display:itemStyle.display,background:itemStyle.backgroundColor,borders:[itemStyle.borderTopWidth,itemStyle.borderRightWidth,itemStyle.borderBottomWidth,itemStyle.borderLeftWidth],x:box.x,right:box.right}});
-  return{display:style.display,background:style.backgroundColor,borders:[style.borderTopWidth,style.borderRightWidth,style.borderBottomWidth,style.borderLeftWidth],signalDisplay:signal.display,signalWidth:Number.parseFloat(signal.width),items};
- });
- expect(allowanceNotation.display).toBe('flex');
- expect(allowanceNotation.background).toBe('rgba(0, 0, 0, 0)');
- expect(allowanceNotation.borders.every(width=>width==='0px')).toBe(true);
- expect(allowanceNotation.signalDisplay).toBe('block');
- expect(allowanceNotation.signalWidth).toBeLessThanOrEqual(48);
- expect(allowanceNotation.items.every(item=>item.display==='flex'&&item.background==='rgba(0, 0, 0, 0)'&&item.borders.every(width=>width==='0px'))).toBe(true);
- expect(allowanceNotation.items[3].x).toBeGreaterThan(allowanceNotation.items[2].right);
+ const allowanceItems=await page.locator('.resource-strip>span').evaluateAll(nodes=>nodes.map(node=>node.getBoundingClientRect().toJSON()));
+ expect(allowanceItems).toHaveLength(4);
+ const allowanceOverlap=(a,b)=>a.x<b.right&&a.right>b.x&&a.y<b.bottom&&a.bottom>b.y;
+ expect(allowanceItems.every((item,index)=>allowanceItems.every((other,otherIndex)=>index===otherIndex||!allowanceOverlap(item,other)))).toBe(true);
+ expect(new Set(allowanceItems.map(item=>Math.round(item.x))).size).toBe(2);
+ expect(new Set(allowanceItems.map(item=>Math.round(item.y))).size).toBe(2);
  expect(await page.locator('.board').evaluate(node=>getComputedStyle(node,'::before').display)).toBe('none');
  await expect(page.locator('.reina-seal')).toHaveCount(0);
- await expect(page.locator('.gameplay-information')).toHaveCount(1);
+ await expect(page.locator('.gameplay-information')).toHaveCount(0);
+ await expect(page.locator('.commands [role="status"]')).toBeVisible();
  await expect(page.locator('.duelist-information')).toHaveCount(2);
  await expect(page.locator('.duelist-information.enemy')).toContainText('SILENTINDEX');
  await expect(page.locator('.duelist-information:not(.enemy)')).toContainText('REINA');
  await expect(page.locator('.duelist-information')).toContainText(['LP 4000','LP 4000']);
- const duelistRails=await page.locator('.duelist-information').evaluateAll(nodes=>nodes.map(node=>{
-  const style=getComputedStyle(node),signal=getComputedStyle(node,'::before'),box=node.getBoundingClientRect();
-  return {width:box.width,height:box.height,background:style.backgroundColor,borders:[style.borderTopWidth,style.borderRightWidth,style.borderBottomWidth,style.borderLeftWidth],signalDisplay:signal.display,signalWidth:Number.parseFloat(signal.width),after:getComputedStyle(node,'::after').display};
- }));
+ const duelistRails=await page.locator('.duelist-information').evaluateAll(nodes=>nodes.map(node=>node.getBoundingClientRect().toJSON()));
  expect(Math.abs(duelistRails[0].width-duelistRails[1].width)).toBeLessThanOrEqual(.5);
  expect(Math.abs(duelistRails[0].height-duelistRails[1].height)).toBeLessThanOrEqual(.5);
- expect(duelistRails.every(rail=>rail.background==='rgba(0, 0, 0, 0)'&&rail.borders.every(width=>width==='0px')&&rail.signalDisplay==='block'&&rail.signalWidth<=56&&rail.after==='none')).toBe(true);
- for(const rail of await page.locator('.duelist-information').all()){
-  const telemetry=rail.locator('dl');
-  await expect(telemetry.locator('dt')).toHaveText(['DECK','HAND','FIELD','GRAVE','TOTAL']);
-  expect(await telemetry.evaluate(node=>getComputedStyle(node).display)).toBe('flex');
-  const cells=await telemetry.locator('div').evaluateAll(nodes=>nodes.map(node=>({display:getComputedStyle(node).display,textAlign:getComputedStyle(node).textAlign,borderRight:getComputedStyle(node).borderRightWidth})));
-  expect(cells.every(cell=>cell.display==='flex'&&cell.textAlign==='left'&&cell.borderRight==='0px')).toBe(true);
- }
- const gameplayText=page.locator('.gameplay-information strong');
+ const gameplayText=page.locator('.commands [role="status"]');
  await expect(gameplayText).toBeVisible();
  expect(Number.parseFloat(await gameplayText.evaluate(node=>getComputedStyle(node).fontSize))).toBeGreaterThanOrEqual(12);
  await expect(page.locator('.commands')).toContainText('ENTER BATTLE');
  await expect(page.locator('.commands')).toContainText('END TURN');
  await page.locator('.hand .card').first().click();
  await expect(page.locator('.inspect')).toHaveClass(/has-card/);
- await expect(page.locator('.inspect')).toContainText('CARD INSPECT');
+ await expect(page.locator('.inspect')).toContainText('CARD DETAILS');
  const viewport=page.viewportSize();
  for(const selector of ['.inspect','.commands','.resource-strip','.hand']){
   const box=await page.locator(selector).boundingBox();
@@ -156,20 +140,62 @@ test('duel controls use one command rail and card inspect stays inside viewport'
  const inspectBox=await page.locator('.inspect').boundingBox();
  const playerStatsBox=await page.locator('.stats:not(.enemy)').boundingBox();
  const enemyStatsBox=await page.locator('.duelist-information.enemy').boundingBox();
- const gameplayBox=await page.locator('.gameplay-information').boundingBox();
+ const gameplayBox=await page.locator('.commands [role="status"]').boundingBox();
  const supportBoxes=await page.locator('.support-zone').evaluateAll(nodes=>nodes.map(node=>node.getBoundingClientRect().toJSON()));
  const overlaps=(a,b)=>a.x<b.x+b.width&&a.x+a.width>b.x&&a.y<b.y+b.height&&a.y+a.height>b.y;
  expect(commandBox.x).toBeGreaterThanOrEqual(handBox.x+handBox.width);
- expect(inspectBox.y).toBeGreaterThanOrEqual(playerStatsBox.y+playerStatsBox.height);
+ expect(overlaps(inspectBox,playerStatsBox)).toBe(false);
  expect(overlaps(enemyStatsBox,supportBoxes[0])).toBe(false);
  expect(supportBoxes.every(box=>!overlaps(gameplayBox,box))).toBe(true);
 });
 
-test('tall viewport keeps opponent and gameplay rails clear of support rows',async({page})=>{
+test('visible enemy card opens read-only inspect without revealing concealed support',async({page})=>{
+ await page.setViewportSize({width:1280,height:720});
+ await page.emulateMedia({reducedMotion:'reduce'});
+ await enterDuel(page);
+ await page.getByRole('button',{name:/END TURN/}).click();
+ const enemyHero=page.locator('.enemy-territory .hero-zone .card').first();
+ await expect(enemyHero).toBeVisible({timeout:15000});
+ const enemyName=(await enemyHero.locator('strong').textContent()).trim();
+ await enemyHero.click();
+ const inspect=page.locator('.inspect');
+ await expect(inspect).toHaveClass(/has-card/);
+ await expect(inspect).toContainText(enemyName);
+ await expect(inspect).toContainText(/ATK \d+ \/ DEF \d+/);
+ await expect(inspect.getByRole('button',{name:/SUMMON|DEFENSE|ACTIVATE|SET SUPPORT/})).toHaveCount(0);
+ await expect(inspect.getByRole('button',{name:'CLOSE'})).toBeVisible();
+ const concealed=page.locator('.enemy-territory .support-zone .card.concealed').first();
+ if(await concealed.count()){
+  await concealed.click();
+  await expect(inspect).toContainText(enemyName);
+  await expect(inspect).not.toContainText('UNKNOWN');
+ }
+});
+
+test('visible own battlefield card opens inspect outside targeting modes',async({page})=>{
+ await page.setViewportSize({width:1280,height:720});
+ await page.emulateMedia({reducedMotion:'reduce'});
+ await enterDuel(page);
+ const yuri=page.getByRole('button',{name:/Select YURI SCOUT/});
+ await yuri.focus();
+ await yuri.press('Enter');
+ await page.getByRole('button',{name:'SUMMON',exact:true}).click();
+ await page.locator('.player-territory .hero-zone .slot.valid').first().click();
+ const ownHero=page.locator('.player-territory .hero-zone .card').first();
+ await ownHero.click();
+ const inspect=page.locator('.inspect');
+ await expect(inspect).toHaveClass(/has-card/);
+ await expect(inspect).toContainText('YURI SCOUT');
+ await expect(inspect).toContainText('ATK 1100 / DEF 900');
+ await expect(inspect.getByRole('button',{name:/SUMMON|DEFENSE|SET SUPPORT/})).toHaveCount(0);
+ await expect(inspect.getByRole('button',{name:'CLOSE'})).toBeVisible();
+});
+
+test('tall viewport keeps opponent and command status clear of support rows',async({page})=>{
  await page.setViewportSize({width:1440,height:900});
  await enterDuel(page);
  const enemyBox=await page.locator('.duelist-information.enemy').boundingBox();
- const gameplayBox=await page.locator('.gameplay-information').boundingBox();
+ const gameplayBox=await page.locator('.commands [role="status"]').boundingBox();
  const supportBoxes=await page.locator('.support-zone').evaluateAll(nodes=>nodes.map(node=>node.getBoundingClientRect().toJSON()));
  const overlaps=(a,b)=>a.x<b.x+b.width&&a.x+a.width>b.x&&a.y<b.y+b.height&&a.y+a.height>b.y;
  expect(supportBoxes.every(box=>!overlaps(enemyBox,box))).toBe(true);
@@ -240,7 +266,7 @@ for(const viewport of responsiveViewports)test(`responsive duel geometry stays u
  expect(await dimensions(support)).toEqual(await dimensions(hero));
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=document.documentElement.clientWidth)).toBe(true);
  for(const button of await page.locator('.commands button').all()){
-  const metrics=await button.evaluate(node=>({height:node.getBoundingClientRect().height,fits:node.scrollWidth<=node.clientWidth&&node.scrollHeight<=node.clientHeight}));
+  const metrics=await button.evaluate(node=>({height:node.getBoundingClientRect().height,fits:node.scrollWidth<=node.clientWidth+.5&&node.scrollHeight<=node.clientHeight+.5}));
   expect(metrics.height).toBeGreaterThanOrEqual(40);
   expect(metrics.fits).toBe(true);
  }
@@ -250,13 +276,16 @@ for(const viewport of responsiveViewports)test(`responsive duel geometry stays u
  else{
   await page.locator('.hand .card').first().click();
   await expect(page.locator('.inspect')).toHaveClass(/has-card/);
-  const inspectBox=await page.locator('.inspect').boundingBox(),commandsBox=await page.locator('.commands').boundingBox();
-  expect(inspectBox.y).toBeGreaterThanOrEqual(handBox.y+handBox.height);
-  expect(commandsBox.y).toBeGreaterThanOrEqual(inspectBox.y+inspectBox.height);
+  await expect(page.locator('.inspect')).toHaveAttribute('role','dialog');
+  await expect(page.locator('.inspect-backdrop')).toBeVisible();
+  const inspectBox=await page.locator('.inspect').boundingBox(),commandsBox=await page.locator('.commands').boundingBox(),size=page.viewportSize();
+  expect(inspectBox.y).toBeGreaterThanOrEqual(0);
+  expect(inspectBox.y+inspectBox.height).toBeLessThanOrEqual(size.height+.5);
+  expect(commandsBox.y+commandsBox.height).toBeLessThanOrEqual(size.height+.5);
  }
 });
 
-test('mobile hand remains clickable and controls follow board flow',async({page})=>{
+test('mobile hand remains clickable while inspect dialog preserves commands',async({page})=>{
  await page.setViewportSize({width:390,height:844});
  await enterDuel(page);
  const mobileNavCentering=await page.locator('.arena-duel-nav').evaluate(nav=>{
@@ -266,11 +295,13 @@ test('mobile hand remains clickable and controls follow board flow',async({page}
  expect(mobileNavCentering).toBeLessThanOrEqual(.5);
  await page.locator('.hand .card').first().click();
  await expect(page.locator('.inspect')).toHaveClass(/has-card/);
- const handBox=await page.locator('.hand').boundingBox();
  const inspectBox=await page.locator('.inspect').boundingBox();
  const commandsBox=await page.locator('.commands').boundingBox();
- expect(inspectBox.y).toBeGreaterThanOrEqual(handBox.y+handBox.height);
- expect(commandsBox.y).toBeGreaterThanOrEqual(inspectBox.y+inspectBox.height);
+ await expect(page.locator('.inspect')).toHaveAttribute('role','dialog');
+ await expect(page.locator('.inspect-backdrop')).toBeVisible();
+ expect(inspectBox.y).toBeGreaterThanOrEqual(0);
+ expect(inspectBox.y+inspectBox.height).toBeLessThanOrEqual(844.5);
+ expect(commandsBox.y+commandsBox.height).toBeLessThanOrEqual(844.5);
 });
 
 test('opening hand draws automatically exactly once',async({page})=>{

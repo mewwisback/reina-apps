@@ -1,0 +1,104 @@
+.app-mobile-header,
+.app-nav-backdrop {
+  display: none;
+}
+
+@media (max-width: 700px) {
+  .app-shell {
+    display: block !important;
+    min-width: 0;
+    overflow-x: clip;
+    padding-top: 56px;
+  }
+
+  .app-mobile-header {
+    align-items: center;
+    background: #0b0912;
+    border-bottom: 1px solid rgba(237, 231, 220, 0.12);
+    display: flex;
+    height: 56px;
+    inset: 0 0 auto;
+    justify-content: space-between;
+    padding: 0 12px 0 16px;
+    position: fixed;
+    z-index: 42;
+  }
+
+  .app-mobile-brand {
+    align-items: center;
+    color: #ede7dc;
+    display: flex;
+    font-family: 'Zen Old Mincho', serif;
+    font-size: 13px;
+    font-weight: 700;
+    gap: 10px;
+    letter-spacing: 0.24em;
+  }
+
+  .app-mobile-mark {
+    align-items: center;
+    background: #e03c4e;
+    color: #0f0c16;
+    display: flex;
+    font-family: 'Zen Kaku Gothic New', sans-serif;
+    font-weight: 900;
+    height: 30px;
+    justify-content: center;
+    width: 30px;
+  }
+
+  .app-mobile-menu {
+    align-items: center;
+    background: transparent;
+    border: 1px solid rgba(237, 231, 220, 0.24);
+    color: #ede7dc;
+    display: flex;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    height: 44px;
+    justify-content: center;
+    min-width: 54px;
+    padding: 0 10px;
+  }
+
+  .app-nav-backdrop {
+    background: rgba(8, 6, 11, 0.72);
+    border: 0;
+    display: block;
+    inset: 56px 0 0;
+    position: fixed;
+    z-index: 39;
+  }
+
+  .app-shell > aside[data-app-sidebar] {
+    display: flex !important;
+    height: calc(100dvh - 56px) !important;
+    inset: 56px auto 0 0;
+    max-width: min(86vw, 320px);
+    position: fixed !important;
+    transform: translateX(-102%);
+    transition: transform 180ms ease !important;
+    width: min(86vw, 320px) !important;
+    z-index: 40;
+  }
+
+  .app-shell > aside[data-app-sidebar][data-mobile-open='true'] {
+    transform: translateX(0);
+  }
+
+  .app-shell > aside[data-app-sidebar] nav a {
+    min-height: 44px;
+  }
+
+  .app-main {
+    max-width: 100%;
+    min-width: 0;
+    overflow-x: clip;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-shell > aside[data-app-sidebar] {
+    transition: none !important;
+  }
+}

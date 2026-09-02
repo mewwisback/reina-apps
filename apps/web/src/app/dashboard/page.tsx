@@ -116,6 +116,26 @@ export default function DashboardPage() {
             >
               SHOP
             </Link>
+            <Link
+              href="/arena"
+              className="dashboard-enter-arena"
+              style={{
+                display: 'inline-flex',
+                minHeight: 44,
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: '#F5F1E8',
+                background: '#E03C4E',
+                fontFamily: "'JetBrains Mono', monospace",
+                fontSize: 11,
+                fontWeight: 900,
+                letterSpacing: '.12em',
+                padding: '12px 22px',
+                textDecoration: 'none',
+              }}
+            >
+              ENTER ARENA
+            </Link>
           </div>
         </div>
 
@@ -155,7 +175,7 @@ export default function DashboardPage() {
       {/* ===== CONTENT ===== */}
       <div style={{ padding: '0 clamp(20px,3.5vw,48px)' }}>
         {/* stat cards */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1.15fr 1fr 1.3fr', gap: 14, marginTop: 32 }}>
+        <div className="dashboard-stats">
           <div style={STAT_CARD_STYLE}>
             <div style={CORNER} />
             <div style={{ position: 'relative', fontFamily: "'JetBrains Mono', monospace", fontSize: 9.5, letterSpacing: '.2em', color: 'rgba(237,231,220,.5)' }}>RANK</div>
@@ -229,9 +249,9 @@ export default function DashboardPage() {
         {/* recent duels */}
         <div style={{ marginTop: 32 }}>
           <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, letterSpacing: '.2em', color: '#E03C4E' }}>RECENT DUELS</div>
-          <div style={{ marginTop: 16, border: '1px solid rgba(237,231,220,.14)' }}>
+          <div className="duel-list" style={{ marginTop: 16, border: '1px solid rgba(237,231,220,.14)' }}>
             {MATCHES.map((m, i) => (
-              <div key={i} style={{ display: 'grid', gridTemplateColumns: '64px 1fr auto auto', alignItems: 'center', gap: 14, padding: '12px 16px 12px 13px', borderBottom: '1px solid rgba(237,231,220,.1)', borderLeft: `3px solid ${m.resultHue}` }}>
+              <div className="duel-row" key={i} style={{ borderBottom: '1px solid rgba(237,231,220,.1)', borderLeft: `3px solid ${m.resultHue}` }}>
                 <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9.5, fontWeight: 900, letterSpacing: '.12em', color: '#0F0C16', background: m.resultHue, textAlign: 'center', padding: '4px 0', clipPath: 'polygon(0 0,100% 0,88% 100%,0 100%)' }}>{m.result}</div>
                 <div style={{ fontSize: 13, color: 'rgba(237,231,220,.85)' }}>vs <span style={{ fontWeight: 700, color: '#F5F1E8' }}>{m.opponent}</span></div>
                 <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9.5, letterSpacing: '.08em', color: 'rgba(237,231,220,.55)', border: '1px solid rgba(237,231,220,.2)', padding: '3px 8px' }}>{m.mode}</div>

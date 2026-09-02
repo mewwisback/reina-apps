@@ -27,7 +27,7 @@ const WEEKLY: QuestDef[] = [
 function QuestRow({ q, claimed, onClaim }: { q: QuestDef; claimed: boolean; onClaim: () => void }) {
   const ready = q.done && !claimed;
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: '1fr 140px 100px', alignItems: 'center', gap: 16, padding: '16px 18px', background: '#100C14', borderLeft: `3px solid ${q.hue}` }}>
+    <div className="quest-row" style={{ background: '#100C14', borderLeft: `3px solid ${q.hue}` }}>
       <div>
         <div style={{ fontWeight: 700, fontSize: 14, color: '#F5F1E8' }}>{q.label}</div>
         <div style={{ marginTop: 9, height: 5, background: 'rgba(237,231,220,.12)' }}>

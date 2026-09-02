@@ -50,7 +50,7 @@ export default function WikiPage() {
   return (
     <div style={{ minHeight: '100vh', background: '#0D0B10', color: '#EDE7DC', fontFamily: "'Zen Kaku Gothic New', sans-serif" }}>
       {/* sticky header */}
-      <div style={{ position: 'sticky', top: 0, zIndex: 20, background: '#0B0912', borderBottom: '1px solid rgba(237,231,220,.12)', padding: '20px clamp(20px,4vw,48px)' }}>
+      <div className="wiki-header" style={{ background: '#0B0912', borderBottom: '1px solid rgba(237,231,220,.12)' }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 16, maxWidth: 1280, margin: '0 auto' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
@@ -70,8 +70,8 @@ export default function WikiPage() {
           </div>
 
           {view === 'roster' && (
-            <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center' }}>
-              <input value={search} onChange={(e) => { setSearch(e.target.value); setPage(0); }} placeholder="SEARCH NAME" style={{ background: '#14101A', border: '1px solid rgba(237,231,220,.25)', color: '#EDE7DC', fontFamily: "'JetBrains Mono', monospace", fontSize: 11, padding: '9px 14px', letterSpacing: '.05em', width: 130 }} />
+            <div className="wiki-filters">
+              <input className="wiki-search" value={search} onChange={(e) => { setSearch(e.target.value); setPage(0); }} placeholder="SEARCH NAME" style={{ background: '#14101A', border: '1px solid rgba(237,231,220,.25)', color: '#EDE7DC', fontFamily: "'JetBrains Mono', monospace", fontSize: 11, padding: '9px 14px', letterSpacing: '.05em', width: 130 }} />
               <div style={{ display: 'flex', gap: 0, border: '1px solid rgba(237,231,220,.25)' }}>
                 {CARD_TYPES.map((t) => (
                   <button key={t} onClick={() => { setCardType(t); setPage(0); setOpenId(null); }} style={{ cursor: 'pointer', padding: '9px 12px', fontFamily: "'JetBrains Mono', monospace", fontSize: 9.5, fontWeight: 700, letterSpacing: '.08em', color: typeFg(t), background: typeBg(t), border: 'none' }}>{t}</button>
@@ -105,13 +105,13 @@ export default function WikiPage() {
       ) : (
         <div style={{ maxWidth: 1280, margin: '0 auto', padding: '36px clamp(20px,4vw,48px) 80px' }}>
           {cardType === 'HEROES' ? (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(104px,1fr))', gap: 9 }}>
+            <div className="wiki-card-grid">
               {paged.map((h) => (
                 <HeroCard key={h.id} h={h} onOpen={() => { setOpenId(h.id); setTab('stats'); setPage(p); }} />
               ))}
             </div>
           ) : (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(104px,1fr))', gap: 9 }}>
+            <div className="wiki-card-grid">
               {SUPPORT_CARDS.filter((s) => s.rank === cardType).map((s) => (
                 <SupportCardGrid key={s.id} s={s} onOpen={() => setOpenId(s.id)} />
               ))}
