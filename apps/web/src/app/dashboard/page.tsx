@@ -255,7 +255,7 @@ export default function DashboardPage() {
                 <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9.5, fontWeight: 900, letterSpacing: '.12em', color: '#0F0C16', background: m.resultHue, textAlign: 'center', padding: '4px 0', clipPath: 'polygon(0 0,100% 0,88% 100%,0 100%)' }}>{m.result}</div>
                 <div style={{ fontSize: 13, color: 'rgba(237,231,220,.85)' }}>vs <span style={{ fontWeight: 700, color: '#F5F1E8' }}>{m.opponent}</span></div>
                 <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9.5, letterSpacing: '.08em', color: 'rgba(237,231,220,.55)', border: '1px solid rgba(237,231,220,.2)', padding: '3px 8px' }}>{m.mode}</div>
-                <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: 'rgba(237,231,220,.4)', minWidth: 76, textAlign: 'right' }}>{m.time}</div>
+                <div className="duel-time" style={{ fontFamily: "'JetBrains Mono', monospace", color: 'rgba(237,231,220,.4)' }}>{m.time}</div>
               </div>
             ))}
           </div>

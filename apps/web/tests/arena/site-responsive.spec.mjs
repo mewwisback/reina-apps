@@ -2,6 +2,18 @@ import {expect,test} from '@playwright/test';
 
 const shellRoutes=['/dashboard','/collection','/deck-builder','/leaderboard','/quests','/shop'];
 
+for(const [label,width,height,alignment] of [['mobile',390,844,'left'],['desktop',1440,900,'right']]){
+ test(`/dashboard owns ${label} duel-time alignment`,async({page})=>{
+  await page.setViewportSize({width:Number(width),height:Number(height)});
+  await page.goto('/dashboard');
+  const row=page.locator('.duel-row').first();
+  const time=row.locator('.duel-time');
+  await expect(time).toHaveCSS('text-align',alignment);
+  const geometry=await row.evaluate(node=>({contained:node.scrollWidth<=node.clientWidth+1,timeContained:(()=>{const row=node.getBoundingClientRect(),time=node.querySelector('.duel-time')?.getBoundingClientRect();return Boolean(time&&time.x>=row.x-.5&&time.right<=row.right+.5);})()}));
+  expect(geometry).toEqual({contained:true,timeContained:true});
+ });
+}
+
 for(const [label,width,height,mmrSize,metricSize] of [['mobile',390,844,'10px','10px'],['desktop',1440,900,'12px','11px']]){
  test(`/leaderboard owns ${label} metric sizing`,async({page})=>{
   await page.setViewportSize({width:Number(width),height:Number(height)});

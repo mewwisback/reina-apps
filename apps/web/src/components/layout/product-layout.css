@@ -20,6 +20,7 @@
 .shop-tabs > button[data-active='true'] { border-bottom-color: #e03c4e; color: #f5f1e8; }
 .shop-pack-grid { display: grid; gap: 24px; grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 32px; }
 .duel-row { align-items: center; display: grid; gap: 14px; grid-template-columns: 64px minmax(0, 1fr) auto auto; padding: 12px 16px 12px 13px; }
+.duel-time { font-size: 10px; min-width: 76px; text-align: right; }
 .deck-tabs { align-items: center; display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
 .deck-workspace { display: grid; gap: 20px; grid-template-columns: minmax(0, 1fr) 260px; margin-top: 20px; }
 .vault-grid { display: grid; gap: 8px; grid-template-columns: repeat(auto-fill, minmax(88px, 1fr)); margin-top: 16px; }
@@ -111,7 +112,7 @@
   .shop-pack-grid { gap: 16px; margin-top: 20px; }
 
   .duel-row { gap: 8px; grid-template-columns: 54px minmax(0, 1fr) auto; padding: 12px 10px; }
-  .duel-row > :last-child { grid-column: 2 / -1; text-align: left !important; }
+  .duel-time { grid-column: 2 / -1; text-align: left; }
 
   .deck-tabs { overflow-x: auto; flex-wrap: nowrap; padding-inline: 16px; scrollbar-width: thin; }
   .deck-tabs > button { flex: 0 0 auto; min-height: 44px; }
