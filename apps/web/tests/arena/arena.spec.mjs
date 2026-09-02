@@ -4,6 +4,13 @@ import {expect,test} from '@playwright/test';
 const arenaSourceUrl=new URL('../../src/app/arena/page.tsx',import.meta.url);
 const arenaCssUrl=new URL('../../src/app/arena/arena.css',import.meta.url);
 const rootLayoutUrl=new URL('../../src/app/layout.tsx',import.meta.url);
+const nextConfigUrl=new URL('../../next.config.mjs',import.meta.url);
+
+test('Next dev server allows the exact Playwright origin without a wildcard',async()=>{
+ const config=await readFile(nextConfigUrl,'utf8');
+ expect(config).toContain("allowedDevOrigins: ['127.0.0.1']");
+ expect(config).not.toMatch(/allowedDevOrigins:\s*\[[^\]]*['"]\*['"]/);
+});
 
 test('production fonts are local and require no build-time network access',async()=>{
  const layout=await readFile(rootLayoutUrl,'utf8');
@@ -83,6 +90,7 @@ test('ruleset hover moves its surface and text while reduced motion stays still'
 });
 
 test('found opponent shows complete profile without clipping',async({page})=>{
+ await page.emulateMedia({reducedMotion:'reduce'});
  await page.goto('/arena?arenaFixture=matchmaking');
  await page.getByRole('button',{name:/RANKED/}).click();
  await expect(page.getByRole('heading',{name:'SILENTINDEX'})).toBeVisible();
