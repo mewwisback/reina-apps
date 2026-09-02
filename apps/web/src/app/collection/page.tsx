@@ -47,7 +47,7 @@ export default function CollectionPage() {
         <Link href="/wiki" style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: '#E0596A', textDecoration: 'none' }}>BROWSE FULL WIKI &gt;</Link>
       </div>
 
-      <div style={{ padding: '0 clamp(20px,3.5vw,48px)' }}>
+      <div className="product-content">
         {/* rarity stats */}
         <div className="collection-stats">
           {RANKS.filter((r) => r !== 'ALL').map((r) => {

@@ -77,7 +77,7 @@ export default function ShopPage() {
       </div>
 
       {/* tabs + content */}
-      <div style={{ padding: '0 clamp(20px,3.5vw,48px)' }}>
+      <div className="product-content">
         <div className="shop-tabs">
           {(['packs', 'pass', 'cosmetics'] as Tab[]).map((t) => {
             const active = tab === t;

@@ -173,7 +173,7 @@ export default function DashboardPage() {
       </div>
 
       {/* ===== CONTENT ===== */}
-      <div style={{ padding: '0 clamp(20px,3.5vw,48px)' }}>
+      <div className="product-content">
         {/* stat cards */}
         <div className="dashboard-stats">
           <div style={STAT_CARD_STYLE}>

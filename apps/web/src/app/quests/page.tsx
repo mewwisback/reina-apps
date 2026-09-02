@@ -73,7 +73,7 @@ export default function QuestsPage() {
         </div>
       </div>
 
-      <div style={{ padding: '0 clamp(20px,3.5vw,48px)' }}>
+      <div className="product-content">
         <div style={{ marginTop: 28, display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
           <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, letterSpacing: '.2em', color: '#E03C4E' }}>DAILY QUESTS</div>
           <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: 'rgba(237,231,220,.4)' }}>RESETS IN 09:24:11</div>

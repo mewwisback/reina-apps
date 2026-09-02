@@ -2,6 +2,18 @@ import {expect,test} from '@playwright/test';
 
 const shellRoutes=['/dashboard','/collection','/deck-builder','/leaderboard','/quests','/shop'];
 
+for(const [route,width,height,padding] of ['/dashboard','/collection','/leaderboard','/quests','/shop'].flatMap(route=>[[route,390,844,'16px'],[route,1440,900,'48px']])){
+ test(`${route} owns product content spacing at ${width}px`,async({page})=>{
+  await page.setViewportSize({width:Number(width),height:Number(height)});
+  await page.goto(String(route));
+  const content=page.locator('.product-content');
+  await expect(content).toHaveCSS('padding-left',padding);
+  await expect(content).toHaveCSS('padding-right',padding);
+  const contained=await content.evaluate(node=>node.scrollWidth<=node.clientWidth+1);
+  expect(contained).toBe(true);
+ });
+}
+
 for(const [route,width,height,margin] of [['/dashboard',390,844,'16px'],['/leaderboard',390,844,'16px'],['/quests',390,844,'16px'],['/dashboard',1440,900,'48px'],['/leaderboard',1440,900,'48px'],['/quests',1440,900,'48px']]){
  test(`${route} owns product hero spacing at ${width}px`,async({page})=>{
   await page.setViewportSize({width:Number(width),height:Number(height)});

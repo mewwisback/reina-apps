@@ -113,7 +113,7 @@ export default function LeaderboardPage() {
         </div>
       </div>
 
-      <div style={{ padding: '0 clamp(20px,3.5vw,48px)' }}>
+      <div className="product-content">
         {/* podium */}
         <div style={{ position: 'relative', marginTop: 32, padding: '30px 22px 8px', background: 'radial-gradient(ellipse at 50% 0%,rgba(224,60,78,.14),transparent 65%)' }}>
           <div style={{ position: 'absolute', left: 0, top: 0, width: 18, height: 18, borderTop: '1px solid rgba(245,241,232,.3)', borderLeft: '1px solid rgba(245,241,232,.3)' }} />

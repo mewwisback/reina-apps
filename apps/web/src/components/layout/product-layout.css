@@ -11,6 +11,7 @@
 .collection-grid { display: grid; gap: 10px; grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); margin-top: 20px; }
 .leaderboard-podium { align-items: end; grid-template-columns: 1fr 1.25fr 1fr; }
 .product-hero { margin-inline: clamp(20px, 3.5vw, 48px); }
+.product-content { padding-inline: clamp(20px, 3.5vw, 48px); }
 .leaderboard-row { align-items: center; display: grid; gap: 12px; grid-template-columns: 52px minmax(0, 1fr) 130px 90px 90px 80px; padding: 12px 14px; }
 .leaderboard-metric { font-size: 11px; }
 .leaderboard-mmr { font-size: 12px; }
@@ -56,10 +57,11 @@
     margin-inline: 16px;
   }
 
-  .app-main[data-route='/dashboard'] > div:nth-child(2),
-  .app-main[data-route='/leaderboard'] > div:nth-child(2),
-  .app-main[data-route='/quests'] > div:nth-child(2),
-  .app-main[data-route='/collection'] > div,
+  .product-content {
+    padding-inline: 16px;
+  }
+
+  .app-main[data-route='/collection'] > div:not(.product-content),
   .app-main[data-route='/shop'] > div,
   .app-main[data-route='/deck-builder'] > div {
     padding-inline: 16px !important;
