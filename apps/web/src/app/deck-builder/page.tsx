@@ -93,7 +93,7 @@ export default function DeckBuilderPage() {
   return (
     <AppShell>
       {/* header hero */}
-      <div style={{ position: 'relative', overflow: 'hidden', padding: '20px clamp(20px,3vw,36px)' }}>
+      <div className="deck-builder-hero" style={{ position: 'relative', overflow: 'hidden' }}>
         <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(100deg,#1A0E10 0%,#4C1018 44%,#8C1420 60%,#1A0E10 100%)' }} />
         <div style={{ position: 'absolute', left: 0, top: 0, width: 20, height: 20, borderTop: '2px solid #F5F1E8', borderLeft: '2px solid #F5F1E8', opacity: 0.7 }} />
         <div style={{ position: 'absolute', right: 0, bottom: 0, width: 20, height: 20, borderBottom: '2px solid #F5F1E8', borderRight: '2px solid #F5F1E8', opacity: 0.7 }} />

@@ -1,6 +1,28 @@
+import {readFile} from 'node:fs/promises';
 import {expect,test} from '@playwright/test';
 
 const shellRoutes=['/dashboard','/collection','/deck-builder','/leaderboard','/quests','/shop'];
+
+test('shared product layout requires no important overrides',async()=>{
+ const css=await readFile(new URL('../../src/components/layout/product-layout.css',import.meta.url),'utf8');
+ expect(css).not.toContain('!important');
+});
+
+for(const [route,selector,width,height,padding] of [
+ ['/collection','.product-page-header',390,844,'16px'],['/collection','.product-page-header',1440,900,'48px'],
+ ['/shop','.product-page-header',390,844,'16px'],['/shop','.product-page-header',1440,900,'48px'],
+ ['/shop','.product-promo',390,844,'16px'],['/shop','.product-promo',1440,900,'48px'],
+ ['/deck-builder','.deck-builder-hero',390,844,'16px'],['/deck-builder','.deck-builder-hero',1440,900,'36px'],
+]){
+ test(`${route} owns ${selector} spacing at ${width}px`,async({page})=>{
+  await page.setViewportSize({width:Number(width),height:Number(height)});
+  await page.goto(String(route));
+  const surface=page.locator(String(selector));
+  await expect(surface).toHaveCSS('padding-left',padding);
+  await expect(surface).toHaveCSS('padding-right',padding);
+  expect(await surface.evaluate(node=>node.scrollWidth<=node.clientWidth+1)).toBe(true);
+ });
+}
 
 for(const [route,width,height,padding] of ['/dashboard','/collection','/leaderboard','/quests','/shop'].flatMap(route=>[[route,390,844,'16px'],[route,1440,900,'48px']])){
  test(`${route} owns product content spacing at ${width}px`,async({page})=>{

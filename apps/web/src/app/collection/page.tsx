@@ -39,7 +39,7 @@ export default function CollectionPage() {
 
   return (
     <AppShell>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 16, padding: '36px clamp(20px,3.5vw,48px) 0' }}>
+      <div className="product-page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 16 }}>
         <div>
           <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, letterSpacing: '.2em', color: '#E03C4E' }}>MY COLLECTION</div>
           <h1 style={{ margin: '8px 0 0', fontSize: 'clamp(24px,2.6vw,32px)', fontWeight: 900, letterSpacing: '-.02em', color: '#F5F1E8' }}>{POOL.length} of 100 heroes</h1>

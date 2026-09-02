@@ -31,7 +31,7 @@ export default function ShopPage() {
   return (
     <AppShell>
       {/* header */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 16, padding: '36px clamp(20px,3.5vw,48px) 0' }}>
+      <div className="product-page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 16 }}>
         <div>
           <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, letterSpacing: '.2em', color: '#E03C4E' }}>SHOP</div>
           <h1 style={{ margin: '8px 0 0', fontSize: 'clamp(24px,2.6vw,32px)', fontWeight: 900, letterSpacing: '-.02em', color: '#F5F1E8' }}>Packs, pass &amp; cosmetics</h1>
@@ -59,7 +59,7 @@ export default function ShopPage() {
       </div>
 
       {/* starter bundle */}
-      <div style={{ position: 'relative', overflow: 'hidden', marginTop: 28, padding: '32px clamp(20px,3.5vw,48px)' }}>
+      <div className="product-promo" style={{ position: 'relative', overflow: 'hidden', marginTop: 28 }}>
         <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(100deg,#120E12 0%,#120E12 36%,#5C1119 60%,#8C1420 76%,#120E12 94%)' }} />
         <div style={{ position: 'relative', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 24, flexWrap: 'wrap' }}>
           <div>
