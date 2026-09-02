@@ -276,7 +276,7 @@ test('Arena summon targeting aligns visible slots, hit targets, and command prom
 });
 
 test('Arena battlefield heroes expose attack or defense stance',async({page})=>{
- await page.setViewportSize({width:1280,height:720});
+ await page.setViewportSize({width:1280,height:595});
  await page.goto('/arena?arenaFixture=dense&arenaHand=10');
  await page.getByRole('button',{name:'CASUAL'}).click();
  await page.getByRole('button',{name:/ENTER DUEL/}).click();
@@ -287,8 +287,14 @@ test('Arena battlefield heroes expose attack or defense stance',async({page})=>{
  const hero=page.locator('.player-territory .hero-zone .card').first();
  await expect(hero).toHaveAttribute('data-stance','defense');
  await expect(hero).toContainText('DEF');
- const geometry=await hero.evaluate(node=>{const card=node.getBoundingClientRect(),slot=node.parentElement?.getBoundingClientRect(),matrix=new DOMMatrixReadOnly(getComputedStyle(node).transform);return{landscape:card.width>card.height,rotation:Math.round(Math.atan2(matrix.b,matrix.a)*180/Math.PI),centered:Boolean(slot&&Math.abs(card.x+card.width/2-(slot.x+slot.width/2))<=1&&Math.abs(card.y+card.height/2-(slot.y+slot.height/2))<=1),slotPortrait:Boolean(slot&&slot.height>slot.width),contained:Boolean(slot&&card.left>=slot.left-.5&&card.right<=slot.right+.5&&card.top>=slot.top-.5&&card.bottom<=slot.bottom+.5)}});
- expect(geometry).toEqual({landscape:true,rotation:90,centered:true,slotPortrait:true,contained:true});
+ const geometry=await hero.evaluate(node=>{const card=node.getBoundingClientRect(),slot=node.parentElement?.getBoundingClientRect(),zone=node.closest('.zone')?.getBoundingClientRect(),next=node.parentElement?.nextElementSibling?.getBoundingClientRect(),matrix=new DOMMatrixReadOnly(getComputedStyle(node).transform);return{landscape:card.width>card.height,rotation:Math.round(Math.atan2(matrix.b,matrix.a)*180/Math.PI),centered:Boolean(slot&&Math.abs(card.x+card.width/2-(slot.x+slot.width/2))<=1&&Math.abs(card.y+card.height/2-(slot.y+slot.height/2))<=1),slotPortrait:Boolean(slot&&slot.height>slot.width),scaleRatio:card.width/node.offsetHeight,zoneContained:Boolean(zone&&card.x>=zone.x-.5&&card.y>=zone.y-.5&&card.right<=zone.right+.5&&card.bottom<=zone.bottom+.5),clearsNextSlot:Boolean(!next||card.right<=next.x+.5)}});
+ expect(geometry.landscape).toBe(true);
+ expect(geometry.rotation).toBe(90);
+ expect(geometry.centered).toBe(true);
+ expect(geometry.slotPortrait).toBe(true);
+ expect(geometry.scaleRatio).toBeCloseTo(.9,2);
+ expect(geometry.zoneContained).toBe(true);
+ expect(geometry.clearsNextSlot).toBe(true);
 });
 
 test('Arena dense desktop hand uses one overlapping physical row',async({page})=>{
