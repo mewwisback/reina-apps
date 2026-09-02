@@ -228,6 +228,25 @@ test('tall viewport keeps opponent and command status clear of support rows',asy
  expect(enemyBox.height).toBeLessThanOrEqual(160);
 });
 
+test('owned support uses Shift+Enter for read-only inspect while primary click still activates',async({page})=>{
+ await page.setViewportSize({width:1280,height:720});
+ await page.emulateMedia({reducedMotion:'reduce'});
+ await enterDuel(page);
+ const handSupport=page.locator('.hand .card').filter({hasText:'CRIMSON SURGE'}).first();
+ await handSupport.click();
+ await page.getByRole('button',{name:'SET SUPPORT'}).click();
+ const support=page.locator('.support-zone:not(.enemy-zone) .card').first();
+ await support.focus();
+ await support.press('Shift+Enter');
+ const inspect=page.locator('.inspect');
+ await expect(inspect).toHaveClass(/has-card/);
+ await expect(inspect).toContainText('CRIMSON SURGE');
+ await expect(inspect.getByRole('button',{name:/SUMMON|DEFENSE|ACTIVATE|SET SUPPORT/})).toHaveCount(0);
+ await page.getByRole('button',{name:'CLOSE'}).click();
+ await support.click();
+ await expect(page.locator('.commands [role="status"]')).toContainText('not armed until your next turn');
+});
+
 test('support cards match hero card dimensions and turn two commands remain readable',async({page})=>{
  await page.setViewportSize({width:1280,height:720});
  await page.emulateMedia({reducedMotion:'reduce'});
