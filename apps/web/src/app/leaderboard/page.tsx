@@ -143,9 +143,9 @@ export default function LeaderboardPage() {
                 {p.isYou && <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 8, fontWeight: 900, color: '#0F0C16', background: '#E03C4E', padding: '2px 6px', flex: 'none' }}>YOU</div>}
               </div>
               <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10.5, fontWeight: 700, color: p.tierHue }}>{p.tier}</div>
-              <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, fontWeight: 700, color: '#F5F1E8' }}>{p.mmr}</div>
-              <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: 'rgba(237,231,220,.55)' }}>{p.wins}W–{p.losses}L</div>
-              <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: '#4FA870' }}>{p.winRate}%</div>
+              <div className="leaderboard-metric leaderboard-mmr" style={{ fontFamily: "'JetBrains Mono', monospace", fontWeight: 700, color: '#F5F1E8' }}>{p.mmr}</div>
+              <div className="leaderboard-metric" style={{ fontFamily: "'JetBrains Mono', monospace", color: 'rgba(237,231,220,.55)' }}>{p.wins}W–{p.losses}L</div>
+              <div className="leaderboard-metric" style={{ fontFamily: "'JetBrains Mono', monospace", color: '#4FA870' }}>{p.winRate}%</div>
             </div>
           ))}
         </div>

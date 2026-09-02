@@ -11,6 +11,8 @@
 .collection-grid { display: grid; gap: 10px; grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); margin-top: 20px; }
 .leaderboard-podium { align-items: end; grid-template-columns: 1fr 1.25fr 1fr; }
 .leaderboard-row { align-items: center; display: grid; gap: 12px; grid-template-columns: 52px minmax(0, 1fr) 130px 90px 90px 80px; padding: 12px 14px; }
+.leaderboard-metric { font-size: 11px; }
+.leaderboard-mmr { font-size: 12px; }
 .leaderboard-head { padding: 0 14px 10px; }
 .quest-row { align-items: center; display: grid; gap: 16px; grid-template-columns: minmax(0, 1fr) 140px 100px; padding: 16px 18px; }
 .shop-tabs { border-bottom: 1px solid rgba(237, 231, 220, .16); display: flex; margin-top: 8px; }
@@ -81,9 +83,7 @@
     grid-template-columns: 36px minmax(0, 1fr) auto;
     padding: 12px 8px;
   }
-  .leaderboard-row > :nth-child(4),
-  .leaderboard-row > :nth-child(5),
-  .leaderboard-row > :nth-child(6) { font-size: 10px !important; grid-column: auto; }
+  .leaderboard-metric { font-size: 10px; grid-column: auto; }
 
   .quest-row {
     gap: 10px;

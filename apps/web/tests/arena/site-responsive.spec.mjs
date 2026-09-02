@@ -2,6 +2,18 @@ import {expect,test} from '@playwright/test';
 
 const shellRoutes=['/dashboard','/collection','/deck-builder','/leaderboard','/quests','/shop'];
 
+for(const [label,width,height,mmrSize,metricSize] of [['mobile',390,844,'10px','10px'],['desktop',1440,900,'12px','11px']]){
+ test(`/leaderboard owns ${label} metric sizing`,async({page})=>{
+  await page.setViewportSize({width:Number(width),height:Number(height)});
+  await page.goto('/leaderboard');
+  const firstRow=page.locator('.leaderboard-row:not(.leaderboard-head)').first();
+  await expect(firstRow.locator('.leaderboard-mmr')).toHaveCSS('font-size',mmrSize);
+  await expect(firstRow.locator('.leaderboard-metric').nth(1)).toHaveCSS('font-size',metricSize);
+  const contained=await firstRow.evaluate(node=>node.scrollWidth<=node.clientWidth+1);
+  expect(contained).toBe(true);
+ });
+}
+
 for(const [label,width,height,fontSize] of [['mobile',390,844,'9px'],['desktop',1440,900,'12.5px']]){
  test(`/shop owns ${label} tab styling without inline overrides`,async({page})=>{
   await page.setViewportSize({width:Number(width),height:Number(height)});
