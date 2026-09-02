@@ -78,11 +78,11 @@ export default function ShopPage() {
 
       {/* tabs + content */}
       <div style={{ padding: '0 clamp(20px,3.5vw,48px)' }}>
-        <div className="shop-tabs" style={{ borderBottom: '1px solid rgba(237,231,220,.16)' }}>
+        <div className="shop-tabs">
           {(['packs', 'pass', 'cosmetics'] as Tab[]).map((t) => {
             const active = tab === t;
             return (
-              <button key={t} onClick={() => setTab(t)} style={{ cursor: 'pointer', padding: '14px 18px', fontSize: 12.5, fontWeight: 900, letterSpacing: '.12em', color: active ? '#F5F1E8' : 'rgba(237,231,220,.5)', borderBottom: `3px solid ${active ? '#E03C4E' : 'transparent'}` }}>
+              <button key={t} data-active={active} onClick={() => setTab(t)}>
                 {t === 'packs' ? 'HERO PACKS' : t === 'pass' ? 'SEASON PASS' : 'COSMETICS'}
               </button>
             );

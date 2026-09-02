@@ -2,6 +2,23 @@ import {expect,test} from '@playwright/test';
 
 const shellRoutes=['/dashboard','/collection','/deck-builder','/leaderboard','/quests','/shop'];
 
+for(const [label,width,height,fontSize] of [['mobile',390,844,'9px'],['desktop',1440,900,'12.5px']]){
+ test(`/shop owns ${label} tab styling without inline overrides`,async({page})=>{
+  await page.setViewportSize({width:Number(width),height:Number(height)});
+  await page.goto('/shop');
+  const tabs=page.locator('.shop-tabs');
+  const heroPacks=tabs.getByRole('button',{name:'HERO PACKS'});
+  const seasonPass=tabs.getByRole('button',{name:'SEASON PASS'});
+  await expect(heroPacks).toHaveCSS('font-size',fontSize);
+  await expect(heroPacks).toHaveAttribute('data-active','true');
+  await seasonPass.click();
+  await expect(seasonPass).toHaveAttribute('data-active','true');
+  await expect(heroPacks).toHaveAttribute('data-active','false');
+  const geometry=await tabs.evaluate((node,minHeight)=>({overflow:node.scrollWidth<=node.clientWidth+1,buttons:[...node.querySelectorAll('button')].every(button=>button.getBoundingClientRect().height>=minHeight)}),Number(width)<=700?44:0);
+  expect(geometry).toEqual({overflow:true,buttons:true});
+ });
+}
+
 for(const route of shellRoutes){
  test(`${route} uses a contained mobile application shell`,async({page})=>{
   await page.setViewportSize({width:390,height:844});
