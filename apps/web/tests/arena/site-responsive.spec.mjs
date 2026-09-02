@@ -8,6 +8,33 @@ test('shared product layout requires no important overrides',async()=>{
  expect(css).not.toContain('!important');
 });
 
+test('shared app shell requires no important overrides',async()=>{
+ const css=await readFile(new URL('../../src/components/layout/app-shell.css',import.meta.url),'utf8');
+ expect(css).not.toContain('!important');
+});
+
+test('desktop sidebar collapse remains CSS-owned',async({page})=>{
+ await page.setViewportSize({width:1440,height:900});
+ await page.goto('/dashboard');
+ const sidebar=page.locator('[data-app-sidebar]');
+ await expect(sidebar).toHaveCSS('width','238px');
+ await sidebar.locator('button').first().click();
+ await expect(sidebar).toHaveAttribute('data-collapsed','true');
+ await expect(sidebar).toHaveCSS('width','72px');
+});
+
+test('mobile sidebar keeps fixed drawer geometry with reduced motion',async({page})=>{
+ await page.emulateMedia({reducedMotion:'reduce'});
+ await page.setViewportSize({width:390,height:844});
+ await page.goto('/dashboard');
+ const sidebar=page.locator('[data-app-sidebar]');
+ await expect(sidebar).toHaveCSS('position','fixed');
+ await expect(sidebar).toHaveCSS('height','788px');
+ await expect(sidebar).toHaveCSS('transition-duration','0s');
+ await page.getByRole('button',{name:'Open navigation'}).click();
+ await expect(sidebar).toHaveAttribute('data-mobile-open','true');
+});
+
 for(const [route,selector,width,height,padding] of [
  ['/collection','.product-page-header',390,844,'16px'],['/collection','.product-page-header',1440,900,'48px'],
  ['/shop','.product-page-header',390,844,'16px'],['/shop','.product-page-header',1440,900,'48px'],

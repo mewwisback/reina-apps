@@ -34,7 +34,6 @@ export function AppShell({ children }: AppShellProps) {
   const router = useRouter();
 
   const expanded = !collapsed;
-  const asideWidth = collapsed ? '72px' : '238px';
 
   useEffect(() => {
     const query = window.matchMedia('(max-width: 700px)');
@@ -52,7 +51,7 @@ export function AppShell({ children }: AppShellProps) {
   }, []);
 
   return (
-    <div className="app-shell" style={{ display: 'flex', minHeight: '100vh' }}>
+    <div className="app-shell">
       <header className="app-mobile-header">
         <Link href="/" className="app-mobile-brand" aria-label="Reina home">
           <span className="app-mobile-mark">R</span>
@@ -74,24 +73,9 @@ export function AppShell({ children }: AppShellProps) {
       <aside
         id="app-navigation"
         data-app-sidebar
+        data-collapsed={collapsed ? 'true' : 'false'}
         data-mobile-open={mobileOpen ? 'true' : 'false'}
         aria-hidden={mobileLayout && !mobileOpen ? true : undefined}
-        style={{
-          width: asideWidth,
-          flex: 'none',
-          position: 'sticky',
-          top: 0,
-          height: '100vh',
-          overflowY: 'auto',
-          overflowX: 'hidden',
-          background: '#0B0912',
-          borderRight: '1px solid rgba(237,231,220,.1)',
-          padding: '26px 16px',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 30,
-          transition: 'width .22s',
-        }}
       >
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
           <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '0 6px', minWidth: 0, overflow: 'hidden' }}>
