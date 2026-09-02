@@ -65,7 +65,7 @@ export default function QuestsPage() {
 
   return (
     <AppShell>
-      <div style={{ position: 'relative', overflow: 'hidden', margin: '0 clamp(20px,3.5vw,48px)' }}>
+      <div className="product-hero" style={{ position: 'relative', overflow: 'hidden' }}>
         <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(100deg,#1A0E10 0%,#4C1018 46%,#8C1420 62%,#1A0E10 100%)', clipPath: 'polygon(0 0,100% 0,100% 100%,0 100%,0 0,3% 14%,3% 86%,0 100%)' }} />
         <div style={{ position: 'relative', padding: '32px clamp(20px,3.2vw,40px)' }}>
           <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9.5, letterSpacing: '.28em', color: 'rgba(245,241,232,.65)' }}>DAILY &amp; WEEKLY</div>

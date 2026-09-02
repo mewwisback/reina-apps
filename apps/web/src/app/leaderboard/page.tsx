@@ -76,7 +76,7 @@ export default function LeaderboardPage() {
 
   return (
     <AppShell>
-      <div style={{ position: 'relative', overflow: 'hidden', margin: '0 clamp(20px,3.5vw,48px)' }}>
+      <div className="product-hero" style={{ position: 'relative', overflow: 'hidden' }}>
         <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(100deg,#1A0E10 0%,#4C1018 46%,#8C1420 62%,#1A0E10 100%)', clipPath: 'polygon(0 0,100% 0,100% 100%,0 100%,0 0,3% 14%,3% 86%,0 100%)' }} />
         <div style={{ position: 'absolute', left: 0, top: 0, width: 26, height: 26, borderTop: '2px solid #F5F1E8', borderLeft: '2px solid #F5F1E8', opacity: 0.8 }} />
         <div style={{ position: 'absolute', right: 0, bottom: 0, width: 26, height: 26, borderBottom: '2px solid #F5F1E8', borderRight: '2px solid #F5F1E8', opacity: 0.8 }} />

@@ -2,6 +2,18 @@ import {expect,test} from '@playwright/test';
 
 const shellRoutes=['/dashboard','/collection','/deck-builder','/leaderboard','/quests','/shop'];
 
+for(const [route,width,height,margin] of [['/dashboard',390,844,'16px'],['/leaderboard',390,844,'16px'],['/quests',390,844,'16px'],['/dashboard',1440,900,'48px'],['/leaderboard',1440,900,'48px'],['/quests',1440,900,'48px']]){
+ test(`${route} owns product hero spacing at ${width}px`,async({page})=>{
+  await page.setViewportSize({width:Number(width),height:Number(height)});
+  await page.goto(String(route));
+  const hero=page.locator('.product-hero');
+  await expect(hero).toHaveCSS('margin-left',margin);
+  await expect(hero).toHaveCSS('margin-right',margin);
+  const contained=await hero.evaluate(node=>node.getBoundingClientRect().right<=document.documentElement.clientWidth+.5);
+  expect(contained).toBe(true);
+ });
+}
+
 for(const [label,width,height,alignment] of [['mobile',390,844,'left'],['desktop',1440,900,'right']]){
  test(`/dashboard owns ${label} duel-time alignment`,async({page})=>{
   await page.setViewportSize({width:Number(width),height:Number(height)});

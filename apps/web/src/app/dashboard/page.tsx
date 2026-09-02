@@ -47,7 +47,7 @@ export default function DashboardPage() {
   return (
     <AppShell>
       {/* ===== HERO BANNER ===== */}
-      <div style={{ position: 'relative', overflow: 'hidden', margin: '0 clamp(20px,3.5vw,48px)' }}>
+      <div className="product-hero" style={{ position: 'relative', overflow: 'hidden' }}>
         <div
           style={{
             position: 'absolute',
