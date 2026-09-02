@@ -216,6 +216,70 @@ test('visible own battlefield card opens inspect outside targeting modes',async(
  await expect(inspect.getByRole('button',{name:'CLOSE'})).toBeVisible();
 });
 
+test('inspect dismissal clears selected hand actions before battlefield input resumes',async({page})=>{
+ await page.setViewportSize({width:1280,height:720});
+ await page.emulateMedia({reducedMotion:'reduce'});
+ await enterDuel(page);
+ const handHero=page.getByRole('button',{name:/Select YURI SCOUT/});
+ await handHero.focus();
+ await handHero.press('Enter');
+ await expect(page.locator('.inspect')).toHaveClass(/has-card/);
+ await page.getByRole('button',{name:'Close card details'}).click();
+ await expect(page.locator('.inspect')).not.toHaveClass(/has-card/);
+ await expect(page.locator('.inspect-backdrop')).toHaveCount(0);
+ await expect(page.locator('.hand .card.active')).toHaveCount(0);
+ await expect(page.locator('.player-territory .slot.valid')).toHaveCount(0);
+});
+
+test('attack selection wins over own hero inspection during battle',async({page})=>{
+ await page.setViewportSize({width:1280,height:720});
+ await page.emulateMedia({reducedMotion:'reduce'});
+ await enterDuel(page,'dense');
+ const handHero=page.getByRole('button',{name:/Select YURI SCOUT/});
+ await handHero.focus();
+ await handHero.press('Enter');
+ await page.getByRole('button',{name:'SUMMON',exact:true}).click();
+ await page.locator('.player-territory .hero-zone .slot.valid').first().click();
+ await page.getByRole('button',{name:/ENTER BATTLE/}).click();
+ await page.getByRole('button',{name:/END TURN/}).click();
+ await expect(page.locator('.phase-label')).toHaveText('MAIN PHASE',{timeout:15000});
+ await expect(page.locator('.duel-state')).toContainText('2');
+ await page.getByRole('button',{name:/ENTER BATTLE/}).click();
+ const ownHero=page.locator('.player-territory .hero-zone .card').first();
+ await ownHero.click();
+ await expect(page.locator('.player-territory .hero-zone .slot.selected')).toHaveCount(1);
+ await expect(page.locator('.inspect')).not.toHaveClass(/has-card/);
+ await expect(page.locator('.commands [role="status"]')).toContainText(/direct damage|Choose target/);
+});
+
+test('tribute mode selects occupied heroes instead of opening inspect',async({page})=>{
+ await page.setViewportSize({width:1280,height:720});
+ await page.emulateMedia({reducedMotion:'reduce'});
+ await enterDuel(page,'dense');
+ const handHero=page.getByRole('button',{name:/Select TARI GUARD/});
+ await handHero.focus();
+ await handHero.press('Enter');
+ await page.getByRole('button',{name:'DEFENSE',exact:true}).click();
+ await page.locator('.player-territory .hero-zone .slot.valid').first().click();
+ for(const turn of [2,3]){
+  await page.getByRole('button',{name:/ENTER BATTLE/}).click();
+  await page.getByRole('button',{name:/END TURN/}).click();
+  await expect(page.locator('.phase-label')).toHaveText('MAIN PHASE',{timeout:15000});
+  await expect(page.locator('.duel-state')).toContainText(String(turn));
+ }
+ const highLevel=page.locator('.hand .card').filter({hasText:'CHISE BLADE'}).first();
+ await expect(highLevel).toBeVisible();
+ await highLevel.focus();
+ await highLevel.press('Enter');
+ await page.getByRole('button',{name:'SUMMON',exact:true}).click();
+ await page.locator('.player-territory .hero-zone .card').first().click();
+ await expect(page.locator('.player-territory .hero-zone')).toContainText('CHISE BLADE');
+ await expect(page.locator('.player-territory .hero-zone')).not.toContainText('TARI GUARD');
+ await expect(page.locator('.player-territory .hero-zone .slot.selected')).toHaveCount(0);
+ await expect(page.locator('.inspect')).not.toHaveClass(/has-card/);
+ await expect(page.locator('.commands [role="status"]')).toContainText('summoned using 1 chosen tribute');
+});
+
 test('tall viewport keeps opponent and command status clear of support rows',async({page})=>{
  await page.setViewportSize({width:1440,height:900});
  await enterDuel(page);
