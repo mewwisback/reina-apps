@@ -4,7 +4,6 @@ import { useEffect, useMemo, useRef, useState, type FocusEvent, type MouseEvent 
 import Link from 'next/link';
 import gsap from 'gsap';
 import './arena.css';
-import './arena-mobile.css';
 import {battleOutcome,damageOutcome,drawOutcome,spellDamage,terminalWinner,trapOutcome,tributeIndices,tributeUpgrade} from './rules.mjs';
 import {cancellableDelay} from './async-control.mjs';
 

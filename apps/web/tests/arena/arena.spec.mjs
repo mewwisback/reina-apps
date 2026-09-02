@@ -1,4 +1,19 @@
+import {readFile} from 'node:fs/promises';
 import {expect,test} from '@playwright/test';
+
+const arenaSourceUrl=new URL('../../src/app/arena/page.tsx',import.meta.url);
+const arenaCssUrl=new URL('../../src/app/arena/arena.css',import.meta.url);
+
+test('Arena owns one consolidated stylesheet with bounded cascade overrides',async()=>{
+ const [source,css]=await Promise.all([
+  readFile(arenaSourceUrl,'utf8'),
+  readFile(arenaCssUrl,'utf8'),
+ ]);
+ const imports=[...source.matchAll(/import ['"]\.\/arena[^'"]*\.css['"]/g)];
+ expect(imports).toHaveLength(1);
+ expect(imports[0][0]).toContain("./arena.css");
+ expect((css.match(/!important/g)??[]).length).toBeLessThanOrEqual(1197);
+});
 
 const enterDuel=async(page,fixture='final-draw')=>{
  await page.goto(`/arena?arenaFixture=${fixture}`);
