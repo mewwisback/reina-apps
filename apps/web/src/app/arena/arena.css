@@ -109,6 +109,9 @@
     transform-origin: center;
     pointer-events: auto;
   }
+  .arena .battlefield-semantics .slot:has(> .card[data-stance="defense"]) {
+    clip-path: none;
+  }
   .arena .battlefield-semantics .slot > .card[data-stance="defense"] {
     transform: translate(-50%, -50%) rotate(90deg) scale(.9);
     box-shadow: inset 0 0 0 2px #82a6d9, 0 0 16px rgba(84, 130, 196, .42) !important;
@@ -1117,6 +1120,21 @@
   .arena .duel-state small { color: #c7bbaa !important; font-size: 8px !important; }
   .arena .duel-state b { font-size: 12px !important; }
   .arena .battlefield-territory > .piles { border-left: 1px solid rgba(224, 60, 78, .55) !important; }
+}
+
+@media (min-width: 901px) and (min-height: 1200px) {
+  .arena .board {
+    top: calc((100% - 450px - 180px) / 2) !important;
+  }
+  .arena .inspect {
+    top: calc((100% - 450px - 180px) / 2 - 6px) !important;
+  }
+  .arena .perimeter {
+    top: calc((100% - 450px - 180px) / 2 + 448px) !important;
+  }
+  .arena .duelist-information.enemy {
+    top: calc((100% - 450px - 180px) / 2 - 14px) !important;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

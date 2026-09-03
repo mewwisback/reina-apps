@@ -29,7 +29,7 @@ test('Arena owns one consolidated stylesheet with bounded cascade overrides',asy
  const imports=[...source.matchAll(/import ['"]\.\/arena[^'"]*\.css['"]/g)];
  expect(imports).toHaveLength(1);
  expect(imports[0][0]).toContain("./arena.css");
- expect((css.match(/!important/g)??[]).length).toBeLessThanOrEqual(1197);
+ expect((css.match(/!important/g)??[]).length).toBeLessThanOrEqual(1203);
 });
 
 test('Arena visual copy avoids decorative slash separators',async()=>{
