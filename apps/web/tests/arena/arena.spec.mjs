@@ -32,6 +32,12 @@ test('Arena owns one consolidated stylesheet with bounded cascade overrides',asy
  expect((css.match(/!important/g)??[]).length).toBeLessThanOrEqual(1197);
 });
 
+test('Arena visual copy avoids decorative slash separators',async()=>{
+ const css=await readFile(arenaCssUrl,'utf8');
+ const contentStrings=[...css.matchAll(/content:\s*(["'])(.*?)\1/g)].map(([, ,value])=>value);
+ expect(contentStrings.every(value=>!value.includes('//'))).toBe(true);
+});
+
 const enterDuel=async(page,fixture='final-draw')=>{
  await page.goto(`/arena?arenaFixture=${fixture}`);
  await page.getByRole('button',{name:/RANKED/}).click();
