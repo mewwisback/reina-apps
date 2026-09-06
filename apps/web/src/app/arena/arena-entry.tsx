@@ -4,6 +4,7 @@ import Link from 'next/link';
 import {useLayoutEffect,useRef} from 'react';
 import gsap from 'gsap';
 import './entry.css';
+import {CardBackdrop} from './card-backdrop';
 
 type Mode='casual'|'ranked'|'event';
 const modes={casual:['CASUAL','Standard rules. Practice without rank stakes.'],ranked:['RANKED','Demo ruleset. Ranking is not connected.'],event:['EVENT','Demo ruleset. No event rewards.']} as const;
@@ -13,12 +14,8 @@ export function ArenaEntry({screen,category,elapsed,soundOn,onSound,onSelect,onS
  useLayoutEffect(()=>{
   const media=gsap.matchMedia();
   const context=gsap.context(()=>media.add('(prefers-reduced-motion: no-preference)',()=>{
-   gsap.timeline({defaults:{ease:'expo.out'}})
-    .from('.threshold-environment',{scale:1.08,duration:1.2},0)
-    .from('.threshold-title h1 span',{yPercent:105,stagger:.08,duration:.75},0)
-    .from('.threshold-kicker,.threshold-intro,.threshold-deck-copy',{y:14,opacity:0,stagger:.06,duration:.55},.12)
-    .from('.threshold-mode',{y:18,opacity:0,stagger:.065,duration:.45},.2);
-   if(screen==='found')gsap.timeline().from('.threshold-versus',{scale:1.6,opacity:0,duration:.25}).from('.threshold-opponent h2',{clipPath:'inset(0 100% 0 0)',duration:.5,ease:'expo.out'},.1);
+   if(screen==='search')gsap.from('.threshold-wait',{borderTopColor:'#e03c4e',duration:.6,ease:'power2.out'});
+   if(screen==='found')gsap.from('.threshold-opponent',{x:16,opacity:0,duration:.35,ease:'power3.out'});
   }),root);
   if(screen==='found')root.current?.querySelector<HTMLButtonElement>('.threshold-primary')?.focus({preventScroll:true});
   return()=>{media.revert();context.revert()};
@@ -33,7 +30,7 @@ export function ArenaEntry({screen,category,elapsed,soundOn,onSound,onSelect,onS
  return <main ref={root} className="threshold" data-entry-state={screen}>
   <header className="threshold-nav"><Link href="/dashboard">← LEAVE</Link><div className="threshold-brand"><i aria-hidden="true">R</i><span>REINA<small>ARENA</small></span></div><button aria-label={`${soundOn?'Mute':'Enable'} sound`} aria-pressed={soundOn} onClick={onSound}>SOUND {soundOn?'ON':'OFF'}</button></header>
   <section className="threshold-hero">
-   <div className="threshold-environment" aria-hidden="true"/>
+   <div className="threshold-environment" aria-hidden="true"><CardBackdrop/></div>
    <div className="threshold-title"><p className="threshold-kicker">REINA / DEMO ARENA</p><h1 aria-label={screen==='category'?'Choose your fight':screen==='search'?'Searching the courtyard':'Duelist found'}>{(screen==='category'?['CHOOSE YOUR','FIGHT.']:screen==='search'?['SEARCHING','FOR A DUEL.']:['DUELIST','FOUND.']).map(line=><span className="threshold-line" key={line}><span>{line}</span></span>)}</h1><p className="threshold-intro">{screen==='category'?'Your deck. Your next opponent. Choose a ruleset below.':screen==='search'?'Finding your practice opponent. Cancel at any time.':'Your practice opponent is ready. Enter when you are.'}</p></div>
    <section className="threshold-deck-copy" aria-label="Demo deck"><p className="threshold-kicker">YOUR DEMO DECK</p><h2>Quiet Blade</h2><p>20 cards · standard starter</p><small>Playing as REINA · demo identity</small></section>
   </section>
