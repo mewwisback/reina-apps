@@ -1,20 +1,12 @@
 import {expect,test} from '@playwright/test';
-
-const pixels=page=>page.locator('.threshold-environment canvas').evaluate(canvas=>canvas.toDataURL());
-test('canonical canvas paints distinct frames over time without eager full preload',async({page})=>{
- const requests=[];page.on('request',r=>{if(r.url().includes('/card-flip/'))requests.push(r.url())});
- await page.addInitScript(()=>{window.bitmapLive=0;window.bitmapPeak=0;const create=window.createImageBitmap;window.createImageBitmap=async(...args)=>{const bitmap=await create(...args),close=bitmap.close.bind(bitmap);window.bitmapPeak=Math.max(window.bitmapPeak,++window.bitmapLive);bitmap.close=()=>{window.bitmapLive--;close()};return bitmap}});
- await page.goto('/arena');
- const canvas=page.locator('.threshold-environment canvas');await expect(canvas).toBeVisible();
- await expect.poll(()=>canvas.evaluate(c=>c.getContext('2d').getImageData(640,360,1,1).data[3])).toBe(255);
- const first=await pixels(page);await page.waitForTimeout(650);const second=await pixels(page);await page.waitForTimeout(650);const third=await pixels(page);
- expect(new Set([first,second,third]).size).toBe(3);expect(new Set(requests).size).toBeLessThan(100);
- expect(await page.evaluate(()=>window.bitmapPeak)).toBeLessThanOrEqual(10);
- await page.evaluate(()=>{Object.defineProperty(document,'hidden',{configurable:true,value:true});document.dispatchEvent(new Event('visibilitychange'))});const paused=await pixels(page),count=requests.length;await page.waitForTimeout(350);expect(await pixels(page)).toBe(paused);expect(requests.length).toBe(count);expect(await page.evaluate(()=>window.bitmapLive)).toBe(0);
- await page.evaluate(()=>{delete document.hidden;document.dispatchEvent(new Event('visibilitychange'))});await page.waitForTimeout(350);expect(await pixels(page)).not.toBe(paused);
- await page.getByRole('link',{name:'← LEAVE'}).click();await page.waitForTimeout(300);expect(await page.evaluate(()=>window.bitmapLive)).toBe(0);
+const time=page=>page.locator('.threshold-environment video').evaluate(v=>v.currentTime);
+test('native backdrop pauses hidden, resumes visible and releases source on exit',async({page})=>{
+ await page.goto('/arena');await expect.poll(()=>time(page)).toBeGreaterThan(.2);
+ await page.evaluate(()=>{window.backdrop=document.querySelector('.threshold-environment video');Object.defineProperty(document,'hidden',{configurable:true,value:true});document.dispatchEvent(new Event('visibilitychange'))});
+ const paused=await time(page);await page.waitForTimeout(350);expect(await time(page)).toBe(paused);
+ await page.evaluate(()=>{delete document.hidden;document.dispatchEvent(new Event('visibilitychange'))});await expect.poll(()=>time(page)).toBeGreaterThan(paused+.2);
+ await page.getByRole('link',{name:'← LEAVE'}).click();await expect.poll(()=>page.evaluate(()=>window.backdrop.getAttribute('src'))).toBeNull();
 });
-
 test('mode and queue transitions never replay heading or environment reveal',async({page})=>{
  await page.goto('/arena');await page.waitForTimeout(1400);
  await page.evaluate(()=>{window.motionViolations=[];const check=()=>{for(const el of document.querySelectorAll('.threshold-title h1 span,.threshold-environment,.threshold-intro,.threshold-deck-copy')){const s=getComputedStyle(el);if((s.transform!=='none'&&s.transform!=='matrix(1, 0, 0, 1, 0, 0)')||Number(s.opacity)<1)window.motionViolations.push(el.className)}window.motionObserver=requestAnimationFrame(check)};check()});
@@ -27,10 +19,18 @@ test('mode and queue transitions never replay heading or environment reveal',asy
  await page.getByRole('button',{name:'ENTER DUEL',exact:true}).click();await page.waitForTimeout(500);const board=await page.locator('.board').getAttribute('style');await page.getByRole('button',{name:'ENTER BATTLE',exact:true}).click();expect(await page.locator('.board').getAttribute('style')).toBe(board);
 });
 
-test('reduced motion requests no sequence and stays static even after live preference change',async({page})=>{
- await page.emulateMedia({reducedMotion:'reduce'});const requests=[];page.on('request',r=>{if(r.url().includes('/card-flip/'))requests.push(r.url())});
+test('reduced motion requests no video and responds to live preference changes',async({page})=>{
+ await page.emulateMedia({reducedMotion:'reduce'});const requests=[];page.on('request',r=>{if(r.url().includes('/card-flip'))requests.push(r.url())});
  await page.goto('/arena');await page.waitForTimeout(300);expect(requests).toEqual([]);
- await page.emulateMedia({reducedMotion:'no-preference'});await expect.poll(()=>requests.length).toBeGreaterThan(0);
- await page.waitForTimeout(300);await page.emulateMedia({reducedMotion:'reduce'});const count=requests.length,first=await pixels(page);await page.waitForTimeout(400);
- expect(await pixels(page)).toBe(first);expect(requests.length).toBe(count);
+ await page.emulateMedia({reducedMotion:'no-preference'});await expect.poll(()=>time(page)).toBeGreaterThan(.2);
+ await page.emulateMedia({reducedMotion:'reduce'});const paused=await time(page);await page.waitForTimeout(400);expect(await time(page)).toBe(paused);await expect(page.locator('.threshold-environment video')).toBeHidden();
+});
+test('failed decoration never blocks ruleset selection or duel entry',async({page})=>{
+ await page.route('**/card-flip.mp4',route=>route.abort());await page.goto('/arena');
+ await page.getByRole('button',{name:/CASUAL/}).click();await page.getByRole('button',{name:'START DEMO MATCH'}).click();await page.getByRole('button',{name:'ENTER DUEL',exact:true}).click();await expect(page.getByRole('button',{name:'ENTER BATTLE',exact:true})).toBeVisible();
+});
+test('matchmaking omits generic intro and uses source crimson control feedback',async({page})=>{
+ await page.goto('/arena');await expect(page.locator('.threshold-intro')).toHaveCount(0);
+ const mode=page.getByRole('button',{name:/CASUAL/});await mode.click();await expect(mode.locator('i')).toHaveText('✓');
+ const leave=page.getByRole('link',{name:'← LEAVE'});await leave.hover();await expect(leave).toHaveCSS('color','rgb(224, 60, 78)');await page.mouse.move(0,0);await page.keyboard.press('Tab');await leave.focus();await expect(leave).toBeFocused();await expect(leave).toHaveCSS('color','rgb(224, 60, 78)');
 });
