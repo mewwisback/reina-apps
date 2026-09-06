@@ -7,7 +7,7 @@ import './entry.css';
 import {CardBackdrop} from './card-backdrop';
 
 type Mode='casual'|'ranked'|'event';
-const modes={casual:['CASUAL','Standard rules. Practice without rank stakes.'],ranked:['RANKED','Demo ruleset. Ranking is not connected.'],event:['EVENT','Demo ruleset. No event rewards.']} as const;
+const modes={casual:['CASUAL','Standard rules. No rank stakes.'],ranked:['RANKED','Demo rules. Ranking not connected.'],event:['EVENT','Demo rules. No event rewards.']} as const;
 
 export function ArenaEntry({screen,category,elapsed,soundOn,onSound,onSelect,onStart,onCancel,onAccept}:{screen:'category'|'search'|'found';category:Mode|null;elapsed:number;soundOn:boolean;onSound:()=>void;onSelect:(mode:Mode)=>void;onStart:()=>void;onCancel:()=>void;onAccept:()=>void}){
  const root=useRef<HTMLElement>(null);
@@ -31,7 +31,7 @@ export function ArenaEntry({screen,category,elapsed,soundOn,onSound,onSelect,onS
   <header className="threshold-nav"><Link href="/dashboard">← LEAVE</Link><div className="threshold-brand"><i aria-hidden="true">R</i><span>REINA<small>ARENA</small></span></div><button aria-label={`${soundOn?'Mute':'Enable'} sound`} aria-pressed={soundOn} onClick={onSound}>SOUND {soundOn?'ON':'OFF'}</button></header>
   <section className="threshold-hero">
    <div className="threshold-environment" aria-hidden="true"><CardBackdrop/></div>
-   <div className="threshold-title"><p className="threshold-kicker">REINA / DEMO ARENA</p><h1 aria-label={screen==='category'?'Choose your fight':screen==='search'?'Searching the courtyard':'Duelist found'}>{(screen==='category'?['CHOOSE YOUR','FIGHT.']:screen==='search'?['SEARCHING','FOR A DUEL.']:['DUELIST','FOUND.']).map(line=><span className="threshold-line" key={line}><span>{line}</span></span>)}</h1>{screen!=='category'&&<p className="threshold-intro">{screen==='search'?'Finding your practice opponent. Cancel at any time.':'Your practice opponent is ready. Enter when you are.'}</p>}</div>
+   <div className="threshold-title"><p className="threshold-kicker">REINA / DEMO ARENA</p><h1 aria-label={screen==='category'?'Choose your fight':screen==='search'?'Searching the courtyard':'Duelist found'}>{(screen==='category'?['SELECT MODE']:screen==='search'?['SEARCHING']:['DUELIST FOUND']).map(line=><span className="threshold-line" key={line}><span>{line}</span></span>)}</h1>{screen!=='category'&&<p className="threshold-intro">{screen==='search'?'Finding your practice opponent. Cancel at any time.':'Your practice opponent is ready. Enter when you are.'}</p>}</div>
    <section className="threshold-deck-copy" aria-label="Demo deck"><p className="threshold-kicker">YOUR DEMO DECK</p><h2>Quiet Blade</h2><p>20 cards · standard starter</p><small>Playing as REINA · demo identity</small></section>
   </section>
   <section className="threshold-stage">

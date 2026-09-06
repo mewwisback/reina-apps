@@ -1,4 +1,4 @@
-import {chromium} from '@playwright/test';
+import {chromium,devices} from '@playwright/test';
 import {mkdir,writeFile} from 'node:fs/promises';
 import {createHash} from 'node:crypto';
 import assert from 'node:assert/strict';
@@ -7,7 +7,7 @@ const base=process.env.ENTRY_BASE_URL||'http://127.0.0.1:3000';
 // Measure without screencast encoding; capture-entry.mjs records visual evidence separately.
 await mkdir(out,{recursive:true});const browser=await chromium.launch();const evidence=[];
 for(const [name,width,height] of [['desktop',1536,864],['phone',390,844]]){
- const context=await browser.newContext({viewport:{width,height}});const page=await context.newPage(),errors=[],requests=[];
+ const context=await browser.newContext({...name==='phone'?devices['Pixel 7']:{},viewport:{width,height},screen:{width,height}});const page=await context.newPage(),errors=[],requests=[];
  page.on('pageerror',e=>errors.push(e.message));page.on('request',r=>{if(r.url().includes('/card-flip'))requests.push(r.url())});
  await page.goto(`${base}/arena`);const canvas=page.locator('.threshold-environment video');await canvas.waitFor();await page.waitForFunction(()=>document.querySelector('.threshold-environment video').currentTime>.2);
  const cadence=await canvas.evaluate(v=>new Promise(resolve=>{const times=[],start=performance.now();const frame=(now)=>{times.push(now);if(now-start<8000){v.requestVideoFrameCallback(frame);return}const intervals=times.slice(1).map((t,i)=>t-times[i]).sort((a,b)=>a-b),q=v.getVideoPlaybackQuality();resolve({fps:times.length/((now-start)/1000),p95:intervals[Math.floor(intervals.length*.95)],max:Math.max(...intervals),dropped:q.droppedVideoFrames,total:q.totalVideoFrames})};v.requestVideoFrameCallback(frame)}));assert.ok(cadence.fps>22);
