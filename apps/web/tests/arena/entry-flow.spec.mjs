@@ -62,7 +62,7 @@ for(const [width,height] of [[360,800],[390,844],[430,932],[844,390],[820,1180],
 
 test('failed decorative image and audio cannot block keyboard entry',async({page})=>{
  await page.emulateMedia({reducedMotion:'reduce'});
- await page.route('**/arena/ritual-chamber.webp',route=>route.abort());
+ await page.route('**/arena/card-field.webp',route=>route.abort());
  await page.route('**/arena/audio/**',route=>route.abort());
  await page.goto('/arena?arenaFixture=matchmaking');
  const mode=page.getByRole('button',{name:/CASUAL/});await mode.focus();await page.keyboard.press('Enter');

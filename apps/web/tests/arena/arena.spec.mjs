@@ -59,7 +59,7 @@ test('rulesets expose honest demo selection and distinct display type',async({pa
  await expect(page.locator('.threshold')).not.toContainText('MMR');
  await expect(page.getByRole('button',{name:'START DEMO MATCH'})).toBeDisabled();
  const headingFont=await page.getByRole('heading',{name:'Choose your fight'}).evaluate(node=>getComputedStyle(node).fontFamily);
- expect(headingFont).toContain('Zen Old Mincho');
+ expect(headingFont).toContain('bodyFont');
 });
 
 test('reduced motion mode selection stays still',async({page})=>{

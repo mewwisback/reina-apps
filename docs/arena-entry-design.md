@@ -1,36 +1,31 @@
-# Courtyard Threshold
+# Arena entry — canonical source correction
 
-## Approved direction
+## Authority and correction
 
-Operate surface. Courtyard Threshold selected by owner; alternative visual approval waits waived. Compact ruleset rail and close tabletop variants rejected: first gives deck too little presence, second cannot retain opposite seats on narrow screens without hiding controls.
+`reina-fe` is visual authority. Previous Courtyard Threshold implementation was rejected by owner. Previous “0/10 structural tells” and approval claims were unsupported and are withdrawn. This revision does not claim subjective acceptance.
 
-Existing ritual-chamber environment reused; CSS physical deck uses Reina mark rather than introducing licensed character art. No proprietary game screen or asset copied. External game-reference audit from original plan was not completed; composition derives from existing Reina assets and tokens.
+| Source | Applied evidence |
+|---|---|
+| `src/lib/tokens.ts`, `src/app/globals.css` | Void `#0D0B10`, ink `#EDE7DC`, cream `#F5F1E8`, crimson `#E03C4E`; gutter `clamp(20px,4.5vw,56px)` |
+| `src/app/layout.tsx` | Zen Kaku sans content/display, Zen Old Mincho wordmark, JetBrains Mono metadata; target retains existing vendored Next local fonts |
+| `src/components/site-nav.tsx` | Centered REINA identity, crimson clipped R mark, separate leave/sound controls |
+| `src/components/hero-section.tsx` | Large heavy sans statement, crimson signal bar, dark card field, clipped crimson action |
+| `src/components/roster-section.tsx`, `packs-section.tsx` | Open space, short section labels, strong heading hierarchy; not equal-weight decorative card furniture |
+| `src/hooks/use-hero-intro.ts`, `reveal-heading.tsx` | GSAP line reveals, staggered rise, expo easing, scoped cleanup |
+| `public/assets/card-flip/frame-239.webp` | Byte-for-byte copied to `public/arena/card-field.webp`; decorative only |
 
-## Motion storyboard
+## Structure
 
-| State | Anticipation / action / settle | Interruption | Reduced motion |
-|---|---|---|---|
-| Dashboard departure | Shell recedes, threshold status rises; native Link navigates immediately | Scoped cleanup on unmount | Immediate navigation |
-| Lobby | Rule draws across; mode rail arrives in short offset beats | Context reverts when state changes | Static readable layout |
-| Selection | Chosen mode presses inward; deck rotates back into square | Selection context replaces prior movement | Pressed marker and background only |
-| Search | Deck lifts slightly; connecting line contracts asynchronously | Hidden tab pauses loop; cancel clears timer and reverts GSAP | Elapsed text only |
-| Found | Opposing seat arrives; VS accent lands; name settles separately | Cancel exits; readable text never waits on opacity | Immediate identity |
-| Duel | Board opens; opposing HUD rails move inward; command rail settles | Timeline never initializes combat; unmount reverts | Immediate readiness |
+Remove invented brown court, serif headline, decorative CSS deck stack, numbered vertical option cards. Replace with wide card-field hero, deck facts at opposite edge, unboxed horizontal ruleset strip on desktop, compact rows on phone. Search and opponent reveal occupy same ruleset region. Existing explicit selection/start, cancel, accept, sound preference, dashboard departure and combat remain intact.
 
-Existing 4.2-second simulated search retained, labeled honestly. No network claims, ETA, live counts, MMR, opponent win record or deck-validity assertion. Ranked and Event are explicitly demo rulesets with standard combat, no rewards/rank service.
+## Motion and access
 
-## Correctness boundary
+GSAP reveals headline lines, eases card-field scale, staggers supporting content and rulesets, draws selected underline, and wipes opponent name after VS arrival. No ambient loop. Hover and focus share state styling. Reduced motion skips GSAP. Found state focuses accept. Native button pressed/disabled semantics remain. All controls stay in document flow; phone may scroll.
 
-Combat initialization has synchronous idempotency guard. Existing opening five-card deal and authoritative turn-one draw produce six cards. Rematch resets guard. Combat rules and AI scheduler otherwise unchanged. Entry inert gate lasts at most 400 ms (zero under reduced motion); independent cancellable timer controls readiness, not GSAP completion. First command receives focus.
+## Evidence and limits
 
-All essential battlefield controls, marks, and cards are DOM/CSS/canvas; no external image is essential for play. Environment image is decorative and can fail without blocking entry. Therefore no fabricated asset handshake, percentage, or loading stages. Route fallback reflects actual Next route loading only.
+New browser regression observed red before structural implementation. Font check targets actual primary family, not platform-dependent Next fallback family. Separate text-range containment test found headline font metrics outside clip parent; padding fixed all four failing sizes (320, 390, 844, 1280). Full existing combat suite remains required.
 
-## Verification notes
+Desktop and phone screenshot/video capture exercises dashboard, selection, search, found and six-card duel. Initial screenshot audit noted Next development badge over footer; production verification must confirm absence. Initial disabled CTA is intentionally muted until selection, not live-action contrast. Browser computed mode heading text-shadow and filter are both `none`; alleged chromatic fringing was not a CSS effect. No fabricated live players, rankings, rewards, queue estimate or deck validation.
 
-Initial visual audit: desktop title/rail hierarchy coherent, phone reveal contained. Disabled start button intentionally muted before selection. Focus and pressed state exposed semantically. Decorative background remains subordinate. Opponent arrival initially crossed viewport edge at 1280px; reduced travel from 90px to 16px after real failing browser containment assertion.
-
-Slop audit: 0/10 structural tells. Serif and Japanese type families inherited, no SaaS feature tiles, fake metrics, floating glass, icon toppers or generic gradient palette. Card stack is CSS card furniture, not invented character illustration.
-
-## Release and rollback
-
-Base: `redesign/arena-game-ui` at `e7cf6d4` (PR #7). Entry PR #8 remains scoped against that branch. Revert implementation commit(s), not checkpoint or unrelated open PRs, for rollback. Production should only move after regression gates pass. Existing untracked artifacts and root index.js remain preserved.
+Canonical card art is one static 1280×720 frame with short GSAP entrance, not 240-frame playback; avoids downloading entire 30 MB sequence for decorative entry. Visual judgment remains owner’s. Existing untracked artifacts and root `index.js` preserved. Rollback by reverting scoped correction commit, no combat reset or base-branch merge.
