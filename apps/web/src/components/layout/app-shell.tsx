@@ -1,8 +1,9 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
-import { useEffect, useState, type ReactNode } from 'react';
+import { usePathname } from 'next/navigation';
+import gsap from 'gsap';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import './app-shell.css';
 import './product-layout.css';
 
@@ -31,9 +32,16 @@ export function AppShell({ children }: AppShellProps) {
   const [walletInput, setWalletInput] = useState('');
   const [enteringArena, setEnteringArena] = useState(false);
   const pathname = usePathname();
-  const router = useRouter();
+  const shellRef = useRef<HTMLDivElement>(null);
 
   const expanded = !collapsed;
+  useEffect(()=>{
+    if(!enteringArena)return;
+    const media=gsap.matchMedia(),context=gsap.context(()=>media.add('(prefers-reduced-motion: no-preference)',()=>{
+      gsap.timeline().addLabel('depart').to('.product-hero',{scale:.98,y:8,duration:.24,ease:'power2.in'},'depart').from('.arena-route-exit span',{y:12,duration:.2,ease:'power3.out'},'depart');
+    }),shellRef);
+    return()=>{media.revert();context.revert()};
+  },[enteringArena]);
 
   useEffect(() => {
     const query = window.matchMedia('(max-width: 700px)');
@@ -51,7 +59,11 @@ export function AppShell({ children }: AppShellProps) {
   }, []);
 
   return (
-    <div className="app-shell">
+    <div ref={shellRef} className="app-shell" onClickCapture={event=>{
+      const link=(event.target as HTMLElement).closest<HTMLAnchorElement>('a[href="/arena"]');
+      if(!link||event.button!==0||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey)return;
+      setEnteringArena(true);
+    }}>
       <header className="app-mobile-header">
         <Link href="/" className="app-mobile-brand" aria-label="Reina home">
           <span className="app-mobile-mark">R</span>
@@ -133,12 +145,9 @@ export function AppShell({ children }: AppShellProps) {
                 key={item.href}
                 href={item.href}
                 aria-current={active ? 'page' : undefined}
-                onClick={(event) => {
+                onClick={() => {
                   setMobileOpen(false);
-                  if (item.href !== '/arena' || active || enteringArena) return;
-                  event.preventDefault();
-                  setEnteringArena(true);
-                  window.setTimeout(() => router.push(item.href), 320);
+
                 }}
                 style={{
                   display: 'flex',
@@ -224,7 +233,7 @@ export function AppShell({ children }: AppShellProps) {
 
       {enteringArena && (
         <div className="arena-route-exit" role="status" aria-label="Entering Arena" aria-live="polite">
-          <img src="/arena/loading/tail-spin.svg" alt="" aria-hidden="true" />
+          <b aria-hidden="true">R</b>
           <span>ENTERING ARENA</span>
         </div>
       )}

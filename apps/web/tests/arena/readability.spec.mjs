@@ -6,7 +6,8 @@ for(const [width,height] of [[1024,768],[844,390],[360,800],[1280,720]]){
   await page.emulateMedia({reducedMotion:'reduce'});
   await page.setViewportSize({width,height});
   await page.goto('/arena?arenaFixture=dense&arenaHand=10');
-  await page.getByRole('button',{name:'CASUAL'}).click();
+  await page.getByRole('button',{name:/CASUAL/}).click();
+ await page.getByRole('button',{name:'START DEMO MATCH'}).click();
   await page.getByRole('button',{name:/ENTER DUEL/}).click();
   await page.locator('.duel:not(.opening)').waitFor();
   await page.getByRole('button',{name:/Select YURI SCOUT/}).click();

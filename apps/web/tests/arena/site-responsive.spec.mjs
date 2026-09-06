@@ -193,7 +193,8 @@ for(const handSize of [1,3,5,6,8,10]){
  test(`Arena renders and exposes every card in a ${handSize}-card hand`,async({page})=>{
   await page.setViewportSize({width:390,height:844});
   await page.goto(`/arena?arenaFixture=dense&arenaHand=${handSize}`);
-  await page.getByRole('button',{name:'CASUAL'}).click();
+  await page.getByRole('button',{name:/CASUAL/}).click();
+ await page.getByRole('button',{name:'START DEMO MATCH'}).click();
   await page.getByRole('button',{name:/ENTER DUEL/}).click();
   await expect(page.locator('.duel')).not.toHaveClass(/opening/);
   const cards=page.locator('.hand .card');
@@ -217,7 +218,8 @@ for(const handSize of [1,3,5,6,8,10]){
 test('Arena mobile gameplay text remains readable and contained',async({page})=>{
  await page.setViewportSize({width:390,height:844});
  await page.goto('/arena?arenaFixture=dense&arenaHand=10');
- await page.getByRole('button',{name:'CASUAL'}).click();
+ await page.getByRole('button',{name:/CASUAL/}).click();
+ await page.getByRole('button',{name:'START DEMO MATCH'}).click();
  await page.getByRole('button',{name:/ENTER DUEL/}).click();
  await expect(page.locator('.duel')).not.toHaveClass(/opening/);
  const metrics=await page.locator('.duel').evaluate(root=>{
@@ -240,7 +242,8 @@ for(const handSize of [1,3,5,6,8,10]){
  test(`Arena landscape exposes every card in a ${handSize}-card hand`,async({page})=>{
   await page.setViewportSize({width:844,height:390});
   await page.goto(`/arena?arenaFixture=dense&arenaHand=${handSize}`);
-  await page.getByRole('button',{name:'CASUAL'}).click();
+  await page.getByRole('button',{name:/CASUAL/}).click();
+ await page.getByRole('button',{name:'START DEMO MATCH'}).click();
   await page.getByRole('button',{name:/ENTER DUEL/}).click();
   await expect(page.locator('.duel')).not.toHaveClass(/opening/);
   const cards=page.locator('.hand .card');
@@ -268,7 +271,8 @@ for(const handSize of [1,3,5,6,8,10]){
 test('Arena canvas owns battlefield geometry while DOM preserves interaction semantics',async({page})=>{
  await page.setViewportSize({width:390,height:844});
  await page.goto('/arena?arenaFixture=dense&arenaHand=10');
- await page.getByRole('button',{name:'CASUAL'}).click();
+ await page.getByRole('button',{name:/CASUAL/}).click();
+ await page.getByRole('button',{name:'START DEMO MATCH'}).click();
  await page.getByRole('button',{name:/ENTER DUEL/}).click();
  await expect(page.locator('.duel')).not.toHaveClass(/opening/);
  const canvas=page.locator('canvas.battlefield-canvas');
@@ -284,7 +288,8 @@ test('Arena canvas owns battlefield geometry while DOM preserves interaction sem
 test('Arena short desktop reserves disjoint battlefield, hand, inspect, and command regions',async({page})=>{
  await page.setViewportSize({width:1280,height:720});
  await page.goto('/arena?arenaFixture=dense&arenaHand=10');
- await page.getByRole('button',{name:'CASUAL'}).click();
+ await page.getByRole('button',{name:/CASUAL/}).click();
+ await page.getByRole('button',{name:'START DEMO MATCH'}).click();
  await page.getByRole('button',{name:/ENTER DUEL/}).click();
  await expect(page.locator('.duel')).not.toHaveClass(/opening/);
  const selectors=['.board','.hand','.inspect','.commands'],boxes=await Promise.all(selectors.map(selector=>page.locator(selector).boundingBox()));
@@ -299,7 +304,8 @@ test('Arena short desktop reserves disjoint battlefield, hand, inspect, and comm
 test('Arena allowance panel stays outside battlefield and reserved desktop regions',async({page})=>{
  await page.setViewportSize({width:1280,height:720});
  await page.goto('/arena?arenaFixture=dense&arenaHand=10');
- await page.getByRole('button',{name:'CASUAL'}).click();
+ await page.getByRole('button',{name:/CASUAL/}).click();
+ await page.getByRole('button',{name:'START DEMO MATCH'}).click();
  await page.getByRole('button',{name:/ENTER DUEL/}).click();
  await page.locator('.duel:not(.opening)').waitFor();
  const boxes=await page.evaluate(()=>{const rect=selector=>{const r=document.querySelector(selector).getBoundingClientRect();return{x:r.x,y:r.y,right:r.right,bottom:r.bottom,width:r.width,height:r.height}};return{allowance:rect('.perimeter'),board:rect('.board'),inspect:rect('.inspect'),player:rect('.stats:not(.enemy)'),hand:rect('.hand')}});
@@ -315,7 +321,8 @@ test('Arena allowance panel stays outside battlefield and reserved desktop regio
 test('Arena desktop composes inspect rail, central tabletop, corner HUDs, and overlapping hand from duel reference',async({page})=>{
  await page.setViewportSize({width:1280,height:720});
  await page.goto('/arena?arenaFixture=dense&arenaHand=10');
- await page.getByRole('button',{name:'CASUAL'}).click();
+ await page.getByRole('button',{name:/CASUAL/}).click();
+ await page.getByRole('button',{name:'START DEMO MATCH'}).click();
  await page.getByRole('button',{name:/ENTER DUEL/}).click();
  await page.locator('.duel:not(.opening)').waitFor();
  await page.getByRole('button',{name:/Select REI ZERO/}).click();
@@ -339,7 +346,8 @@ for(const [label,width,height] of [['desktop-1280',1280,720],['desktop-1366',136
   await page.emulateMedia({reducedMotion:'reduce'});
   await page.setViewportSize({width,height});
   await page.goto('/arena?arenaFixture=dense&arenaHand=10');
-  await page.getByRole('button',{name:'CASUAL'}).click();
+  await page.getByRole('button',{name:/CASUAL/}).click();
+ await page.getByRole('button',{name:'START DEMO MATCH'}).click();
   await page.getByRole('button',{name:/ENTER DUEL/}).click();
   await expect(page.locator('.duel')).not.toHaveClass(/opening/);
   const regions=await Promise.all(['.board','.hand','.inspect','.commands'].map(selector=>page.locator(selector).boundingBox()));
@@ -362,7 +370,8 @@ for(const [label,width,height] of [['desktop-1280',1280,720],['desktop-1366',136
 test('Arena desktop selected card keeps every inspect action visible without scrolling',async({page})=>{
  await page.setViewportSize({width:1280,height:720});
  await page.goto('/arena?arenaFixture=dense&arenaHand=10');
- await page.getByRole('button',{name:'CASUAL'}).click();
+ await page.getByRole('button',{name:/CASUAL/}).click();
+ await page.getByRole('button',{name:'START DEMO MATCH'}).click();
  await page.getByRole('button',{name:/ENTER DUEL/}).click();
  await expect(page.locator('.duel')).not.toHaveClass(/opening/);
  await page.getByRole('button',{name:/Select REI ZERO/}).click();
@@ -377,7 +386,8 @@ test('Arena desktop selected card keeps every inspect action visible without scr
 test('Arena summon targeting aligns visible slots, hit targets, and command prompt',async({page})=>{
  await page.setViewportSize({width:1280,height:720});
  await page.goto('/arena?arenaFixture=dense&arenaHand=10');
- await page.getByRole('button',{name:'CASUAL'}).click();
+ await page.getByRole('button',{name:/CASUAL/}).click();
+ await page.getByRole('button',{name:'START DEMO MATCH'}).click();
  await page.getByRole('button',{name:/ENTER DUEL/}).click();
  await page.locator('.duel:not(.opening)').waitFor();
  await page.getByRole('button',{name:/Select YURI SCOUT/}).click();
@@ -396,7 +406,8 @@ test('Arena summon targeting aligns visible slots, hit targets, and command prom
 test('Arena battlefield heroes expose attack or defense stance',async({page})=>{
  await page.setViewportSize({width:1280,height:595});
  await page.goto('/arena?arenaFixture=dense&arenaHand=10');
- await page.getByRole('button',{name:'CASUAL'}).click();
+ await page.getByRole('button',{name:/CASUAL/}).click();
+ await page.getByRole('button',{name:'START DEMO MATCH'}).click();
  await page.getByRole('button',{name:/ENTER DUEL/}).click();
  await page.locator('.duel:not(.opening)').waitFor();
  await page.getByRole('button',{name:/Select YURI SCOUT/}).click();
@@ -420,7 +431,8 @@ test('Arena battlefield heroes expose attack or defense stance',async({page})=>{
 test('Arena dense desktop hand uses one overlapping physical row',async({page})=>{
  await page.setViewportSize({width:1280,height:720});
  await page.goto('/arena?arenaFixture=dense&arenaHand=10');
- await page.getByRole('button',{name:'CASUAL'}).click();
+ await page.getByRole('button',{name:/CASUAL/}).click();
+ await page.getByRole('button',{name:'START DEMO MATCH'}).click();
  await page.getByRole('button',{name:/ENTER DUEL/}).click();
  await page.locator('.duel:not(.opening)').waitFor();
  const cards=page.locator('.hand .card');
@@ -432,7 +444,8 @@ test('Arena dense desktop hand uses one overlapping physical row',async({page})=
 test('Arena enlarged battlefield lanes contain every physical slot',async({page})=>{
  await page.setViewportSize({width:1280,height:720});
  await page.goto('/arena?arenaFixture=dense&arenaHand=10');
- await page.getByRole('button',{name:'CASUAL'}).click();
+ await page.getByRole('button',{name:/CASUAL/}).click();
+ await page.getByRole('button',{name:'START DEMO MATCH'}).click();
  await page.getByRole('button',{name:/ENTER DUEL/}).click();
  await page.locator('.duel:not(.opening)').waitFor();
  const geometry=await page.locator('.battlefield-semantics .slot').evaluateAll(slots=>slots.map(slot=>{const s=slot.getBoundingClientRect(),zone=slot.closest('.zone-wrap')?.getBoundingClientRect(),board=slot.closest('.board')?.getBoundingClientRect();return{laneHeight:zone?.height,insideLane:Boolean(zone&&s.top>=zone.top-.5&&s.bottom<=zone.bottom+.5),insideBoard:Boolean(board&&s.top>=board.top-.5&&s.bottom<=board.bottom+.5)}}));
@@ -443,7 +456,8 @@ test('Arena enlarged battlefield lanes contain every physical slot',async({page}
 test('Arena occupied hero fills the same physical footprint as an empty slot',async({page})=>{
  await page.setViewportSize({width:1280,height:720});
  await page.goto('/arena?arenaFixture=dense&arenaHand=10');
- await page.getByRole('button',{name:'CASUAL'}).click();
+ await page.getByRole('button',{name:/CASUAL/}).click();
+ await page.getByRole('button',{name:'START DEMO MATCH'}).click();
  await page.getByRole('button',{name:/ENTER DUEL/}).click();
  await page.locator('.duel:not(.opening)').waitFor();
  await page.getByRole('button',{name:/Select YURI SCOUT/}).click();
@@ -458,7 +472,8 @@ test('Arena occupied hero fills the same physical footprint as an empty slot',as
 test('Arena summoned hero stays inside its battlefield slot',async({page})=>{
  await page.setViewportSize({width:1280,height:720});
  await page.goto('/arena?arenaFixture=dense&arenaHand=10');
- await page.getByRole('button',{name:'CASUAL'}).click();
+ await page.getByRole('button',{name:/CASUAL/}).click();
+ await page.getByRole('button',{name:'START DEMO MATCH'}).click();
  await page.getByRole('button',{name:/ENTER DUEL/}).click();
  await page.locator('.duel:not(.opening)').waitFor();
  await page.getByRole('button',{name:/Select YURI SCOUT/}).click();
@@ -473,7 +488,8 @@ test('Arena summoned hero stays inside its battlefield slot',async({page})=>{
 test('Arena battlefield renders recognizable portrait cards with visible stance',async({page})=>{
  await page.setViewportSize({width:1280,height:720});
  await page.goto('/arena?arenaFixture=dense&arenaHand=10');
- await page.getByRole('button',{name:'CASUAL'}).click();
+ await page.getByRole('button',{name:/CASUAL/}).click();
+ await page.getByRole('button',{name:'START DEMO MATCH'}).click();
  await page.getByRole('button',{name:/ENTER DUEL/}).click();
  await page.locator('.duel:not(.opening)').waitFor();
  await page.getByRole('button',{name:/Select YURI SCOUT/}).click();
@@ -493,7 +509,8 @@ for(const [name,width,height] of [['card-owner-1280',1280,720],['card-owner-1366
  test(`Arena ${name} keeps every occupied card owned by its slot`,async({page})=>{
   await page.setViewportSize({width:Number(width),height:Number(height)});
   await page.goto('/arena?arenaFixture=dense&arenaHand=10');
-  await page.getByRole('button',{name:'CASUAL'}).click();
+  await page.getByRole('button',{name:/CASUAL/}).click();
+ await page.getByRole('button',{name:'START DEMO MATCH'}).click();
   await page.getByRole('button',{name:/ENTER DUEL/}).click();
   await page.locator('.duel:not(.opening)').waitFor();
   await page.getByRole('button',{name:/Select YURI SCOUT/}).click();
@@ -508,7 +525,8 @@ for(const [name,width,height] of [['card-owner-1280',1280,720],['card-owner-1366
 test('Arena landscape gives battlefield primary width without crossing the action rail',async({page})=>{
  await page.setViewportSize({width:844,height:390});
  await page.goto('/arena?arenaFixture=dense&arenaHand=10');
- await page.getByRole('button',{name:'CASUAL'}).click();
+ await page.getByRole('button',{name:/CASUAL/}).click();
+ await page.getByRole('button',{name:'START DEMO MATCH'}).click();
  await page.getByRole('button',{name:/ENTER DUEL/}).click();
  await expect(page.locator('.duel')).not.toHaveClass(/opening/);
  const [board,hand,commands]=await Promise.all([page.locator('.board').boundingBox(),page.locator('.hand').boundingBox(),page.locator('.commands').boundingBox()]);
@@ -521,7 +539,8 @@ test('Arena separates hero and support rows inside each territory',async({page})
  for(const viewport of [{width:390,height:844},{width:844,height:390}]){
   await page.setViewportSize(viewport);
   await page.goto('/arena?arenaFixture=dense&arenaHand=10');
-  await page.getByRole('button',{name:'CASUAL'}).click();
+  await page.getByRole('button',{name:/CASUAL/}).click();
+ await page.getByRole('button',{name:'START DEMO MATCH'}).click();
   await page.getByRole('button',{name:/ENTER DUEL/}).click();
   await expect(page.locator('.duel')).not.toHaveClass(/opening/);
   for(const territory of await page.locator('.battlefield-territory').all()){
@@ -539,7 +558,8 @@ test('Arena separates hero and support rows inside each territory',async({page})
 test('Arena pile rails never overlap battlefield slots',async({page})=>{
  await page.setViewportSize({width:390,height:844});
  await page.goto('/arena?arenaFixture=dense&arenaHand=10');
- await page.getByRole('button',{name:'CASUAL'}).click();
+ await page.getByRole('button',{name:/CASUAL/}).click();
+ await page.getByRole('button',{name:'START DEMO MATCH'}).click();
  await page.getByRole('button',{name:/ENTER DUEL/}).click();
  await expect(page.locator('.duel')).not.toHaveClass(/opening/);
  const piles=await page.locator('.pile').evaluateAll(nodes=>nodes.map(node=>{const r=node.getBoundingClientRect();return{x:r.x,y:r.y,right:r.right,bottom:r.bottom}}));
@@ -553,7 +573,8 @@ test('Arena pile rails never overlap battlefield slots',async({page})=>{
 test('Arena mobile battlefield exposes clear territory ownership',async({page})=>{
  await page.setViewportSize({width:390,height:844});
  await page.goto('/arena?arenaFixture=dense&arenaHand=10');
- await page.getByRole('button',{name:'CASUAL'}).click();
+ await page.getByRole('button',{name:/CASUAL/}).click();
+ await page.getByRole('button',{name:'START DEMO MATCH'}).click();
  await page.getByRole('button',{name:/ENTER DUEL/}).click();
  await expect(page.locator('.duel')).not.toHaveClass(/opening/);
  await expect(page.locator('.battlefield-territory')).toHaveCount(2);
@@ -575,7 +596,8 @@ test('Arena mobile battlefield exposes clear territory ownership',async({page})=
 test('Arena status belongs to command rail instead of battlefield',async({page})=>{
  await page.setViewportSize({width:390,height:844});
  await page.goto('/arena?arenaFixture=dense&arenaHand=5');
- await page.getByRole('button',{name:'CASUAL'}).click();
+ await page.getByRole('button',{name:/CASUAL/}).click();
+ await page.getByRole('button',{name:'START DEMO MATCH'}).click();
  await page.getByRole('button',{name:/ENTER DUEL/}).click();
  await expect(page.locator('.duel')).not.toHaveClass(/opening/);
  await expect(page.locator('.board [role="status"]')).toHaveCount(0);
@@ -590,7 +612,8 @@ test('Arena status belongs to command rail instead of battlefield',async({page})
 test('Arena selected-card sheet preserves mobile commands',async({page})=>{
  await page.setViewportSize({width:390,height:844});
  await page.goto('/arena?arenaFixture=dense&arenaHand=10');
- await page.getByRole('button',{name:'CASUAL'}).click();
+ await page.getByRole('button',{name:/CASUAL/}).click();
+ await page.getByRole('button',{name:'START DEMO MATCH'}).click();
  await page.getByRole('button',{name:/ENTER DUEL/}).click();
  await expect(page.locator('.duel')).not.toHaveClass(/opening/);
  await page.locator('.hand .card').nth(7).click();
