@@ -68,11 +68,11 @@ export default function DocsPage() {
       {/* content */}
       <main className="docs-content">
         <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10.5, letterSpacing: '.26em', color: '#E0596A' }}>REINA DOCS</div>
-        <h1 style={{ margin: '14px 0 0', fontSize: 'clamp(34px,4.4vw,52px)', fontWeight: 900, letterSpacing: '-.03em', color: '#F5F1E8' }}>Everything you need to enter the arena.</h1>
-        <p style={{ margin: '16px 0 0', maxWidth: 560, fontSize: 15.5, lineHeight: 1.75, color: 'rgba(237,231,220,.68)' }}>Collect heroes, build a speed deck, fuse your spares into something stronger, and battle. This reference covers the mechanics end to end.</p>
+        <h1 style={{ margin: '14px 0 0', fontSize: 'clamp(34px,4.4vw,52px)', fontWeight: 900, letterSpacing: '-.03em', color: '#F5F1E8' }}>Cards, decks &amp; duels</h1>
+        <p style={{ margin: '16px 0 0', maxWidth: 560, fontSize: 15.5, lineHeight: 1.75, color: 'rgba(237,231,220,.68)' }}>Rules for hero stats, deck building, Forge fusion, and arena battles.</p>
 
         <Section id="start" tag="START" title="Getting started">
-          <P>No wallet is required to start. Sign up with an email and you're in the roster screen in under a minute.</P>
+          <P>Create an account with your email. No wallet required.</P>
           <ol style={{ margin: '20px 0 0', paddingLeft: 22, fontSize: 15, lineHeight: 2, color: 'rgba(237,231,220,.8)' }}>
             <li>Create your account and confirm your email.</li>
             <li>Open your first pack from the Packs screen. Every pack guarantees three hero cards.</li>
@@ -82,7 +82,7 @@ export default function DocsPage() {
         </Section>
 
         <Section id="collect" tag="COLLECT" title="Collecting heroes & rarity tiers">
-          <P>Every hero is a card with a class (12 total: Scout, Strategist, Vanguard, Herald, Artificer, Cleric, Warden, Sentinel, Blade, Sage, Medic, Negotiator) and a rarity. Rarity sets the range your hero's stats roll into. Class is a compatibility filter for Forge fusion, not a power tier: stats decide who wins a fight.</P>
+          <P>Every hero is a card with a class (12 total: Scout, Strategist, Vanguard, Herald, Artificer, Cleric, Warden, Sentinel, Blade, Sage, Medic, Negotiator) and a rarity. Rarity sets the range your hero&apos;s stats roll into. Class is a compatibility filter for Forge fusion, not a power tier: stats decide who wins a fight.</P>
           <TableGrid
             cols={['RARITY', 'STAT RANGE', 'SHARE OF ROSTER']}
             hueRows={[0]}
@@ -93,15 +93,15 @@ export default function DocsPage() {
               ['Legendary', '85–99', '5%'],
             ]}
           />
-          <P small>Stats are ATK, DEF, SPD and LUCK. A small number of heroes, regardless of rarity, also carry a unique Special Ability: three of the five Legendaries have one, and at least one Common does too. Check a hero's own page in the Wiki to see if it has one.</P>
+          <P small>Stats are ATK, DEF, SPD and LUCK. A small number of heroes, regardless of rarity, also carry a unique Special Ability: three of the five Legendaries have one, and at least one Common does too. Check a hero&apos;s own page in the Wiki to see if it has one.</P>
         </Section>
 
         <Section id="forge" tag="FORGE" title="Forge (Fusion)">
-          <P>The Forge combines two cards into one. It's how spares turn into real power instead of sitting idle in your vault.</P>
+          <P>The Forge combines two compatible cards into one.</P>
           <ol style={{ margin: '20px 0 0', paddingLeft: 22, fontSize: 15, lineHeight: 2, color: 'rgba(237,231,220,.8)' }}>
             <li>Not every pair can fuse. Each hero only fuses with a specific set of known partners, mostly within its own class, with a few curated cross-class pairs discovered by players.</li>
-            <li>Ranks don't need to match: a Common can fuse with a Rare, an Elite with a Common, any mix, as long as the pair is compatible.</li>
-            <li>Try an incompatible pair anyway and the Forge still runs: it always fails, and both cards are lost.</li>
+            <li>Ranks don&apos;t need to match: a Common can fuse with a Rare, an Elite with a Common, any mix, as long as the pair is compatible.</li>
+            <li>Incompatible pairs always fail, and both cards are lost. Check compatibility before fusing.</li>
             <li>Fusing itself is free. It draws from a cooldown that refills between matches, and can also happen mid-match, in-hand, the instant you play two compatible cards together.</li>
           </ol>
           <TableGrid
@@ -113,18 +113,18 @@ export default function DocsPage() {
               ['Either Elite', 'Elite (100%, stat-boosted)'],
             ]}
           />
-          <P small>One recipe breaks the two-card rule: a Common, an Elite, and a Blank Card together guarantee a Legendary. Blank Cards aren't sold or packed: every match shuffles one into the pre-game draw with a 20% chance. Vault cap is 3 copies per hero, extra pulls beyond that are best spent in the Forge.</P>
+          <P small>One recipe breaks the two-card rule: a Common, an Elite, and a Blank Card together guarantee a Legendary. Blank Cards aren&apos;t sold or packed: every match shuffles one into the pre-game draw with a 20% chance. Vault cap is 3 copies per hero, extra pulls beyond that are best spent in the Forge.</P>
         </Section>
 
         <Section id="deck" tag="DECK" title="Building a deck">
-          <P>A deck is 20 to 30 cards, a speed format built for matches around 5–8 minutes. Heroes, Spells, and Traps all fill the same deck, there's no separate equip pool. You can rebuild your deck any time you aren't mid-match.</P>
+          <P>A deck is 20 to 30 cards, a speed format built for matches around 5–8 minutes. Heroes, Spells, and Traps all fill the same deck, there&apos;s no separate equip pool. You can rebuild your deck any time you aren&apos;t mid-match.</P>
         </Section>
 
         <Section id="arena" tag="ARENA" title="Battle & arena">
           <P>Matches are turn-based on a visible battlefield, with face-down cards for bluffing, the same hidden-information play as a physical card game. Each player starts at 4000 life points.</P>
           <ol style={{ margin: '20px 0 0', paddingLeft: 22, fontSize: 15, lineHeight: 2, color: 'rgba(237,231,220,.8)' }}>
-            <li>Win by draining the opponent's life points to zero, or by decking them out, running their draw pile dry.</li>
-            <li>On your turn you can attack with a hero, play or equip a support card, fuse two compatible hand cards, activate a trap, set a card face-down, or switch a hero's stance.</li>
+            <li>Win by draining the opponent&apos;s life points to zero, or by decking them out, running their draw pile dry.</li>
+            <li>On your turn you can attack with a hero, play or equip a support card, fuse two compatible hand cards, activate a trap, set a card face-down, or switch a hero&apos;s stance.</li>
             <li><strong>Campaign</strong> is solo play against bot decks: it teaches the mechanics and pays out early packs.</li>
             <li><strong>Ranked Ladder</strong> is seasonal PvP with resets; you wager your own stake going in and matchmaking weighs both rank and deck power level.</li>
             <li><strong>Guild &amp; Friend Battles</strong> are private challenges and team play between guildmates, no ranked stakes attached.</li>
@@ -132,7 +132,7 @@ export default function DocsPage() {
         </Section>
 
         <Section id="packs" tag="PACKS" title="Packs & odds">
-          <P>Every hero pack contains three cards with a guaranteed floor per tier, no purely random duds. Spell and Trap cards are sold in their own dedicated packs, separate from hero packs, and are also earned through Campaign and PvE clears.</P>
+          <P>Every hero pack contains three cards with a guaranteed minimum rarity for each tier. Spell and Trap cards are sold in their own dedicated packs, separate from hero packs, and are also earned through Campaign and PvE clears.</P>
           <TableGrid
             cols={['TIER', 'GUARANTEED']}
             hueRows={[0]}
@@ -145,7 +145,7 @@ export default function DocsPage() {
         </Section>
 
         <Section id="support" tag="SUPPORT" title="Spell, Trap & Wild cards">
-          <P>Spells resolve instantly when played face-up. Traps get set face-down and trigger on their own during the opponent's turn, the same bluff as a face-down monster. Wild cards, like the Blank Card, never enter a hand or a fight: they exist only to complete specific Forge recipes.</P>
+          <P>Spells resolve instantly when played face-up. Traps get set face-down and trigger on their own during the opponent&apos;s turn, the same bluff as a face-down monster. Wild cards, like the Blank Card, never enter a hand or a fight: they exist only to complete specific Forge recipes.</P>
           <div style={{ marginTop: 22, display: 'flex', flexWrap: 'wrap', gap: 14 }}>
             <CardExample type="SPELL" hue="#3FA8A0" name="Surge Protocol" desc="Boost one hero's ATK for the turn." />
             <CardExample type="TRAP" hue="#8C6FD8" name="Counter Seal" desc="Negate one incoming attack." />

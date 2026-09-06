@@ -32,10 +32,10 @@ export default function HomePage() {
           margin: 0,
         }}
       >
-        The arena is loading
+        Enter the arena
       </h1>
       <p style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, letterSpacing: '0.2em', color: 'rgba(237,231,220,.55)' }}>
-        ENTER TO CLAIM YOUR SEAT
+        LOG IN OR CREATE A DUELIST ACCOUNT
       </p>
       <div style={{ display: 'flex', gap: 16, marginTop: 8 }}>
         <Link href="/login" className="btn-crimson" style={{ padding: '14px 32px' }}>

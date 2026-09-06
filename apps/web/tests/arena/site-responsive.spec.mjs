@@ -344,8 +344,11 @@ for(const [label,width,height] of [['desktop-1280',1280,720],['desktop-1366',136
   await expect(page.locator('.duel')).not.toHaveClass(/opening/);
   const regions=await Promise.all(['.board','.hand','.inspect','.commands'].map(selector=>page.locator(selector).boundingBox()));
   expect(regions.every(box=>box&&box.x>=0&&box.y>=64&&box.x+box.width<=width+.5&&box.y+box.height<=height+.5)).toBe(true);
-  const boardTransform=await page.locator('.board').evaluate(node=>getComputedStyle(node).transform);
-  expect(boardTransform).toBe('none');
+  const planar=await page.locator('.board').evaluate(node=>{
+   const matrix=new DOMMatrixReadOnly(getComputedStyle(node).transform);
+   return matrix.is2D&&matrix.a===1&&matrix.b===0&&matrix.c===0&&matrix.d===1;
+  });
+  expect(planar).toBe(true);
   const cards=await page.locator('.hand .card').evaluateAll(nodes=>nodes.map(node=>{const box=node.getBoundingClientRect();return{left:box.left,top:box.top,right:box.right,bottom:box.bottom}}));
   expect(cards).toHaveLength(10);
   expect(cards.every(card=>card.left>=0&&card.top>=64&&card.right<=width+.5&&card.bottom<=height+.5)).toBe(true);

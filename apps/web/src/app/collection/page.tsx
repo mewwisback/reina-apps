@@ -89,9 +89,9 @@ export default function CollectionPage() {
         <div style={{ marginTop: 28, border: '1px solid rgba(237,231,220,.14)', padding: 20, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 16 }}>
           <div>
             <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9.5, letterSpacing: '.16em', color: 'rgba(237,231,220,.5)' }}>DUPLICATES READY TO FORGE</div>
-            <div style={{ fontWeight: 900, fontSize: 16, marginTop: 6, color: '#F5F1E8' }}>{dupeCount} spare cards sitting idle in your vault</div>
+            <div style={{ fontWeight: 900, fontSize: 16, marginTop: 6, color: '#F5F1E8' }}>{dupeCount} duplicate cards in your vault</div>
           </div>
-          <Link href="/wiki" style={{ border: '1px solid #E03C4E', color: '#E03C4E', fontSize: 11, fontWeight: 700, letterSpacing: '.1em', padding: '11px 18px', textDecoration: 'none' }}>OPEN FORGE</Link>
+          <Link href="/wiki" style={{ border: '1px solid #E03C4E', color: '#E03C4E', fontSize: 11, fontWeight: 700, letterSpacing: '.1em', padding: '11px 18px', textDecoration: 'none' }}>VIEW FUSION GUIDE</Link>
         </div>
       </div>
     </AppShell>

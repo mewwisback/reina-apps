@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     default: 'Reina',
     template: '%s | Reina',
   },
-  description: 'Reina app. Log in to manage your arena.',
+  description: 'Reina card battles. Build your deck, collect heroes, and enter the arena.',
 };
 
 export const viewport: Viewport = {
