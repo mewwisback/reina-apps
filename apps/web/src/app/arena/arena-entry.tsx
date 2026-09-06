@@ -12,6 +12,18 @@ const modes={casual:['CASUAL','Standard rules. No rank stakes.'],ranked:['RANKED
 export function ArenaEntry({screen,category,elapsed,soundOn,onSound,onSelect,onStart,onCancel,onAccept}:{screen:'category'|'search'|'found';category:Mode|null;elapsed:number;soundOn:boolean;onSound:()=>void;onSelect:(mode:Mode)=>void;onStart:()=>void;onCancel:()=>void;onAccept:()=>void}){
  const root=useRef<HTMLElement>(null);
  useLayoutEffect(()=>{
+  // Desktop-fit custom tabs can expose a wide layout on a phone screen.
+  // Correct layout density, not visualViewport.scale: pinch zoom stays user-owned.
+  const update=()=>{
+   const phone=matchMedia('(max-device-width:600px) and (orientation:portrait) and (pointer:coarse)').matches;
+   const width=window.screen.width;
+   const scale=phone&&width>0&&innerWidth>width*1.25?innerWidth/width:1;
+   root.current?.style.setProperty('--entry-scale',String(scale));
+  };
+  update();window.addEventListener('resize',update);
+  return()=>window.removeEventListener('resize',update);
+ },[]);
+ useLayoutEffect(()=>{
   const media=gsap.matchMedia();
   const context=gsap.context(()=>media.add('(prefers-reduced-motion: no-preference)',()=>{
    if(screen==='search')gsap.from('.threshold-wait',{borderTopColor:'#e03c4e',duration:.6,ease:'power2.out'});
