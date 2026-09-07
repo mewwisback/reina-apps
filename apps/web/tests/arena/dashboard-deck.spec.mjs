@@ -27,10 +27,41 @@ test('PLAY rapid double activation creates one history entry',async({page})=>{
  await expect(page).toHaveURL(/\/arena$/); await page.goBack(); await expect(page).toHaveURL(/\/dashboard$/);
 });
 
-test('rapid selection cancels motion and live reduced motion settles real hero',async({page})=>{
+test('initial system reduced motion starts no card tween',async({page})=>{
+ await page.emulateMedia({reducedMotion:'reduce'});
+ // Observe synchronous writes before hydration; settled styles would miss a reverted tween.
+ await page.addInitScript(()=>{
+  window.cardMotionWrites=[];
+  new MutationObserver(records=>{
+   for(const record of records) if(record.target.matches('[data-front]')){
+    for(const style of [record.oldValue,record.target.getAttribute('style')]) if(style?.includes('transform:')) window.cardMotionWrites.push(style);
+   }
+  }).observe(document,{subtree:true,attributes:true,attributeFilter:['style'],attributeOldValue:true});
+ });
  await page.goto('/dashboard');
- await page.evaluate(()=>{for(const name of ['HAKU','SORA','YUI']) document.querySelector(`button[aria-label="Select ${name}"]`).click();});
- await expect(page.locator('[data-selected-hero]')).toHaveText('YUI');
+ await expect(page.locator('.deck-dashboard')).toHaveAttribute('data-reduced-motion','true');
+ await page.getByRole('button',{name:'Select HAKU',exact:true}).click();
+ await expect(page.locator('[data-selected-hero]')).toHaveText('HAKU');
+ expect(await page.evaluate(()=>window.cardMotionWrites)).toEqual([]);
+});
+
+test('rapid selection cancels motion and live reduced motion settles real hero',async({page})=>{
+ await page.clock.install();
+ await page.goto('/dashboard');
+ await page.clock.pauseAt(new Date(Date.now()+10000));
+ for(const name of ['HAKU','SORA','YUI']){
+  // Separate browser tasks and frames commit each selection before its 280ms tween ends.
+  await page.evaluate(name=>document.querySelector(`button[aria-label="Select ${name}"]`).click(),name);
+  await page.clock.runFor(32);
+  await expect(page.locator('[data-selected-hero]')).toHaveText(name);
+  const state=await page.locator('[data-front]').evaluateAll(els=>({
+   oldCleared:els.filter(el=>el.dataset.selected!=='true').every(el=>!el.style.transform),
+   y:new DOMMatrix(getComputedStyle(els.find(el=>el.dataset.selected==='true')).transform).m42
+  }));
+  expect(state.oldCleared).toBe(true);
+  expect(state.y).toBeGreaterThan(0);
+  expect(state.y).toBeLessThan(20);
+ }
  const front=page.locator('[data-front][data-selected="true"]');
  await expect.poll(()=>front.evaluate(el=>el.style.transform)).not.toBe('');
  await page.emulateMedia({reducedMotion:'reduce'});

@@ -45,7 +45,7 @@ export default function DashboardPage() {
     else entry.current = gsap.to(root.current?.querySelector('.deck-play') ?? null, { y: 4, duration: .22, onComplete: navigate });
   };
   useEffect(() => {
-    if (reduced) { entry.current?.progress(1); return; }
+    if (reduced || window.matchMedia('(prefers-reduced-motion: reduce)').matches) { entry.current?.progress(1); return; }
     const context = gsap.context(() => {
       gsap.fromTo('[data-front][data-selected="true"]', { y: 20, rotationY: -12, scale: .94 }, { y: 0, rotationY: 0, scale: 1, duration: .28, ease: 'power2.out' });
     }, root);
