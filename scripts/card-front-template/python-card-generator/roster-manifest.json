@@ -1,0 +1,95 @@
+{
+  "schema_version": 1,
+  "scope": "Offline visual roster cards only; never combat inputs",
+  "review_status": "PROPOSED_VISUAL_ROSTER_METADATA",
+  "source": {
+    "repository": "https://github.com/mewwisback/reina-fe",
+    "commit": "2c4c49d3c81e0554daad052b6d8d42cdc08ff73d",
+    "path": "src/lib/roster.ts",
+    "sha256": "e33a5519d8391c90135c4bab206aa6b4d9292df08617fbaf5f8bbdbedd94f319"
+  },
+  "decisions": [
+    "All five roles, rarity labels, ATK and DEF copied exactly from canonical roster; no invented balance values.",
+    "No functional abilities added. ROSTER PROFILE contains exact canonical desc, not combat effect.",
+    "REI canonical Overdrive ability omitted: arena does not implement it. REI versus REI ZERO is unresolved, not an approved alias.",
+    "All combat_id values deliberately null; no automatic mapping from name, role, or art."
+  ],
+  "card_back": {
+    "path": "assets/card-back-approved.jpg",
+    "source_filename": "img_ffe274ff6601.jpg",
+    "sha256": "dffdf7d0c54eba8344740db2bf9198feb804d97626a72f89e9314b5fbc6a9c59",
+    "rights": "User supplied; no additional rights granted"
+  },
+  "heroes": [
+    {
+      "id": "haku",
+      "config": "examples/haku.json",
+      "output": "output/haku.png",
+      "source_line": 23,
+      "role": "SCOUT",
+      "rarity": "ELITE",
+      "atk": 70,
+      "def": 88,
+      "profile": "Finds the signal inside the noise.",
+      "combat_id": null,
+      "review_status": "PROPOSED_VISUAL_ROSTER_METADATA",
+      "artwork_sha256": "0497731fbc38b017fd183c714f91075ec9bba8fea977b6fbb8a0a2aca33da65b"
+    },
+    {
+      "id": "rei",
+      "config": "examples/rei.json",
+      "output": "output/rei.png",
+      "source_line": 34,
+      "role": "BLADE",
+      "rarity": "LEGENDARY",
+      "atk": 98,
+      "def": 95,
+      "profile": "The one card every deck is built around.",
+      "combat_id": null,
+      "review_status": "PROPOSED_VISUAL_ROSTER_METADATA",
+      "artwork_sha256": "abcd8378799e6512338ed2598d8b95eb68d6243b6cb0f523802128a81c4c86a4"
+    },
+    {
+      "id": "sora",
+      "config": "examples/sora.json",
+      "output": "output/sora.png",
+      "source_line": 24,
+      "role": "STRATEGIST",
+      "rarity": "RARE",
+      "atk": 75,
+      "def": 70,
+      "profile": "Turns numbers into decisions.",
+      "combat_id": null,
+      "review_status": "PROPOSED_VISUAL_ROSTER_METADATA",
+      "artwork_sha256": "9eeab9aec738ea06f86fdbadfe72abb6c5f5d613ca3f3bf02a8bb1ff31ba3bcf"
+    },
+    {
+      "id": "koma",
+      "config": "examples/koma.json",
+      "output": "output/koma.png",
+      "source_line": 25,
+      "role": "VANGUARD",
+      "rarity": "ELITE",
+      "atk": 65,
+      "def": 95,
+      "profile": "Keeps the machine moving.",
+      "combat_id": null,
+      "review_status": "PROPOSED_VISUAL_ROSTER_METADATA",
+      "artwork_sha256": "f02d0e2943460e0ec07591d792ce0a310d12ce5ac2f3fea2632f7b5da1ca8fa6"
+    },
+    {
+      "id": "yui",
+      "config": "examples/yui.json",
+      "output": "output/yui.png",
+      "source_line": 28,
+      "role": "CLERIC",
+      "rarity": "COMMON",
+      "atk": 45,
+      "def": 80,
+      "profile": "Answers before the question grows.",
+      "combat_id": null,
+      "review_status": "PROPOSED_VISUAL_ROSTER_METADATA",
+      "artwork_sha256": "b10a2a8e02d3d9dfa03cd7979b0d26807b1e4fedcec9355eb657f818a997bd14"
+    }
+  ]
+}
