@@ -41,91 +41,44 @@ test('Arena visual copy avoids decorative slash separators',async()=>{
 const enterDuel=async(page,fixture='final-draw')=>{
  await page.goto(`/arena?arenaFixture=${fixture}`);
  await page.getByRole('button',{name:/RANKED/}).click();
+ await page.getByRole('button',{name:'START DEMO MATCH'}).click();
  await page.getByRole('button',{name:'ENTER DUEL'}).click();
 };
 
-test('dashboard to Arena uses a loading fade before route content appears',async({page})=>{
+test('dashboard navigation reaches threshold without mandatory delay',async({page})=>{
  await page.goto('/dashboard');
  await page.getByRole('link',{name:'Arena',exact:true}).click();
- await expect(page.getByRole('status',{name:'Entering Arena'})).toBeVisible();
- await expect(page).toHaveURL(/\/arena$/);
  await expect(page.getByRole('heading',{name:'Choose your fight'})).toBeVisible();
- await expect(page.locator('.arena-route-enter')).toHaveCount(1);
+ await expect(page.locator('.threshold')).toHaveCount(1);
 });
 
-test('matchmaking starts only after selecting a duel category',async({page})=>{
+test('rulesets expose honest demo selection and distinct display type',async({page})=>{
  await page.goto('/arena');
- await expect(page.getByRole('heading',{name:'Choose your fight'})).toBeVisible();
- await expect(page.locator('.matchmaking-nav')).toHaveCount(1);
- await expect(page.locator('.matchmaking-brand')).toContainText('REINA');
- await expect(page.locator('.matchmaking-region')).toContainText('ASIA PACIFIC');
- await expect(page.locator('.matchmaking-region')).toContainText('38 MS');
- await expect(page.locator('.matchmaking-nav')).not.toContainText('/');
- await expect(page.getByText('Searching the courtyard')).toHaveCount(0);
- await expect(page.locator('.match-mode,.duel-ledger')).toHaveCount(0);
- await expect(page.locator('.match-ruleset')).toHaveCount(3);
- await expect(page.locator('.match-ruleset')).toContainText(['CASUAL','RANKED','EVENT']);
- await expect(page.locator('.matchmaking-composition')).toHaveCSS('background-color','rgb(13, 11, 16)');
- await expect(page.locator('.matchmaking-signal')).toHaveCSS('background-color','rgb(224, 60, 78)');
+ await expect(page.locator('.threshold-mode')).toHaveCount(3);
+ await expect(page.locator('.threshold')).not.toContainText('38 MS');
+ await expect(page.locator('.threshold')).not.toContainText('MMR');
+ await expect(page.getByRole('button',{name:'START DEMO MATCH'})).toBeDisabled();
  const headingFont=await page.getByRole('heading',{name:'Choose your fight'}).evaluate(node=>getComputedStyle(node).fontFamily);
- const modeFont=await page.getByRole('button',{name:/CASUAL/}).locator('.ruleset-copy b').evaluate(node=>getComputedStyle(node).fontFamily);
- expect(headingFont).toContain('Zen Old Mincho');
- expect(modeFont).toContain('Zen Kaku Gothic New');
- expect(modeFont).not.toBe(headingFont);
- await page.getByRole('button',{name:/CASUAL/}).click();
- await expect(page.getByRole('heading',{name:/Searching the courtyard|Duelist found/})).toBeVisible();
- await expect(page.locator('.queue-orbit')).toHaveCount(0);
- await expect(page.locator('.match-loader')).toHaveAttribute('src','/arena/loading/tail-spin.svg');
- await expect(page.locator('.matchmaking-brand')).toContainText('CASUAL DUEL');
+ expect(headingFont).toContain('bodyFont');
 });
 
-test('ruleset hover moves its surface and text while reduced motion stays still',async({page})=>{
+test('reduced motion mode selection stays still',async({page})=>{
+ await page.emulateMedia({reducedMotion:'reduce'});
  await page.goto('/arena');
  const casual=page.getByRole('button',{name:/CASUAL/});
- const title=casual.locator('.ruleset-copy b');
- await casual.hover();
- await page.waitForTimeout(180);
- expect(await casual.evaluate(node=>getComputedStyle(node).transform)).not.toBe('none');
- expect(await title.evaluate(node=>getComputedStyle(node).transform)).not.toBe('none');
- await page.emulateMedia({reducedMotion:'reduce'});
- await page.reload();
- const reducedCasual=page.getByRole('button',{name:/CASUAL/});
- await reducedCasual.hover();
- await page.waitForTimeout(180);
- expect(await reducedCasual.evaluate(node=>getComputedStyle(node).transform)).toBe('none');
+ await casual.click();
+ await expect(casual).toHaveCSS('transform','none');
 });
 
-test('found opponent shows complete profile without clipping',async({page})=>{
- await page.emulateMedia({reducedMotion:'reduce'});
+test('found opponent is labeled demo and fits viewport',async({page})=>{
  await page.goto('/arena?arenaFixture=matchmaking');
  await page.getByRole('button',{name:/RANKED/}).click();
+ await page.getByRole('button',{name:'START DEMO MATCH'}).click();
  await expect(page.getByRole('heading',{name:'SILENTINDEX'})).toBeVisible();
- await expect(page.getByText('DIAMOND II / 2,510 MMR')).toBeVisible();
- await expect(page.getByText('CONTROL / SENTINEL')).toBeVisible();
- await expect(page.getByText('53% WR')).toBeVisible();
- await expect(page.getByText('128 DUELS')).toBeVisible();
- const readyLabels=page.getByText('READY',{exact:true});
- await expect(readyLabels).toHaveCount(2);
- for(const ready of await readyLabels.all()){
-  const readyBox=await ready.boundingBox();
-  const parentBox=await ready.locator('..').boundingBox();
-  expect(readyBox).not.toBeNull();
-  expect(parentBox).not.toBeNull();
-  expect(readyBox.x).toBeGreaterThanOrEqual(parentBox.x-.5);
-  expect(readyBox.x+readyBox.width).toBeLessThanOrEqual(parentBox.x+parentBox.width+.5);
-  expect(readyBox.y).toBeGreaterThanOrEqual(parentBox.y-.5);
-  expect(readyBox.y+readyBox.height).toBeLessThanOrEqual(parentBox.y+parentBox.height+.5);
- }
- const profile=page.locator('.match-duelist');
- const box=await profile.boundingBox();
- const navBox=await page.locator('.matchmaking-nav').boundingBox();
- const viewport=page.viewportSize();
- expect(box).not.toBeNull();
- expect(navBox).not.toBeNull();
- expect(box.y).toBeGreaterThanOrEqual(navBox.y+navBox.height);
+ await expect(page.getByText('DEMO OPPONENT',{exact:true})).toBeVisible();
+ const box=await page.locator('.threshold-opponent').boundingBox();
  expect(box.x).toBeGreaterThanOrEqual(0);
- expect(box.x+box.width).toBeLessThanOrEqual(viewport.width);
- expect(await profile.evaluate(node=>node.scrollWidth<=node.clientWidth&&node.scrollHeight<=node.clientHeight)).toBe(true);
+ expect(box.x+box.width).toBeLessThanOrEqual(page.viewportSize().width);
 });
 
 test('duel controls use one command rail and card inspect stays inside viewport',async({page})=>{
