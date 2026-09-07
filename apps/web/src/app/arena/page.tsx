@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import {ArenaEntry} from './arena-entry';
 import gsap from 'gsap';
@@ -30,11 +30,15 @@ export default function ArenaPage(){
  const toggleSound=()=>{const next=!soundOn;setSoundOn(next);try{localStorage.setItem('reina-sound',next?'on':'off')}catch{}};
  const acceptedRef=useRef(false),duelRoot=useRef<HTMLElement>(null);
  const winnerRef=useRef<typeof winner>(null),playerLpRef=useRef(4000),enemyLpRef=useRef(4000),playerDrawnTurnRef=useRef(0),fixtureUsedRef=useRef(false),g=stage(turn);
- const sound=(cue:'select'|'connecting'|'open'|'press')=>{if(!soundOn)return;const audio=new Audio(`/arena/audio/${cue}.ogg`);audio.volume=cue==='connecting'?.18:.32;void audio.play().catch(()=>{})};
- const finish=(requested:'REINA'|'SILENTINDEX',deckOut:'REINA'|'SILENTINDEX'|null=null)=>{if(winnerRef.current)return false;const next=terminalWinner(playerLpRef.current,enemyLpRef.current,deckOut,requested);if(!next)return false;winnerRef.current=next;setWinner(next);setSel(null);setAction(null);setAtt(null);setTributePick([]);return true};
- const damage=(who:'p'|'e',amount:number)=>{if(winnerRef.current)return;const lpRef=who==='p'?playerLpRef:enemyLpRef,result=damageOutcome(lpRef.current,amount);lpRef.current=result.lp;if(result.lethal)finish(who==='p'?'SILENTINDEX':'REINA');const setter=who==='p'?setP:setE;setter(side=>({...side,lp:result.lp}))};
- useEffect(()=>{if(screen!=='search')return;setQueueTime(0);sound('connecting');const testFixture=process.env.NODE_ENV!=='production'&&new URLSearchParams(location.search).has('arenaFixture'),tick=setInterval(()=>setQueueTime(t=>t+1),1000),found=setTimeout(()=>{setScreen('found');sound('open')},testFixture?0:4200);return()=>{clearInterval(tick);clearTimeout(found)}},[screen]);
- const draw=(who:'p'|'e')=>{if(winnerRef.current)return false;const side=who==='p'?p:e,result=drawOutcome(side.deck,side.hand);if(result.deckOut){const next=who==='p'?'SILENTINDEX':'REINA';finish(next,next);setMessage(`${who==='p'?'REINA':'SILENTINDEX'} cannot draw. Deck out.`);return false}const setter=who==='p'?setP:setE;setter(s=>({...s,deck:result.deck,hand:result.hand}));return true};
+ const soundOnRef=useRef(soundOn);
+ useEffect(()=>{soundOnRef.current=soundOn},[soundOn]);
+ const sound=useCallback((cue:'select'|'connecting'|'open'|'press')=>{if(!soundOnRef.current)return;const audio=new Audio(`/arena/audio/${cue}.ogg`);audio.volume=cue==='connecting'?.18:.32;void audio.play().catch(()=>{})},[]);
+ const sidesRef=useRef({p,e});
+ useLayoutEffect(()=>{sidesRef.current={p,e}},[p,e]);
+ const finish=useCallback((requested:'REINA'|'SILENTINDEX',deckOut:'REINA'|'SILENTINDEX'|null=null)=>{if(winnerRef.current)return false;const next=terminalWinner(playerLpRef.current,enemyLpRef.current,deckOut,requested);if(!next)return false;winnerRef.current=next;setWinner(next);setSel(null);setAction(null);setAtt(null);setTributePick([]);return true},[]);
+ const damage=useCallback((who:'p'|'e',amount:number)=>{if(winnerRef.current)return;const lpRef=who==='p'?playerLpRef:enemyLpRef,result=damageOutcome(lpRef.current,amount);lpRef.current=result.lp;if(result.lethal)finish(who==='p'?'SILENTINDEX':'REINA');const setter=who==='p'?setP:setE;setter(side=>({...side,lp:result.lp}))},[finish]);
+ useEffect(()=>{if(screen!=='search')return;setQueueTime(0);sound('connecting');const testFixture=process.env.NODE_ENV!=='production'&&new URLSearchParams(location.search).has('arenaFixture'),tick=setInterval(()=>setQueueTime(t=>t+1),1000),found=setTimeout(()=>{setScreen('found');sound('open')},testFixture?0:4200);return()=>{clearInterval(tick);clearTimeout(found)}},[screen,sound]);
+ const draw=useCallback((who:'p'|'e')=>{if(winnerRef.current)return false;const side=sidesRef.current[who],result=drawOutcome(side.deck,side.hand);if(result.deckOut){const next=who==='p'?'SILENTINDEX':'REINA';finish(next,next);setMessage(`${who==='p'?'REINA':'SILENTINDEX'} cannot draw. Deck out.`);return false}const setter=who==='p'?setP:setE;sidesRef.current[who]={...side,deck:result.deck,hand:result.hand};setter(s=>({...s,deck:result.deck,hand:result.hand}));return true},[finish]);
  const accept=()=>{if(acceptedRef.current)return;acceptedRef.current=true;let a=fresh(),b=fresh(true);const params=new URLSearchParams(location.search),fixture=process.env.NODE_ENV==='production'?null:params.get('arenaFixture'),requestedHand=process.env.NODE_ENV==='production'?null:Number(params.get('arenaHand'));if(fixture&&!fixtureUsedRef.current){fixtureUsedRef.current=true;if(fixture==='deck-out'||fixture==='final-draw')a={...a,deck:a.deck.slice(0,fixture==='deck-out'?5:6)}}const openingCount=fixture==='dense'&&Number.isInteger(requestedHand)&&requestedHand!>=1&&requestedHand!<=10?requestedHand!-1:5;playerLpRef.current=a.lp;enemyLpRef.current=b.lp;a={...a,hand:a.deck.slice(0,openingCount),deck:a.deck.slice(openingCount)};b={...b,hand:b.deck.slice(0,5),deck:b.deck.slice(5)};setP(a);setE(b);setOpening(true);setScreen('duel');setDuelRun(x=>x+1);setMessage(`Opening draw complete. ${openingCount} cards in hand.`)};
  useEffect(()=>{if(!opening)return;const delay=cancellableDelay(window.matchMedia('(prefers-reduced-motion: reduce)').matches?0:400);void delay.promise.then(active=>{if(active)setOpening(false)});return delay.cancel},[opening,duelRun]);
  useEffect(()=>{
@@ -47,7 +51,7 @@ export default function ArenaPage(){
  useEffect(()=>{if(screen==='duel'&&!opening)duelRoot.current?.querySelector<HTMLButtonElement>('.command-primary')?.focus({preventScroll:true})},[screen,opening]);
  const resetDuel=(next:'duel'|'category')=>{acceptedRef.current=false;winnerRef.current=null;playerLpRef.current=4000;enemyLpRef.current=4000;playerDrawnTurnRef.current=0;setWinner(null);setP(fresh());setE(fresh(true));setPhase('DRAW');setTurn(1);setMine(true);setSel(null);setAction(null);setAtt(null);setTributePick([]);setOpening(false);setEco(emptyEco());setEnemyEco(emptyEco());setMessage(next==='duel'?'Rematch ready. Opening hands dealt.':'Choose a duel category.');setScreen(next);if(next==='duel')accept()};
  const endTurn=()=>{if(!mine||winner)return;setSel(null);setAction(null);setAtt(null);setTributePick([]);setMine(false);setMessage('SILENTINDEX turn.');};
- useEffect(()=>{if(screen!=='duel'||!mine||phase!=='DRAW'||winnerRef.current||playerDrawnTurnRef.current===turn)return;playerDrawnTurnRef.current=turn;if(draw('p')){setPhase('MAIN');setMessage(`${g.name}: Choose a card action.`)}},[screen,mine,phase,turn,duelRun]);
+ useEffect(()=>{if(screen!=='duel'||!mine||phase!=='DRAW'||winnerRef.current||playerDrawnTurnRef.current===turn)return;playerDrawnTurnRef.current=turn;if(draw('p')){setPhase('MAIN');setMessage(`${g.name}: Choose a card action.`)}},[screen,mine,phase,turn,duelRun,draw,g.name]);
  const tribute=(s:Side,n:number)=>{const victims=tributeIndices(s.front,n),front=[...s.front],grave=[...s.grave];victims.forEach(i=>{grave.push(front[i]!);front[i]=null});return{side:{...s,front,grave},slot:victims[0]??front.findIndex(x=>!x)}};
  const chooseTribute=(i:number)=>{if(!sel||(action!=='SUMMON'&&action!=='DEFENSE'))return;const card=sel,cost=tributeCost(card);if(!cost||!p.front[i])return;const next=tributePick.includes(i)?tributePick.filter(x=>x!==i):tributePick.length<cost?[...tributePick,i]:tributePick;if(next.length<cost){setTributePick(next);setMessage(`Choose ${cost} tribute${cost>1?'s':''}. ${next.length}/${cost} selected.`);return}setP(s=>{const front=[...s.front],grave=[...s.grave];next.forEach(x=>{const victim=front[x];if(victim){grave.push(victim);front[x]=null}});front[next[0]]={...card,defense:action==='DEFENSE',ready:turn+1};return{...s,hand:s.hand.filter(x=>x.id!==card.id),front,grave}});setEco(x=>({...x,summon:1}));setMessage(`${card.name} summoned using ${cost} chosen tribute${cost>1?'s':''}. Summoning sickness active.`);setTributePick([]);setSel(null);setAction(null)};
  const place=(i:number)=>{if(!sel||phase!=='MAIN'||!mine)return;if(action==='SUMMON'||action==='DEFENSE'){const reason=summonReason(sel,p,turn,eco);if(reason){setMessage(reason);return}const cost=tributeCost(sel);if(cost){setMessage(`Choose ${cost} tribute${cost>1?'s':''} first.`);return}setP(s=>{const front=[...s.front];front[i]={...sel,defense:action==='DEFENSE',ready:turn+1};return{...s,hand:s.hand.filter(x=>x.id!==sel.id),front}});setEco(x=>({...x,summon:1}));setMessage(`${sel.name} summoned. Summoning sickness active.`)}else if(action==='SET'){if(eco.set){setMessage('Set allowance used (1/1).');return}setP(s=>{const back=[...s.back];back[i]={...sel,face:true,setAt:turn};return{...s,hand:s.hand.filter(x=>x.id!==sel.id),back}});setEco(x=>({...x,set:1}));setMessage(`${sel.name} set. Armed for opponent turn.`)}setSel(null);setAction(null)};
@@ -105,10 +109,11 @@ export default function ArenaPage(){
     const attacker=turn===1?-1:s.front.findIndex(x=>x&&!x.used&&(x.ready??0)<=turn),hero=attacker>=0?s.front[attacker]:null;
     if(!hero)return s;
     let next=s;
-    const targets=p.front.map((card,index)=>({card,index})).filter(x=>x.card);
-    const trap=p.back.findIndex(x=>x?.kind==='TRAP'&&trapOutcome(x.name,hero.atk,turn,x.setAt??turn).armed);
+    const player=sidesRef.current.p;
+    const targets=player.front.map((card,index)=>({card,index})).filter(x=>x.card);
+    const trap=player.back.findIndex(x=>x?.kind==='TRAP'&&trapOutcome(x.name,hero.atk,turn,x.setAt??turn).armed);
     if(trap>=0){
-     const card=p.back[trap]!,effect=trapOutcome(card.name,hero.atk,turn,card.setAt??turn);
+     const card=player.back[trap]!,effect=trapOutcome(card.name,hero.atk,turn,card.setAt??turn);
      setP(q=>{const back=[...q.back];back[trap]=null;return{...q,back,grave:[...q.grave,card]}});
      if(effect.reflected){const result=damageOutcome(enemyLpRef.current,effect.reflected);enemyLpRef.current=result.lp;next={...next,lp:result.lp};if(result.lethal)finish('REINA')}
      setMessage(effect.reflected?`MIRROR WARD reflects ${effect.reflected} damage to SILENTINDEX.`:'COUNTER SEAL negates SILENTINDEX attack.');
@@ -128,7 +133,7 @@ export default function ArenaPage(){
    setTurn(t=>t+1);setP(s=>({...s,front:s.front.map(x=>x?{...x,used:false}:x)}));setE(s=>({...s,front:s.front.map(x=>x?{...x,used:false}:x)}));setEco(emptyEco());setPhase('DRAW');setMine(true);setMessage('Your turn. Draw, then act.');
   };
   run();return()=>{stop=true;delay?.cancel()};
- },[mine,screen,winner,turn,g.slots]);
+ },[mine,screen,winner,turn,g.slots,draw,damage,finish,duelRun]);
  const reason=useMemo(()=>!sel?'':sel.kind==='HERO'?summonReason(sel,p,turn,eco):sel.kind==='SPELL'?(turn<3?'Opening: direct damage spells unavailable.':eco.spell?'Spell allowance used (1/1).':''):eco.set?'Set allowance used (1/1).':'',[sel,p,turn,eco]);
  const preview=att===null?'':!e.front.some(Boolean)?`${p.front[att]?.atk??0} direct damage`: 'Choose target to compare ATK against battle value';const pc=count(p),ec=count(e),inspected=action?null:sel??viewedEnemy,tributeRequired=reason.startsWith('Requires one tribute')||reason.startsWith('Requires two tributes');
  if(screen!=='duel')return <ArenaEntry screen={screen} category={category} elapsed={queueTime} soundOn={soundOn} onSound={toggleSound} onSelect={key=>{sound('select');setCategory(key)}} onStart={()=>{if(category)setScreen('search')}} onCancel={()=>setScreen('category')} onAccept={accept}/>;
