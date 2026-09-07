@@ -50,7 +50,7 @@ export default function WikiPage() {
   return (
     <div style={{ minHeight: '100vh', background: '#0D0B10', color: '#EDE7DC', fontFamily: "'Zen Kaku Gothic New', sans-serif" }}>
       {/* sticky header */}
-      <div style={{ position: 'sticky', top: 0, zIndex: 20, background: '#0B0912', borderBottom: '1px solid rgba(237,231,220,.12)', padding: '20px clamp(20px,4vw,48px)' }}>
+      <div className="wiki-header" style={{ background: '#0B0912', borderBottom: '1px solid rgba(237,231,220,.12)' }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 16, maxWidth: 1280, margin: '0 auto' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
@@ -70,8 +70,8 @@ export default function WikiPage() {
           </div>
 
           {view === 'roster' && (
-            <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center' }}>
-              <input value={search} onChange={(e) => { setSearch(e.target.value); setPage(0); }} placeholder="SEARCH NAME" style={{ background: '#14101A', border: '1px solid rgba(237,231,220,.25)', color: '#EDE7DC', fontFamily: "'JetBrains Mono', monospace", fontSize: 11, padding: '9px 14px', letterSpacing: '.05em', width: 130 }} />
+            <div className="wiki-filters">
+              <input className="wiki-search" value={search} onChange={(e) => { setSearch(e.target.value); setPage(0); }} placeholder="SEARCH NAME" style={{ background: '#14101A', border: '1px solid rgba(237,231,220,.25)', color: '#EDE7DC', fontFamily: "'JetBrains Mono', monospace", fontSize: 11, padding: '9px 14px', letterSpacing: '.05em', width: 130 }} />
               <div style={{ display: 'flex', gap: 0, border: '1px solid rgba(237,231,220,.25)' }}>
                 {CARD_TYPES.map((t) => (
                   <button key={t} onClick={() => { setCardType(t); setPage(0); setOpenId(null); }} style={{ cursor: 'pointer', padding: '9px 12px', fontFamily: "'JetBrains Mono', monospace", fontSize: 9.5, fontWeight: 700, letterSpacing: '.08em', color: typeFg(t), background: typeBg(t), border: 'none' }}>{t}</button>
@@ -105,13 +105,13 @@ export default function WikiPage() {
       ) : (
         <div style={{ maxWidth: 1280, margin: '0 auto', padding: '36px clamp(20px,4vw,48px) 80px' }}>
           {cardType === 'HEROES' ? (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(104px,1fr))', gap: 9 }}>
+            <div className="wiki-card-grid">
               {paged.map((h) => (
                 <HeroCard key={h.id} h={h} onOpen={() => { setOpenId(h.id); setTab('stats'); setPage(p); }} />
               ))}
             </div>
           ) : (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(104px,1fr))', gap: 9 }}>
+            <div className="wiki-card-grid">
               {SUPPORT_CARDS.filter((s) => s.rank === cardType).map((s) => (
                 <SupportCardGrid key={s.id} s={s} onOpen={() => setOpenId(s.id)} />
               ))}
@@ -280,15 +280,15 @@ function FusionView({ legendaries, featured, onBrowse }: { legendaries: Hero[]; 
         <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(115deg,#0D0B10 0%,#0D0B10 34%,#5C1119 54%,#8C1420 72%,#0D0B10 92%)', opacity: 0.7 }}></div>
         <div style={{ position: 'relative', maxWidth: 960, margin: '0 auto', padding: '70px clamp(20px,4vw,48px) 60px' }}>
           <div style={{ display: 'inline-block', fontFamily: "'JetBrains Mono', monospace", fontSize: 10, fontWeight: 700, letterSpacing: '.3em', color: '#0F0C16', background: '#E03C4E', padding: '5px 12px', clipPath: 'polygon(0 0,100% 0,90% 100%,0 100%)' }}>THE FORGE</div>
-          <h1 style={{ margin: '16px 0 0', fontSize: 'clamp(38px,5.4vw,64px)', fontWeight: 900, letterSpacing: '-.03em', color: '#F5F1E8', textShadow: '0 0 34px rgba(224,60,78,.7)' }}>Two cards in.<br />One breakthrough out.</h1>
-          <p style={{ margin: '18px 0 0', maxWidth: 600, fontSize: 14.5, lineHeight: 1.8, color: 'rgba(237,231,220,.8)' }}>Not every pair can fuse. Each hero only fuses with a specific set of known partners, listed on its own page as "Fuses well with." Class is a compatibility filter, not a power tier: stats decide who wins a fight, not class.</p>
-          <p style={{ margin: '12px 0 0', maxWidth: 600, fontSize: 13, lineHeight: 1.75, color: '#F5C6CC' }}>Try an incompatible pair anyway and the Forge still runs, it just always fails, and both cards are lost. Check compatibility first.</p>
+          <h1 style={{ margin: '16px 0 0', fontSize: 'clamp(38px,5.4vw,64px)', fontWeight: 900, letterSpacing: '-.03em', color: '#F5F1E8', textShadow: '0 0 34px rgba(224,60,78,.7)' }}>Fuse cards.<br />Check your pair.</h1>
+          <p style={{ margin: '18px 0 0', maxWidth: 600, fontSize: 14.5, lineHeight: 1.8, color: 'rgba(237,231,220,.8)' }}>Not every pair can fuse. Each hero only fuses with a specific set of known partners, listed on its own page as &quot;Fuses well with.&quot; Class is a compatibility filter, not a power tier: stats decide who wins a fight, not class.</p>
+          <p style={{ margin: '12px 0 0', maxWidth: 600, fontSize: 13, lineHeight: 1.75, color: '#F5C6CC' }}>Incompatible pairs always fail, and both cards are lost. Check compatibility before fusing.</p>
         </div>
       </div>
 
       <div style={{ maxWidth: 960, margin: '0 auto', padding: '60px clamp(20px,4vw,48px) 90px' }}>
         <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, letterSpacing: '.24em', color: '#E03C4E' }}>OUTCOME LADDER</div>
-        <h2 style={{ margin: '12px 0 0', fontSize: 26, fontWeight: 800, letterSpacing: '-.02em' }}>Higher input, higher ceiling.</h2>
+        <h2 style={{ margin: '12px 0 0', fontSize: 26, fontWeight: 800, letterSpacing: '-.02em' }}>Fusion odds by input rarity.</h2>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginTop: 26 }}>
           <LadderRow left="BOTH COMMON" leftColor="#C08552" segments={[{ w: 70, c: '#C08552', t: 'COMMON 70%' }, { w: 30, c: '#B8C0C8', t: 'RARE 30%' }]} />
           <LadderRow left="EITHER RARE" leftColor="#B8C0C8" segments={[{ w: 75, c: '#B8C0C8', t: 'RARE 75%' }, { w: 25, c: '#E8B45C', t: 'ELITE 25%' }]} />
@@ -297,8 +297,8 @@ function FusionView({ legendaries, featured, onBrowse }: { legendaries: Hero[]; 
 
         <div style={{ marginTop: 64, paddingTop: 44, borderTop: '1px solid rgba(237,231,220,.14)' }}>
           <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, letterSpacing: '.24em', color: '#8C6FD8' }}>THE BLANK CARD</div>
-          <h2 style={{ margin: '12px 0 0', fontSize: 26, fontWeight: 800, letterSpacing: '-.02em' }}>A third slot, for the right pair.</h2>
-          <p style={{ margin: '12px 0 0', maxWidth: 600, fontSize: 14, lineHeight: 1.75, color: 'rgba(237,231,220,.68)' }}>Feed a Blank Card into a compatible Common + Elite pair and all three are consumed for a guaranteed Legendary, the only fusion that takes three inputs. Fusing is free, it draws from a cooldown that refills between matches. Blank Cards aren't sold or packed: every match shuffles one into the pre-game draw with a 20% chance.</p>
+          <h2 style={{ margin: '12px 0 0', fontSize: 26, fontWeight: 800, letterSpacing: '-.02em' }}>Common + Elite + Blank Card.</h2>
+          <p style={{ margin: '12px 0 0', maxWidth: 600, fontSize: 14, lineHeight: 1.75, color: 'rgba(237,231,220,.68)' }}>Feed a Blank Card into a compatible Common + Elite pair and all three are consumed for a guaranteed Legendary, the only fusion that takes three inputs. Fusing is free, it draws from a cooldown that refills between matches. Blank Cards aren&apos;t sold or packed: every match shuffles one into the pre-game draw with a 20% chance.</p>
           <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginTop: 28, flexWrap: 'wrap' }}>
             <MiniCard label="COMMON" hue="#C08552" />
             <Plus />
@@ -333,7 +333,7 @@ function FusionView({ legendaries, featured, onBrowse }: { legendaries: Hero[]; 
         <div style={{ marginTop: 64, paddingTop: 44, borderTop: '1px solid rgba(237,231,220,.14)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16 }}>
           <div>
             <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, letterSpacing: '.24em', color: '#3FA8A0' }}>SPELL &amp; TRAP</div>
-            <div style={{ fontSize: 16, fontWeight: 700, marginTop: 8, color: 'rgba(237,231,220,.85)' }}>Spells and Traps fill deck slots alongside heroes, browse them under the roster's card-type tabs.</div>
+            <div style={{ fontSize: 16, fontWeight: 700, marginTop: 8, color: 'rgba(237,231,220,.85)' }}>Spells and Traps fill deck slots alongside heroes, browse them under the roster&apos;s card-type tabs.</div>
           </div>
           <button onClick={onBrowse} style={{ cursor: 'pointer', fontFamily: "'JetBrains Mono', monospace", fontSize: 11, fontWeight: 700, letterSpacing: '.1em', color: '#0F0C16', background: '#3FA8A0', padding: '10px 18px', border: 'none' }}>BROWSE CARDS &rarr;</button>
         </div>

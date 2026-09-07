@@ -11,8 +11,8 @@ export default function SignupPage() {
       kicker="JOIN THE ARENA"
       heading="Create your account"
       panel="card-blur"
-      panelBanner="UNLOCK YOUR FIRST PACK"
-      panelBannerSub="Create an account to reveal what's inside."
+      panelBanner="YOUR FIRST HERO PACK"
+      panelBannerSub="Create an account to start collecting heroes."
     >
       <SocialButtons />
       <div style={{ marginTop: 28, textAlign: 'center', fontSize: 13, color: 'rgba(237,231,220,.55)' }}>

@@ -39,7 +39,7 @@ export default function CollectionPage() {
 
   return (
     <AppShell>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 16, padding: '36px clamp(20px,3.5vw,48px) 0' }}>
+      <div className="product-page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 16 }}>
         <div>
           <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, letterSpacing: '.2em', color: '#E03C4E' }}>MY COLLECTION</div>
           <h1 style={{ margin: '8px 0 0', fontSize: 'clamp(24px,2.6vw,32px)', fontWeight: 900, letterSpacing: '-.02em', color: '#F5F1E8' }}>{POOL.length} of 100 heroes</h1>
@@ -47,9 +47,9 @@ export default function CollectionPage() {
         <Link href="/wiki" style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: '#E0596A', textDecoration: 'none' }}>BROWSE FULL WIKI &gt;</Link>
       </div>
 
-      <div style={{ padding: '0 clamp(20px,3.5vw,48px)' }}>
+      <div className="product-content">
         {/* rarity stats */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 16, marginTop: 28 }}>
+        <div className="collection-stats">
           {RANKS.filter((r) => r !== 'ALL').map((r) => {
             const owned = POOL.filter((c) => c.rank === r).length;
             return (
@@ -74,7 +74,7 @@ export default function CollectionPage() {
         </div>
 
         {/* card grid */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(104px,1fr))', gap: 10, marginTop: 20 }}>
+        <div className="collection-grid">
           {filtered.map((c) => (
             <div key={c.name} style={{ position: 'relative', background: '#100C14', border: '1px solid rgba(237,231,220,.16)', clipPath: 'polygon(0 0,100% 0,100% 88%,88% 100%,0 100%)', padding: 10 }}>
               {c.count > 1 && <div style={{ position: 'absolute', top: 6, right: 6, fontFamily: "'JetBrains Mono', monospace", fontSize: 9, fontWeight: 900, color: '#0F0C16', background: '#E8B45C', padding: '1px 5px' }}>x{c.count}</div>}
@@ -89,9 +89,9 @@ export default function CollectionPage() {
         <div style={{ marginTop: 28, border: '1px solid rgba(237,231,220,.14)', padding: 20, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 16 }}>
           <div>
             <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9.5, letterSpacing: '.16em', color: 'rgba(237,231,220,.5)' }}>DUPLICATES READY TO FORGE</div>
-            <div style={{ fontWeight: 900, fontSize: 16, marginTop: 6, color: '#F5F1E8' }}>{dupeCount} spare cards sitting idle in your vault</div>
+            <div style={{ fontWeight: 900, fontSize: 16, marginTop: 6, color: '#F5F1E8' }}>{dupeCount} duplicate cards in your vault</div>
           </div>
-          <Link href="/wiki" style={{ border: '1px solid #E03C4E', color: '#E03C4E', fontSize: 11, fontWeight: 700, letterSpacing: '.1em', padding: '11px 18px', textDecoration: 'none' }}>OPEN FORGE</Link>
+          <Link href="/wiki" style={{ border: '1px solid #E03C4E', color: '#E03C4E', fontSize: 11, fontWeight: 700, letterSpacing: '.1em', padding: '11px 18px', textDecoration: 'none' }}>VIEW FUSION GUIDE</Link>
         </div>
       </div>
     </AppShell>

@@ -27,7 +27,7 @@ const WEEKLY: QuestDef[] = [
 function QuestRow({ q, claimed, onClaim }: { q: QuestDef; claimed: boolean; onClaim: () => void }) {
   const ready = q.done && !claimed;
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: '1fr 140px 100px', alignItems: 'center', gap: 16, padding: '16px 18px', background: '#100C14', borderLeft: `3px solid ${q.hue}` }}>
+    <div className="quest-row" style={{ background: '#100C14', borderLeft: `3px solid ${q.hue}` }}>
       <div>
         <div style={{ fontWeight: 700, fontSize: 14, color: '#F5F1E8' }}>{q.label}</div>
         <div style={{ marginTop: 9, height: 5, background: 'rgba(237,231,220,.12)' }}>
@@ -65,7 +65,7 @@ export default function QuestsPage() {
 
   return (
     <AppShell>
-      <div style={{ position: 'relative', overflow: 'hidden', margin: '0 clamp(20px,3.5vw,48px)' }}>
+      <div className="product-hero" style={{ position: 'relative', overflow: 'hidden' }}>
         <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(100deg,#1A0E10 0%,#4C1018 46%,#8C1420 62%,#1A0E10 100%)', clipPath: 'polygon(0 0,100% 0,100% 100%,0 100%,0 0,3% 14%,3% 86%,0 100%)' }} />
         <div style={{ position: 'relative', padding: '32px clamp(20px,3.2vw,40px)' }}>
           <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9.5, letterSpacing: '.28em', color: 'rgba(245,241,232,.65)' }}>DAILY &amp; WEEKLY</div>
@@ -73,7 +73,7 @@ export default function QuestsPage() {
         </div>
       </div>
 
-      <div style={{ padding: '0 clamp(20px,3.5vw,48px)' }}>
+      <div className="product-content">
         <div style={{ marginTop: 28, display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
           <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, letterSpacing: '.2em', color: '#E03C4E' }}>DAILY QUESTS</div>
           <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: 'rgba(237,231,220,.4)' }}>RESETS IN 09:24:11</div>

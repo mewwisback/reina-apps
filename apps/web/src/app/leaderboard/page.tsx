@@ -76,13 +76,13 @@ export default function LeaderboardPage() {
 
   return (
     <AppShell>
-      <div style={{ position: 'relative', overflow: 'hidden', margin: '0 clamp(20px,3.5vw,48px)' }}>
+      <div className="product-hero" style={{ position: 'relative', overflow: 'hidden' }}>
         <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(100deg,#1A0E10 0%,#4C1018 46%,#8C1420 62%,#1A0E10 100%)', clipPath: 'polygon(0 0,100% 0,100% 100%,0 100%,0 0,3% 14%,3% 86%,0 100%)' }} />
         <div style={{ position: 'absolute', left: 0, top: 0, width: 26, height: 26, borderTop: '2px solid #F5F1E8', borderLeft: '2px solid #F5F1E8', opacity: 0.8 }} />
         <div style={{ position: 'absolute', right: 0, bottom: 0, width: 26, height: 26, borderBottom: '2px solid #F5F1E8', borderRight: '2px solid #F5F1E8', opacity: 0.8 }} />
         <div style={{ position: 'relative', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: 16, padding: '32px clamp(20px,3.2vw,40px)' }}>
           <div>
-            <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9.5, letterSpacing: '.28em', color: 'rgba(245,241,232,.65)' }}>SEASON 3 &middot; RANKED LADDER</div>
+            <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9.5, letterSpacing: '.28em', color: 'rgba(245,241,232,.65)' }}>SEASON 3: RANKED LADDER</div>
             <h1 style={{ margin: '8px 0 0', fontSize: 'clamp(26px,3vw,38px)', fontWeight: 900, letterSpacing: '-.02em', color: '#F5F1E8', textShadow: '0 0 24px rgba(0,0,0,.5)' }}>Leaderboard</h1>
           </div>
           <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
@@ -113,12 +113,12 @@ export default function LeaderboardPage() {
         </div>
       </div>
 
-      <div style={{ padding: '0 clamp(20px,3.5vw,48px)' }}>
+      <div className="product-content">
         {/* podium */}
         <div style={{ position: 'relative', marginTop: 32, padding: '30px 22px 8px', background: 'radial-gradient(ellipse at 50% 0%,rgba(224,60,78,.14),transparent 65%)' }}>
           <div style={{ position: 'absolute', left: 0, top: 0, width: 18, height: 18, borderTop: '1px solid rgba(245,241,232,.3)', borderLeft: '1px solid rgba(245,241,232,.3)' }} />
           <div style={{ position: 'absolute', right: 0, top: 0, width: 18, height: 18, borderTop: '1px solid rgba(245,241,232,.3)', borderRight: '1px solid rgba(245,241,232,.3)' }} />
-          <div style={{ position: 'relative', display: 'grid', gridTemplateColumns: '1fr 1.25fr 1fr', gap: 16, alignItems: 'end' }}>
+          <div className="leaderboard-podium" style={{ position: 'relative' }}>
             <PodiumCard pos={2} hue="#B8C0C8" player={ladder[1]} />
             <PodiumCard pos={1} hue="#E8B45C" player={ladder[0]} title="CHAMPION" big />
             <PodiumCard pos={3} hue="#C08552" player={ladder[2]} />
@@ -127,7 +127,7 @@ export default function LeaderboardPage() {
 
         {/* ladder */}
         <div style={{ marginTop: 36 }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '52px 1fr 130px 90px 90px 80px', gap: 12, padding: '0 14px 10px', fontFamily: "'JetBrains Mono', monospace", fontSize: 9, letterSpacing: '.14em', color: 'rgba(237,231,220,.4)', borderBottom: '1px solid rgba(237,231,220,.14)' }}>
+          <div className="leaderboard-row leaderboard-head" style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9, letterSpacing: '.14em', color: 'rgba(237,231,220,.4)', borderBottom: '1px solid rgba(237,231,220,.14)' }}>
             <div>RANK</div>
             <div>DUELIST</div>
             <div>TIER</div>
@@ -136,16 +136,16 @@ export default function LeaderboardPage() {
             <div>WIN%</div>
           </div>
           {ladder.map((p) => (
-            <div key={p.name} style={{ display: 'grid', gridTemplateColumns: '52px 1fr 130px 90px 90px 80px', gap: 12, alignItems: 'center', padding: '12px 14px', borderBottom: '1px solid rgba(237,231,220,.08)', borderLeft: p.accent, background: p.rowBg }}>
+            <div className="leaderboard-row" key={p.name} style={{ borderBottom: '1px solid rgba(237,231,220,.08)', borderLeft: p.accent, background: p.rowBg }}>
               <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 14, fontWeight: 900, color: p.rankColor }}>{p.pos}</div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
                 <div style={{ fontWeight: 700, fontSize: 13.5, color: '#F5F1E8', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>{p.name}</div>
                 {p.isYou && <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 8, fontWeight: 900, color: '#0F0C16', background: '#E03C4E', padding: '2px 6px', flex: 'none' }}>YOU</div>}
               </div>
               <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10.5, fontWeight: 700, color: p.tierHue }}>{p.tier}</div>
-              <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, fontWeight: 700, color: '#F5F1E8' }}>{p.mmr}</div>
-              <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: 'rgba(237,231,220,.55)' }}>{p.wins}W&ndash;{p.losses}L</div>
-              <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: '#4FA870' }}>{p.winRate}%</div>
+              <div className="leaderboard-metric leaderboard-mmr" style={{ fontFamily: "'JetBrains Mono', monospace", fontWeight: 700, color: '#F5F1E8' }}>{p.mmr}</div>
+              <div className="leaderboard-metric" style={{ fontFamily: "'JetBrains Mono', monospace", color: 'rgba(237,231,220,.55)' }}>{p.wins}W–{p.losses}L</div>
+              <div className="leaderboard-metric" style={{ fontFamily: "'JetBrains Mono', monospace", color: '#4FA870' }}>{p.winRate}%</div>
             </div>
           ))}
         </div>

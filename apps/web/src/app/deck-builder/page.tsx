@@ -93,7 +93,7 @@ export default function DeckBuilderPage() {
   return (
     <AppShell>
       {/* header hero */}
-      <div style={{ position: 'relative', overflow: 'hidden', padding: '20px clamp(20px,3vw,36px)' }}>
+      <div className="deck-builder-hero" style={{ position: 'relative', overflow: 'hidden' }}>
         <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(100deg,#1A0E10 0%,#4C1018 44%,#8C1420 60%,#1A0E10 100%)' }} />
         <div style={{ position: 'absolute', left: 0, top: 0, width: 20, height: 20, borderTop: '2px solid #F5F1E8', borderLeft: '2px solid #F5F1E8', opacity: 0.7 }} />
         <div style={{ position: 'absolute', right: 0, bottom: 0, width: 20, height: 20, borderBottom: '2px solid #F5F1E8', borderRight: '2px solid #F5F1E8', opacity: 0.7 }} />
@@ -128,7 +128,7 @@ export default function DeckBuilderPage() {
       </div>
 
       {/* deck slots */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 18, flexWrap: 'wrap' }}>
+      <div className="deck-tabs">
         {decks.map((d) => {
           const isActive = d.id === activeId;
           const n = d.cardIds.length;
@@ -147,11 +147,11 @@ export default function DeckBuilderPage() {
         )}
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 260px', gap: 20, marginTop: 20 }}>
+      <div className="deck-workspace">
         {/* vault */}
         <div>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
-            <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, letterSpacing: '.16em', color: 'rgba(237,231,220,.5)' }}>YOUR VAULT &middot; TAP TO ADD</div>
+            <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, letterSpacing: '.16em', color: 'rgba(237,231,220,.5)' }}>YOUR VAULT: TAP TO ADD</div>
             <input value={search} onChange={(e) => { setSearch(e.target.value); setVaultPage(0); }} placeholder="SEARCH HEROES" style={{ background: '#100C14', border: '1px solid rgba(237,231,220,.2)', color: '#F5F1E8', fontFamily: "'JetBrains Mono', monospace", fontSize: 11, letterSpacing: '.08em', padding: '8px 12px', width: 160 }} />
           </div>
           <div style={{ display: 'flex', gap: 6, marginTop: 12, flexWrap: 'wrap' }}>
@@ -165,7 +165,7 @@ export default function DeckBuilderPage() {
               );
             })}
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(88px,1fr))', gap: 8, marginTop: 16 }}>
+          <div className="vault-grid">
             {pagedVault.map((c) => (
               <button key={c.id} onClick={c.add} disabled={c.inDeck || count >= 30} style={{ position: 'relative', cursor: c.cursor, overflow: 'hidden', height: 118, background: '#100C14', border: '1px solid rgba(237,231,220,.16)', clipPath: 'polygon(0 0,100% 0,100% 88%,88% 100%,0 100%)', padding: 8, opacity: c.opacity, textAlign: 'left' }}>
                 <div style={{ position: 'absolute', left: 0, top: 0, width: 0, height: 0, borderStyle: 'solid', borderWidth: '16px 16px 0 0', borderColor: `${c.rankHue} transparent transparent transparent` }} />
@@ -210,7 +210,7 @@ export default function DeckBuilderPage() {
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', marginTop: 12, maxHeight: 460, overflowY: 'auto', scrollbarWidth: 'thin', scrollbarColor: '#E03C4E #17121B' }}>
             {deckCardsFiltered.map((d) => (
-              <div key={d.id} style={{ display: 'grid', gridTemplateColumns: '20px auto 1fr auto', alignItems: 'center', gap: 10, padding: '9px 4px', borderBottom: '1px solid rgba(237,231,220,.08)' }}>
+              <div data-deck-list-item key={d.id} style={{ display: 'grid', gridTemplateColumns: '20px auto 1fr auto', alignItems: 'center', gap: 10, padding: '9px 4px', borderBottom: '1px solid rgba(237,231,220,.08)' }}>
                 <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9, color: 'rgba(237,231,220,.3)' }}>{d.index}</div>
                 <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 7, fontWeight: 900, letterSpacing: '.04em', color: '#0F0C16', background: d.rankHue, padding: '3px 5px' }}>{d.rankShort}</div>
                 <div style={{ fontWeight: 700, fontSize: 13.5, color: '#F5F1E8', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>{d.name}</div>

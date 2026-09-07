@@ -151,15 +151,16 @@ function PanelArt({ variant, banner, bannerSub }: { variant: 'card' | 'card-blur
 export function AuthLayout({ kicker, heading, panel = 'card', panelBanner, panelBannerSub, children }: AuthLayoutProps) {
   return (
     <div
+      className="auth-shell"
       style={{
         minHeight: '100vh',
         display: 'grid',
         gridTemplateColumns: '1fr 1fr',
       }}
     >
-      <PanelArt variant={panel} banner={panelBanner} bannerSub={panelBannerSub} />
+      <div className="auth-art"><PanelArt variant={panel} banner={panelBanner} bannerSub={panelBannerSub} /></div>
 
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '60px 40px' }}>
+      <div className="auth-form-panel" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '60px 40px' }}>
         <div style={{ width: '100%', maxWidth: 380 }}>
           <Link href="/" className="reina-logo" style={{ marginBottom: 40 }}>
             <div className="reina-logo-mark">

@@ -1,0 +1,494 @@
+REINA ASSET DESIGN BIBLE FOR GEMINI
+Version: 2.0
+Canonical source: /home/rakha/github/reina-fe
+Purpose: Generate visual assets that match the shipped Reina identity.
+
+SOURCE AUTHORITY
+
+Use evidence in this order:
+1. reina-fe/public/assets/card-flip/frame-000.webp through frame-239.webp
+2. reina-fe/src/app/globals.css
+3. reina-fe/src/components/hero-section.tsx
+4. reina-fe/src/components/hero-card-backdrop.tsx
+5. reina-fe/src/components/roster-section.tsx
+6. reina-fe/src/components/packs-section.tsx
+7. reina-fe/src/components/statement-section.tsx
+8. reina-fe/src/components/site-nav.tsx
+9. reina-fe/src/lib/roster.ts
+
+Do not derive Reina identity from reina-apps Arena backgrounds. Arena assets may extend the world but do not override reina-fe.
+
+CORE IDENTITY
+
+Reina is a dark card world built from:
+- Black void.
+- Face-down cards in suspended motion.
+- Charcoal faceted surfaces.
+- Crimson and coral-red emission.
+- A repeated eye-like bladed iris seal.
+- Nested ornamental card borders.
+- Hard clipped interface geometry.
+- Cream editorial typography.
+- Controlled asymmetry around a strict geometric system.
+
+The mood is secretive, aggressive, ceremonial, high-energy, and precise. Reina is not ancient teal ruin fantasy, cyberpunk, generic occult horror, esports UI, or colorful gacha art.
+
+CANONICAL PALETTE
+
+Global tokens from reina-fe/src/app/globals.css:
+- Void: #0D0B10
+- Void 2: #120E12
+- Void 3: #0B0912
+- Ink: #EDE7DC
+- Cream: #F5F1E8
+- Crimson: #E03C4E
+- Crimson dark: #5C1119
+- Crimson deep: #8C1420
+- Amber: #E8873C
+- Gold: #E8B45C
+- Gold light: #F0C08A
+
+Card-back rendering adds value variants:
+- Near-black background.
+- Charcoal and graphite card planes.
+- Deep burgundy structure.
+- Saturated crimson lines.
+- Coral-red glow.
+- Pink-red highlight cores.
+
+Color hierarchy:
+- 65 to 80 percent void black and charcoal.
+- 15 to 25 percent dark crimson and burgundy structure.
+- Under 10 percent saturated crimson or coral emission.
+- Under 3 percent cream, pale coral, amber, or gold highlights.
+
+Rules:
+- Crimson identifies Reina and active energy.
+- Cream carries readable editorial information.
+- Amber and gold identify packs, rarity, reward, or exceptional state.
+- Individual roster characters may use one controlled hue from roster.ts.
+- Character hues do not replace Reina crimson as product identity.
+- Avoid broad purple, teal, cyan, or rainbow treatment.
+
+CARD-BACK DESIGN
+
+Canonical direction matches the supplied red card-back reference and reina-fe card-flip frames.
+
+Physical form:
+- Portrait card with standard trading-card proportions.
+- Slightly rounded physical corners.
+- Thin dark edge.
+- Matte charcoal or black card field.
+- No orientation-revealing text.
+
+Border system:
+- One muted outer perimeter line.
+- One brighter inset crimson frame.
+- Nested parallel line segments.
+- Angular stepped or clipped corner brackets.
+- Small inward chevrons, diamonds, or triangular interruptions.
+- Narrow crisp emissive cores with restrained red bloom.
+- Border remains readable at 58 by 82 pixels.
+- Ornament stays subordinate to center emblem.
+
+Center emblem:
+- Large radial eye, eclipse, bladed iris, or arcane aperture.
+- Near-black circular core.
+- Bright segmented crimson ring.
+- Four dominant hooked blades or curved points.
+- Four secondary radial points.
+- Dark outer disc with low-contrast facets.
+- Broken concentric tracks rather than a generic target.
+- Roughly fourfold or eightfold rotational construction.
+- Strict geometric symmetry in shape.
+- Asymmetric lighting for depth.
+
+Surface:
+- Dark radial facets around emblem.
+- Low-contrast folded-plane or fractured-armor geometry.
+- Fine restrained grain.
+- Matte finish.
+- Slight embossed depth.
+- No glossy plastic or chrome.
+
+Lighting:
+- Card graphics appear internally emissive.
+- Brightest emission is concentrated on selected border and emblem edges.
+- Adjacent faces remain dark.
+- Bloom never closes border gaps or flattens emblem depth.
+- Center remains near-black for maximum contrast.
+
+Strict exclusions:
+- No text.
+- No numbers.
+- No character portrait.
+- No generic spiral.
+- No blue trading-card vortex.
+- No rainbow foil.
+- No broad gold frame.
+- No fantasy runes.
+- No decorative language resembling readable letters.
+- No full-surface neon outline.
+
+CARD-STORM MOTION LANGUAGE
+
+Canonical hero animation uses repeated face-down cards in a black void.
+
+Composition:
+- Cards occupy foreground, middle depth, and distance.
+- Use varied scale, roll, pitch, and yaw.
+- Include frontal cards, foreshortened cards, and thin edge-on slivers.
+- Crop large foreground cards at frame boundaries.
+- Use overlap to establish depth.
+- Keep irregular black gaps between clusters.
+- Avoid one regular spiral or evenly distributed wallpaper pattern.
+
+Motion cues:
+- Cards tumble or orbit through suspended space.
+- A diagonal crimson energy slash may organize the frame.
+- Small triangular shards and sparks reinforce direction.
+- Motion looks controlled but turbulent.
+- The repeated back emblem keeps chaos coherent.
+
+Lighting:
+- Emissive borders and emblems light nearby card planes.
+- Cards near energy receive pink-red fill.
+- Cards facing away remain charcoal and deep crimson.
+- Foreground may use mild depth blur.
+- Background stays black, not fog-filled scenery.
+
+SHAPE LANGUAGE
+
+Canonical shapes:
+- Rounded card rectangles.
+- Concentric circles.
+- Broken rings.
+- Hooked blades.
+- Iris or eye geometry.
+- Cardinal and diagonal spikes.
+- Angular border brackets.
+- Clipped rectangles.
+- Slanted shards.
+- Small triangles.
+- Narrow horizontal signal bars.
+
+Interface geometry:
+- Large asymmetrical color fields.
+- Hard clip-path cuts.
+- Rectangular panels with one clipped corner.
+- Thin crimson rails.
+- Strong blocks, not decorative frames around everything.
+
+Avoid:
+- Soft pill shapes.
+- Glassmorphism.
+- Generic floating dashboard cards.
+- Middle-dot decoration.
+- Decorative numbered modules unrelated to content.
+- Diagonal tactical grids.
+- Scanlines.
+- Rounded mascot styling.
+- Dense filigree.
+
+TYPOGRAPHY ROLES
+
+Canonical fonts:
+- Sans: Zen Kaku Gothic New.
+- Serif: Zen Old Mincho.
+- Mono: JetBrains Mono.
+
+Role separation:
+- Large primary headings use heavy sans.
+- REINA wordmark and ceremonial identity may use serif.
+- Labels, telemetry, rarity, categories, and compact metadata use mono.
+- Body copy uses sans.
+
+Generated assets must not contain final text. Add all text in code or design software.
+
+PAGE AND MARKETING COMPOSITION
+
+Evidence from reina-fe:
+- Full-screen black or near-black sections.
+- Large centered or asymmetrical editorial headings.
+- One narrow crimson signal line.
+- Large clipped background shards at very low opacity.
+- Restrained conic light rays.
+- Strong negative space.
+- One product accent per section: crimson for roster and identity, amber for packs.
+- Section content does not sit inside generic equal-weight cards.
+
+Use:
+- One dominant message.
+- One focal card system or character group.
+- Broad dark fields.
+- Sparse accents.
+- Measured gutters: clamp-based, roughly 20 to 56 pixels.
+
+Do not use:
+- Dense admin dashboards.
+- Feature-card grids as default composition.
+- Multiple competing accent colors.
+- Decorative metrics.
+- Fake terminal copy.
+
+CHARACTER AND ROSTER ART
+
+reina-fe defines roster identity through role, hue, plate gradient, rarity, and stats.
+
+Roster roles include:
+- Scout.
+- Strategist.
+- Vanguard.
+- Herald.
+- Artificer.
+- Cleric.
+- Warden.
+- Sentinel.
+- Medic.
+- Blade.
+
+Character art rules:
+- One strong role-readable silhouette.
+- One signature tool, weapon, garment, or behavior.
+- Character-specific hue remains local to plate, rim light, prop, or effect.
+- Reina crimson remains shared brand structure.
+- Background uses dark role-colored plate gradients.
+- Character remains readable inside a portrait card crop.
+- Face, head silhouette, and primary tool remain clear at thumbnail size.
+- Pose communicates function, not generic combat drama.
+
+Rendering:
+- Premium stylized illustration.
+- Controlled anime influence is allowed.
+- Strong graphic silhouette.
+- Clean anatomy.
+- Selective painterly texture.
+- Hard and soft edges follow focal hierarchy.
+- Dark background with localized role-color illumination.
+
+Avoid:
+- Generic school uniforms.
+- Random fantasy armor.
+- Bikini armor.
+- Excessive props.
+- Oversized weapons without believable weight.
+- Airbrushed faces.
+- Malformed hands.
+- Uniform neon rim light.
+
+RARITY COLOR SYSTEM
+
+From reina-fe roster data:
+- Common: warm bronze-brown, approximately #C08552.
+- Rare: restrained silver-gray, approximately #B8C0C8.
+- Elite: gold, #E8B45C.
+- Legendary: Reina crimson, #E03C4E.
+
+Rules:
+- Rarity accents frame existing art; they do not recolor the full image.
+- Legendary uses stronger contrast and narrative scale, not rainbow effects.
+- Keep rarity readable through value and material, not hue alone.
+
+HERO CARD ART
+
+Composition:
+- 2:3 portrait master.
+- Dominant character or creature.
+- Face or head in upper-middle safe area.
+- Primary tool or weapon readable.
+- Lower 15 percent contains no essential face or hand details.
+- Critical silhouette remains recognizable at 58 by 82 pixels.
+
+Visual treatment:
+- Near-black or role-colored plate background.
+- Crimson product structure.
+- Local character hue.
+- One focused emissive source.
+- Strong foreground separation.
+- No generated frame, name, stats, rarity, or UI.
+
+SUPPORT CARD ART
+
+Support cards show:
+- Relics.
+- Tactical actions.
+- Signals.
+- Packs.
+- Seals.
+- Energy events.
+- Locations only when they support card action.
+
+Rules:
+- Show one clear cause and result.
+- Favor object-centered or action-centered composition.
+- Reuse eye, ring, shard, border, and card-storm motifs when relevant.
+- Do not turn every support asset into a standing character portrait.
+- No text or generated interface.
+
+PACK ASSETS
+
+Canonical pack section uses amber as its local signal.
+
+Pack design:
+- Void-black or charcoal wrapper.
+- Crimson Reina identity structure.
+- Amber and gold opening/reward accent.
+- Bladed iris seal or simplified Reina emblem.
+- Hard clipped wrapper cuts.
+- Matte foil with selective shine.
+- Sparse sparks or gold burst during opening.
+
+Avoid:
+- Rainbow foil.
+- Candy colors.
+- Generic booster-pack explosions.
+- Dense legal copy baked into image.
+
+ICONS AND SYMBOLS
+
+Icons:
+- Solid or restrained line geometry.
+- One or two colors.
+- Clear at 16 to 24 pixels.
+- Derived from circles, blades, shards, clipped corners, and card silhouettes.
+- Cream for neutral state.
+- Crimson for active or dangerous state.
+- Amber or gold for packs, rarity, reward, or legal highlight.
+
+Do not use:
+- Emoji style.
+- Rounded app-icon containers.
+- Detailed mini-illustrations.
+- Text inside icons.
+
+VFX
+
+Primary VFX vocabulary:
+- Crimson energy slash.
+- Emissive card border.
+- Bladed iris pulse.
+- Broken ring expansion.
+- Triangular shards.
+- Short sparks.
+- Controlled red haze.
+- Gold burst for packs or rewards.
+
+Attack:
+- Directional crimson cut or card-driven strike.
+- Preserve attacker and target readability.
+
+Defense:
+- Dark radial plate or cool neutral facet reinforcement.
+- Do not introduce unrelated blue force fields unless gameplay requires blue stance communication.
+
+Summon:
+- Cards enter from black void.
+- Emblem or border activates first.
+- Crimson ring or diagonal energy establishes motion.
+
+Rules:
+- Keep effect cores crisp.
+- Bloom remains restrained.
+- No rainbow portal.
+- No generic sci-fi beam.
+- No dense spark shower covering cards.
+
+ENVIRONMENTS
+
+Environment art is secondary to canonical void/card identity.
+
+Allowed directions:
+- Abstract black void.
+- Dark ceremonial chamber reduced to graphic masses.
+- Arena surfaces carrying Reina border and iris geometry.
+- Vault or pack space using amber locally.
+- Architecture may appear, but it must use Reina crimson signals and black editorial negative space.
+
+Do not make teal overgrown ruins the default Reina world.
+Do not use ritual-chamber.webp as the canonical environment pattern.
+
+BATTLEFIELD ASSETS
+
+Battlefield must support cards, not compete with them.
+
+Use:
+- Void-black, charcoal, or dark wine surfaces.
+- Large quiet planes.
+- Low-contrast radial facets.
+- Thin crimson territory signals.
+- Restrained iris or broken-ring geometry at center.
+- Pile regions expressed through physical card recesses or clipped frames.
+- Planar card placement zones.
+
+Avoid:
+- Bright full-board emission.
+- Strong baked perspective.
+- Fake labels or numbers.
+- Scanlines.
+- Tactical grids.
+- Decorative telemetry.
+- Detailed scenery directly behind card identities.
+
+CARD-BACK GEMINI PROMPT
+
+Create a universal Reina card back based on the canonical visual language in reina-fe card-flip frames.
+
+Portrait trading-card proportions with slightly rounded physical corners. Near-black matte card field with subtle charcoal radial facets. Layered crimson ornamental border: muted outer perimeter, brighter inset frame, narrow parallel segments, clipped angular corner brackets, and small inward chevron interruptions. Center a large Reina bladed-iris emblem: near-black circular core, segmented crimson ring, four hooked curved blades, four secondary cardinal points, dark outer disc, and broken concentric tracks. The geometry is strictly fourfold or eightfold symmetric while lighting is asymmetric. Use narrow coral-red emissive cores and restrained crimson bloom. Preserve large dark negative space around the emblem. The border and emblem must remain readable at 58 by 82 pixels.
+
+No text, no numbers, no character, no letters, no runes, no blue spiral, no rainbow foil, no broad gold frame, no glossy plastic, no full neon outline, no watermark, no mockup, no hand holding the card.
+
+Output 2048x3072, straight-on card artwork, isolated on transparent background or clean near-black background as requested.
+
+CARD-STORM GEMINI PROMPT
+
+Create a 16:9 Reina card-storm background based on reina-fe card-flip animation.
+
+Dozens of face-down Reina cards suspended in a black void at varied depth, scale, roll, pitch, and yaw. Include large cropped foreground cards, medium central cards, distant dark cards, and thin edge-on slivers. Every card uses the canonical near-black card back with crimson bladed-iris emblem and nested luminous border. Organize the frame around one diagonal crimson energy slash from lower-left to upper-right. Add sparse red triangular shards, short sparks, and controlled haze. Emissive borders light nearby charcoal planes. Preserve irregular black gaps and avoid an evenly distributed pattern.
+
+No text, no card faces, no characters, no architecture, no rainbow colors, no blue light, no regular spiral, no wallpaper repetition, no fake UI, no watermark.
+
+Output 3840x2160 full-bleed background.
+
+CHARACTER CARD GEMINI PROMPT TEMPLATE
+
+Create raw portrait card art for Reina using canonical reina-fe visual language.
+
+Character: [NAME]
+Role: [ROLE]
+Function: [FUNCTION]
+Local hue: [CHARACTER HUE]
+Rarity: [RARITY]
+Signature tool or effect: [ONE PRIMARY MOTIF]
+
+Use a 2:3 portrait composition. Build one strong role-readable silhouette. Keep face and head in the upper-middle safe area. Keep primary tool, hands, and action structurally clear. Use a near-black or role-colored plate background, controlled crimson Reina structure, localized character hue, and one focused emissive source. Preserve readability at 58 by 82 pixels. Use premium stylized illustration with controlled anime influence, clean anatomy, selective painterly texture, and clear focal hierarchy.
+
+No card frame, no text, no name, no stats, no rarity label, no logo, no watermark, no generic fantasy armor, no malformed hands, no excessive props, no uniform neon rim.
+
+Output 2048x3072 raw portrait art.
+
+GLOBAL NEGATIVE PROMPT
+
+bright cheerful daylight, ancient teal ruin default, generic high fantasy, generic occult runes, generic anime game UI, mobile gacha aesthetic, esports graphics, cyberpunk HUD, sci-fi dashboard, holograms, neon rainbow lighting, broad purple gradients, blue trading-card spiral, glossy plastic, chrome surfaces, glassmorphism, random fantasy clutter, excessive filigree, decorative scanlines, tactical grids, floating UI panels, fake text, letters, numbers, watermark, signature, mockup, generated card frame, oversaturated colors, excessive bloom, uniform sharpness, procedural noise, photoreal stock image, plastic 3D render, malformed anatomy, extra fingers, fused hands, impossible weapon grip, duplicated objects, evenly spaced wallpaper pattern
+
+QUALITY GATE
+
+Reject if any answer is no:
+1. Does the asset visibly belong beside reina-fe card-flip frames?
+2. Does void black or charcoal dominate?
+3. Is crimson emission controlled rather than flooding the frame?
+4. Is the bladed-iris, card, shard, or clipped geometry recognizable?
+5. Is there one clear focal hierarchy?
+6. Does the card-back emblem retain a near-black center?
+7. Do border lines have crisp cores beneath restrained bloom?
+8. Does geometry remain readable at target size?
+9. Does the asset avoid text and fake symbols?
+10. Does character-specific color remain local?
+11. Does rarity accent remain subordinate to identity?
+12. Does motion use varied depth instead of a flat repeated pattern?
+13. Does the asset avoid generic fantasy and dashboard treatment?
+14. Does it preserve negative space?
+15. Does it match reina-fe rather than ritual-chamber.webp?
+
+FINAL RULE
+
+When Reina references conflict, reina-fe wins. The canonical visual signature is black void, face-down cards, charcoal facets, crimson emissive borders, a bladed eye-like iris seal, angular shards, hard clipped geometry, cream editorial typography, and controlled card-storm motion.

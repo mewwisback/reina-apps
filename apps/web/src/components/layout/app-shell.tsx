@@ -1,8 +1,11 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
-import { useState, type ReactNode } from 'react';
+import { usePathname } from 'next/navigation';
+import gsap from 'gsap';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
+import './app-shell.css';
+import './product-layout.css';
 
 const NAV_ITEMS = [
   { href: '/dashboard', key: 'D', label: 'Dashboard' },
@@ -21,37 +24,70 @@ interface AppShellProps {
 
 export function AppShell({ children }: AppShellProps) {
   const [collapsed, setCollapsed] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [mobileLayout, setMobileLayout] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const [username, setUsername] = useState('Kaiba99');
   const [usernameInput, setUsernameInput] = useState('Kaiba99');
   const [walletInput, setWalletInput] = useState('');
   const [enteringArena, setEnteringArena] = useState(false);
   const pathname = usePathname();
-  const router = useRouter();
+  const shellRef = useRef<HTMLDivElement>(null);
 
   const expanded = !collapsed;
-  const asideWidth = collapsed ? '72px' : '238px';
+  useEffect(()=>{
+    if(!enteringArena)return;
+    const media=gsap.matchMedia(),context=gsap.context(()=>media.add('(prefers-reduced-motion: no-preference)',()=>{
+      gsap.timeline().addLabel('depart').to('.product-hero',{scale:.98,y:8,duration:.24,ease:'power2.in'},'depart').from('.arena-route-exit span',{y:12,duration:.2,ease:'power3.out'},'depart');
+    }),shellRef);
+    return()=>{media.revert();context.revert()};
+  },[enteringArena]);
+
+  useEffect(() => {
+    const query = window.matchMedia('(max-width: 700px)');
+    const syncLayout = () => setMobileLayout(query.matches);
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setMobileOpen(false);
+    };
+    syncLayout();
+    query.addEventListener('change', syncLayout);
+    window.addEventListener('keydown', closeOnEscape);
+    return () => {
+      query.removeEventListener('change', syncLayout);
+      window.removeEventListener('keydown', closeOnEscape);
+    };
+  }, []);
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh' }}>
+    <div ref={shellRef} className="app-shell" onClickCapture={event=>{
+      const link=(event.target as HTMLElement).closest<HTMLAnchorElement>('a[href="/arena"]');
+      if(!link||event.button!==0||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey)return;
+      setEnteringArena(true);
+    }}>
+      <header className="app-mobile-header">
+        <Link href="/" className="app-mobile-brand" aria-label="Reina home">
+          <span className="app-mobile-mark">R</span>
+          <span>REINA</span>
+        </Link>
+        <button
+          className="app-mobile-menu"
+          type="button"
+          aria-label={mobileOpen ? 'Close navigation' : 'Open navigation'}
+          aria-expanded={mobileOpen}
+          aria-controls="app-navigation"
+          onClick={() => setMobileOpen((open) => !open)}
+        >
+          <span aria-hidden="true">{mobileOpen ? '×' : 'Menu'}</span>
+        </button>
+      </header>
+      {mobileOpen && <button className="app-nav-backdrop" data-nav-backdrop type="button" aria-label="Close navigation" onClick={() => setMobileOpen(false)} />}
       {/* ============ SIDEBAR ============ */}
       <aside
-        style={{
-          width: asideWidth,
-          flex: 'none',
-          position: 'sticky',
-          top: 0,
-          height: '100vh',
-          overflowY: 'auto',
-          overflowX: 'hidden',
-          background: '#0B0912',
-          borderRight: '1px solid rgba(237,231,220,.1)',
-          padding: '26px 16px',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 30,
-          transition: 'width .22s',
-        }}
+        id="app-navigation"
+        data-app-sidebar
+        data-collapsed={collapsed ? 'true' : 'false'}
+        data-mobile-open={mobileOpen ? 'true' : 'false'}
+        aria-hidden={mobileLayout && !mobileOpen ? true : undefined}
       >
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
           <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '0 6px', minWidth: 0, overflow: 'hidden' }}>
@@ -108,11 +144,10 @@ export function AppShell({ children }: AppShellProps) {
               <Link
                 key={item.href}
                 href={item.href}
-                onClick={(event) => {
-                  if (item.href !== '/arena' || active || enteringArena) return;
-                  event.preventDefault();
-                  setEnteringArena(true);
-                  window.setTimeout(() => router.push(item.href), 320);
+                aria-current={active ? 'page' : undefined}
+                onClick={() => {
+                  setMobileOpen(false);
+
                 }}
                 style={{
                   display: 'flex',
@@ -178,7 +213,7 @@ export function AppShell({ children }: AppShellProps) {
                   {username}
                 </div>
                 <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9, fontWeight: 700, letterSpacing: '.1em', color: '#E8B45C' }}>
-                  GOLD III &middot; 1,840 MMR
+                  GOLD III, 1,840 MMR
                 </div>
               </div>
             )}
@@ -198,7 +233,7 @@ export function AppShell({ children }: AppShellProps) {
 
       {enteringArena && (
         <div className="arena-route-exit" role="status" aria-label="Entering Arena" aria-live="polite">
-          <img src="/arena/loading/tail-spin.svg" alt="" aria-hidden="true" />
+          <b aria-hidden="true">R</b>
           <span>ENTERING ARENA</span>
         </div>
       )}
@@ -314,7 +349,7 @@ export function AppShell({ children }: AppShellProps) {
       )}
 
       {/* ============ MAIN ============ */}
-      <main style={{ flex: 1, minWidth: 0, padding: '0 0 60px' }}>{children}</main>
+      <main className="app-main" data-route={pathname} style={{ flex: 1, minWidth: 0, padding: '0 0 60px' }}>{children}</main>
     </div>
   );
 }

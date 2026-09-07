@@ -1,0 +1,109 @@
+REINA ARENA CHECKPOINT
+Date: 2026-09-02
+Branch: redesign/arena-game-ui
+Base commit: 9b789ed
+Production: https://reina-apps.vercel.app/arena
+Deployment: dpl_DfPveHvZCCX8hGKBwJqNUFhh5HUD
+Status: READY
+HTTP: 200
+
+COMPLETED
+
+Arena layout
+- Replaced the generic desktop dashboard grid with a duel-stage composition.
+- Added a persistent left inspect rail, central battlefield, corner duelist HUDs, bottom overlapping hand, right command rail, and territory-owned piles.
+- Adapted the composition from Yu-Gi-Oh! Legacy of the Duelist without applying perspective transforms to semantic hitboxes.
+- Canvas renders only the battlefield background and lane rhythm. Cards, slots, focus, pointer, keyboard, and accessibility remain semantic DOM.
+
+Battlefield cards
+- Empty slots and occupied cards share one physical portrait footprint.
+- Removed the hidden BOT +50 ATK modifier. Both sides use printed ATK.
+- Attack and defense stances render explicitly.
+- Face-down support cards use concealed card backs.
+- Occupied cards remain contained by their owner slots and own their rendered center points.
+
+Card inspection
+- Visible enemy HERO cards open read-only inspection.
+- Enemy inspection never exposes SUMMON, DEFENSE, ACTIVATE, or SET SUPPORT actions.
+- Concealed enemy SUPPORT cards do not reveal identity.
+- Attack targeting takes precedence over enemy inspection.
+- Visible owned HERO cards on the battlefield open read-only inspection.
+- Tribute selection and attacker selection take precedence over owned HERO inspection.
+- Owned SUPPORT clicks retain direct activation behavior.
+- Battlefield viewing state remains separate from actionable hand selection.
+
+Allowance panel
+- Moved SUMMON, SET, SPELL, and FIELD counters outside the battlefield.
+- The panel now occupies a reserved left-rail region between inspect and the player HUD.
+- The counters use a two-by-two arrangement and do not intersect the board, inspect panel, player HUD, or hand.
+
+Responsive coverage
+- Verified 1920x1080, 1536x864, 1366x768, 1280x720, 1024x768, 820x1180, 430x932, 390x844, 360x800, and 844x390.
+- Covered desktop, tablet portrait and landscape, phone portrait and landscape, hand sizes from one to ten cards, selected-card inspection, summon targeting, stances, slot containment, pile collision, territory ownership, command rail, and the mobile inspect sheet.
+- Raised mobile zone labels from 8px to 10px.
+- Raised dense-hand card names from 7px to 10px.
+
+Latest verification
+- 48/48 responsive tests passed.
+- 23/23 Arena interaction tests passed.
+- TypeScript passed.
+- Vercel build passed.
+- Production reported READY.
+- /arena returned HTTP 200.
+
+OPEN WORK
+
+Source control
+- Create a clean verified commit and push the branch.
+- Keep local .hermes plans, credentials, build output, and test artifacts out of Git.
+- Separate Arena work from unrelated application-wide changes when practical.
+- Preserve unfinished work in a draft PR checklist.
+
+Visual refinement
+- Remove remaining generic status and control treatments.
+- Refine typography and spacing hierarchy across left rail, battlefield, and command rail.
+- Review dense-hand readability and small-viewport pile labels from screenshots.
+- Run a complete screenshot rejection pass after each visual batch.
+- Automated geometry proves containment and interaction, not visual acceptance.
+
+Owned SUPPORT inspection
+- Owned SUPPORT cards do not yet have an inspect-only interaction.
+- Clicking an owned SUPPORT card still activates it directly.
+- A future flow may open inspection first and expose an explicit ACTIVATE command while preserving concealed information and gameplay-mode precedence.
+
+CSS cleanup
+- arena.css and arena-mobile.css still contain overlapping selectors, stacked media queries, legacy owners, and many !important declarations.
+- Consolidate desktop stage, mobile flow, card footprint, lane rhythm, inspect geometry, command ownership, and allowance ownership into explicit rule owners.
+
+Manual accessibility audit
+- Verify battlefield focus order, screen-reader announcements when inspection changes, keyboard battlefield inspection, unrelated state preservation on close, high-contrast targeting, 200 percent browser zoom, and phone-landscape touch targets.
+
+PRIORITIES
+
+P0
+- Audit generated and local files.
+- Create and push a verified checkpoint commit.
+- Create a draft PR with completed work and P0/P1/P2 follow-ups.
+
+P1
+- Consolidate Arena CSS without changing verified behavior.
+- Capture opening hand, dense hand, owned inspection, enemy inspection, concealed support, summon, tribute, attack targeting, attack stance, defense stance, support activation, short desktop, tablet, phone portrait, and phone landscape.
+- Design an owned SUPPORT inspect interaction that does not conflict with activation.
+
+P2
+- Remove generic dashboard-like status treatments.
+- Strengthen physical lane ownership.
+- Remove duplicate labels.
+- Refine typography and rail spacing.
+- Audit responsive changes on dashboard, collection, deck builder, docs, leaderboard, quests, shop, wiki, auth layout, and app shell independently.
+
+RECOMMENDED ORDER
+
+1. Create the verified Git checkpoint.
+2. Separate and audit non-Arena changes.
+3. Consolidate Arena CSS without changing behavior.
+4. Run full regression.
+5. Capture the screenshot state matrix.
+6. Fix confirmed collisions and hierarchy issues.
+7. Add owned SUPPORT inspection after its interaction contract is defined.
+8. Deploy production and record the next checkpoint.
