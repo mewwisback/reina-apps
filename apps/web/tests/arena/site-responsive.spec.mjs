@@ -1,7 +1,8 @@
 import {readFile} from 'node:fs/promises';
 import {expect,test} from '@playwright/test';
 
-const shellRoutes=['/dashboard','/collection','/deck-builder','/leaderboard','/quests','/shop'];
+// Dashboard owns its deck shell; geometry coverage lives in dashboard-deck.spec.mjs.
+const shellRoutes=['/collection','/deck-builder','/leaderboard','/quests','/shop'];
 
 test('shared product layout requires no important overrides',async()=>{
  const css=await readFile(new URL('../../src/components/layout/product-layout.css',import.meta.url),'utf8');
@@ -15,7 +16,7 @@ test('shared app shell requires no important overrides',async()=>{
 
 test('desktop sidebar collapse remains CSS-owned',async({page})=>{
  await page.setViewportSize({width:1440,height:900});
- await page.goto('/dashboard');
+ await page.goto('/collection');
  const sidebar=page.locator('[data-app-sidebar]');
  await expect(sidebar).toHaveCSS('width','238px');
  await sidebar.locator('button').first().click();
@@ -26,7 +27,7 @@ test('desktop sidebar collapse remains CSS-owned',async({page})=>{
 test('mobile sidebar keeps fixed drawer geometry with reduced motion',async({page})=>{
  await page.emulateMedia({reducedMotion:'reduce'});
  await page.setViewportSize({width:390,height:844});
- await page.goto('/dashboard');
+ await page.goto('/collection');
  const sidebar=page.locator('[data-app-sidebar]');
  await expect(sidebar).toHaveCSS('position','fixed');
  await expect(sidebar).toHaveCSS('height','788px');
@@ -51,7 +52,7 @@ for(const [route,selector,width,height,padding] of [
  });
 }
 
-for(const [route,width,height,padding] of ['/dashboard','/collection','/leaderboard','/quests','/shop'].flatMap(route=>[[route,390,844,'16px'],[route,1440,900,'48px']])){
+for(const [route,width,height,padding] of ['/collection','/leaderboard','/quests','/shop'].flatMap(route=>[[route,390,844,'16px'],[route,1440,900,'48px']])){
  test(`${route} owns product content spacing at ${width}px`,async({page})=>{
   await page.setViewportSize({width:Number(width),height:Number(height)});
   await page.goto(String(route));
@@ -63,7 +64,7 @@ for(const [route,width,height,padding] of ['/dashboard','/collection','/leaderbo
  });
 }
 
-for(const [route,width,height,margin] of [['/dashboard',390,844,'16px'],['/leaderboard',390,844,'16px'],['/quests',390,844,'16px'],['/dashboard',1440,900,'48px'],['/leaderboard',1440,900,'48px'],['/quests',1440,900,'48px']]){
+for(const [route,width,height,margin] of [['/leaderboard',390,844,'16px'],['/quests',390,844,'16px'],['/leaderboard',1440,900,'48px'],['/quests',1440,900,'48px']]){
  test(`${route} owns product hero spacing at ${width}px`,async({page})=>{
   await page.setViewportSize({width:Number(width),height:Number(height)});
   await page.goto(String(route));
@@ -72,18 +73,6 @@ for(const [route,width,height,margin] of [['/dashboard',390,844,'16px'],['/leade
   await expect(hero).toHaveCSS('margin-right',margin);
   const contained=await hero.evaluate(node=>node.getBoundingClientRect().right<=document.documentElement.clientWidth+.5);
   expect(contained).toBe(true);
- });
-}
-
-for(const [label,width,height,alignment] of [['mobile',390,844,'left'],['desktop',1440,900,'right']]){
- test(`/dashboard owns ${label} duel-time alignment`,async({page})=>{
-  await page.setViewportSize({width:Number(width),height:Number(height)});
-  await page.goto('/dashboard');
-  const row=page.locator('.duel-row').first();
-  const time=row.locator('.duel-time');
-  await expect(time).toHaveCSS('text-align',alignment);
-  const geometry=await row.evaluate(node=>({contained:node.scrollWidth<=node.clientWidth+1,timeContained:(()=>{const row=node.getBoundingClientRect(),time=node.querySelector('.duel-time')?.getBoundingClientRect();return Boolean(time&&time.x>=row.x-.5&&time.right<=row.right+.5);})()}));
-  expect(geometry).toEqual({contained:true,timeContained:true});
  });
 }
 
@@ -152,7 +141,7 @@ for(const route of shellRoutes){
 test('dashboard exposes core play action on mobile',async({page})=>{
  await page.setViewportSize({width:390,height:844});
  await page.goto('/dashboard');
- const play=page.getByRole('link',{name:/ENTER ARENA/});
+ const play=page.getByRole('button',{name:'PLAY',exact:true});
  await expect(play).toBeVisible();
  expect((await play.boundingBox()).height).toBeGreaterThanOrEqual(44);
 });

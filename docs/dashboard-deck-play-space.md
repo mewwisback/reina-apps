@@ -2,7 +2,7 @@
 
 ## Scope and dependency
 
-Asset finalization and implementation preparation only. No production dashboard, combat, route, dependency, merge or deployment changes in this PR. Stack on `fix/arena-combat-lifecycle` while PR #9 remains OPEN (head `639c035de13acd12beb2062fac32449671471b5d`). Do not merge #9 as part of this work. After its independent merge, rebase this branch onto current main and retarget this draft before review.
+Dashboard-only implementation and finalized assets. No arena/combat source, dependency, merge or deployment changes in this PR. Stack on `fix/arena-combat-lifecycle` while PR #9 remains OPEN (head `639c035de13acd12beb2062fac32449671471b5d`). Do not merge #9 as part of this work. After its independent merge, rebase this branch onto current main and retarget this draft before review.
 
 ## Source authority and accepted composition
 
@@ -27,7 +27,7 @@ All eight destinations exist at `apps/web/src/app/<route>/page.tsx`.
 | Docs | `/docs` | Visible secondary | More disclosure |
 | Wiki | `/wiki` | Visible secondary | More disclosure |
 
-PLAY enters `/arena` category selection; it does not start a duel directly. Existing arena owns category/search/found/duel. Profile and Settings are separate top-right controls: no matching route currently exists, so do not ship dead links or invent account persistence. Scope their real panel behavior in a later stage. More must expose `aria-expanded`/`aria-controls`, keyboard focus, Escape/outside dismissal and restore focus without covering PLAY. Navigation must use actual links, not prototype modal previews.
+PLAY enters `/arena` category selection; it does not start a duel directly. Existing arena owns category/search/found/duel. Profile and Settings are separate top-right controls: no matching route currently exists, so do not ship dead links or invent account persistence. Native modal dialogs now explain the disconnected profile and offer a dashboard-lifetime reduced-motion toggle; no backend persistence. More must expose `aria-expanded`/`aria-controls`, keyboard focus, Escape/outside dismissal and restore focus without covering PLAY. Navigation must use actual links, not prototype modal previews.
 
 ## Data boundaries and unresolved mappings
 
@@ -39,7 +39,7 @@ PLAY enters `/arena` category selection; it does not start a duel directly. Exis
 - Deck Builder currently generates synthetic `h0..h99` names and uses local component state. Arena constructs two copies of its own ten-card base pool and does not consume selected Deck Builder data. Dashboard selection must not claim connected inventory or change actual arena deck until a separately reviewed identity/persistence contract exists.
 - Arena rules inspected: `page.tsx` base pool, stage/summon/tribute rules; `rules.mjs` battle/trap/spell outcomes. Starting LP 4000; opening 1 hero slot/1400 ATK cap, escalation 3 slots/1800 cap, reign 5 slots; tribute thresholds 1400/2000; one summon/set/spell allowance. None changed. Display roster values are not compatible combat inputs.
 
-## Proposed state flow (not implemented)
+## State flow contract
 
 | State/event | Required result |
 | --- | --- |
@@ -70,6 +70,18 @@ User input filenames, in roster order Haku/Rei/Sora/Koma/Yui: `img_359521e12cdd.
 4. **Integration review (separate approval):** define shared hero IDs, deck ownership/persistence and validation before wiring dashboard decks into arena. Resolve REI/REI ZERO, rarity scale, stats and Overdrive conflict explicitly; never derive combat changes from these PNGs.
 5. **Release gate (not authorized now):** run arena unit/e2e regression, lint, sequential build/type check; compare dashboard route bundle before/after, review scoped diff, obtain independent review and user visual acceptance. Retarget after #9 merges independently. Merge/deploy only on later explicit authorization.
 
-## Verification record
+## Dashboard implementation evidence — 2026-09-07
 
-Baseline generator: 5 tests passed. Footer regression observed RED (`1017.0 not less than or equal to 1014`), then GREEN after 5px move; suite now includes this regression. Runtime Pillow 12.3.0, existing Python 3.11.15; no packages installed. Static asset/source checks and extracted archive test results are reported in PR. Production build and browser dashboard motion tests are deliberately deferred: no production dashboard implementation exists in this change. Independent reviewer tool unavailable in this run; no independent approval claimed.
+- Continued existing work; cream table, dark deck-only rail, eight desktop routes and labeled mobile dock. More reserves extra scroll space, focuses first link, dismisses on Escape/outside/desktop resize. Native dialogs provide profile boundary and local motion preference.
+- Five 600×840 WebP fronts plus approved back (383,048 bytes total). Front errors, including failures before hydration, expose retry and back fallback. Metadata remains visual only; no selected deck is passed to Arena.
+- GSAP selected-front settle: 280ms, previous context reverted on rapid selection, hidden tab, live reduced motion and unmount. PLAY: 220ms one-shot, synchronous duplicate lock, real `/arena`, four-second mounted-route retry recovery. No looping frames.
+- RED logs: `/tmp/reina-dashboard-resume-red.log` (missing PLAY/disabled account), `/tmp/reina-dashboard-motion-red.log` (missing animation), `/tmp/reina-dashboard-geometry-red.log` (More overlap/image fallback). Final focused: **13 passed**, `/tmp/reina-dashboard-green-final.log`.
+- Full browser: **307 passed (6.9m)**, `/tmp/reina-dashboard-full-final.log`. Previous 316-case run exposed obsolete admin-shell expectations; nine dashboard-only admin layout cases removed in favor of five device-aware deck geometry cases. Shared shell checks still run on Collection; Arena gameplay assertions unchanged. Two old dashboard entry selectors now target PLAY.
+- Arena unit: **28 passed**, `/tmp/reina-dashboard-unit.log`. Lint: **0 errors, 1 existing arena/loading.tsx image warning**, `/tmp/reina-dashboard-lint.log`. Browser-owned dev process exited before sequential successful build then `tsc --noEmit`: `/tmp/reina-dashboard-build.log`, `/tmp/reina-dashboard-tsc.log`. Existing multiple-lockfile warning retained. Dashboard route 3.15 kB / 136 kB first-load JS; no trustworthy pre-change bundle measurement captured.
+- Desktop 1600×900 and touch/mobile-UA 390×844 screenshots: `/tmp/reina-pr10-evidence/desktop.png`, `mobile.png`, `mobile-play.png`, `mobile-more.png`. Desktop PLAY clipping found during visual audit and corrected; scrolled mobile PLAY sits above dock. Phones intentionally scroll rather than shrink. Five viewport geometry tests include 320×740, 844×390 and 1024×768.
+- Motion recordings: `/tmp/reina-pr10-evidence/desktop-motion.webm`, `mobile-motion.webm`; decoded storyboard inspected for hero changes and Arena entry. Initial blank browser frame belongs to recorder startup; no claim of deck integration. Reproduce with `node tests/dashboard-evidence.mjs` while local server runs. Loaded fonts: bodyFont/displayFont/monoFont; zero page errors in capture log `/tmp/reina-dashboard-visual.log`.
+- Scoped diff/security scan clean; no independent reviewer tool available, no independent approval claimed. Visual acceptance remains user decision. Device emulation is not physical-device testing. No merge or deployment authorized or performed; PR #9 stays OPEN, PR #10 stays draft on `fix/arena-combat-lifecycle`.
+
+## Historical asset verification record
+
+Baseline generator: 5 tests passed. Footer regression observed RED (`1017.0 not less than or equal to 1014`), then GREEN after 5px move; suite now includes this regression. Runtime Pillow 12.3.0, existing Python 3.11.15; no packages installed. Static asset/source checks and extracted archive test results are reported in PR. Dashboard implementation evidence follows below. Independent reviewer tool unavailable in this run; no independent approval claimed.

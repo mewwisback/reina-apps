@@ -47,7 +47,7 @@ const enterDuel=async(page,fixture='final-draw')=>{
 
 test('dashboard navigation reaches threshold without mandatory delay',async({page})=>{
  await page.goto('/dashboard');
- await page.getByRole('link',{name:'Arena',exact:true}).click();
+ await page.getByRole('button',{name:'PLAY',exact:true}).click();
  await expect(page.getByRole('heading',{name:'Choose your fight'})).toBeVisible();
  await expect(page.locator('.threshold')).toHaveCount(1);
 });
