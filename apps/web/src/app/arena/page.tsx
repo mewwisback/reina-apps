@@ -100,11 +100,12 @@ export default function ArenaPage(){
    setE(s=>{if(winnerRef.current)return s;const c=s.hand.find(x=>x.kind==='TRAP'||(x.kind==='SPELL'&&turn<3));if(!c)return s;const i=s.back.findIndex(x=>!x);if(i<0)return s;const back=[...s.back];back[i]={...c,face:true,setAt:turn};setEnemyEco(x=>({...x,set:1}));setMessage('SILENTINDEX sets one support.');return{...s,hand:s.hand.filter(x=>x.id!==c.id),back}});
    if(!await wait()||halted())return;
    if(turn>=3){
-    setE(s=>{if(winnerRef.current)return s;const c=s.hand.find(x=>x.kind==='SPELL');if(!c)return s;const amount=spellDamage(c.name);damage('p',amount);setEnemyEco(x=>({...x,spell:1}));setMessage(`SILENTINDEX activates ${c.name}. ${amount} damage.`);return{...s,hand:s.hand.filter(x=>x.id!==c.id),grave:[...s.grave,c]}});
+    const s=sidesRef.current.e,c=s.hand.find(x=>x.kind==='SPELL');
+    if(c){const amount=spellDamage(c.name);damage('p',amount);setEnemyEco(x=>({...x,spell:1}));setMessage(`SILENTINDEX activates ${c.name}. ${amount} damage.`);setE({...s,hand:s.hand.filter(x=>x.id!==c.id),grave:[...s.grave,c]})}
     if(!await wait()||halted())return;
    }
    setPhase('BATTLE');
-   setE(s=>{
+   const resolveBattle=(s:Side)=>{
     if(winnerRef.current)return s;
     const attacker=turn===1?-1:s.front.findIndex(x=>x&&!x.used&&(x.ready??0)<=turn),hero=attacker>=0?s.front[attacker]:null;
     if(!hero)return s;
@@ -128,7 +129,9 @@ export default function ArenaPage(){
     }
     if(winnerRef.current)return next;
     const front=[...next.front];front[attacker]={...hero,used:true};return{...next,front};
-   });
+   };
+   // Resolve once outside React's replayable state updaters.
+   setE(resolveBattle(sidesRef.current.e));
    if(!await wait()||halted())return;
    setTurn(t=>t+1);setP(s=>({...s,front:s.front.map(x=>x?{...x,used:false}:x)}));setE(s=>({...s,front:s.front.map(x=>x?{...x,used:false}:x)}));setEco(emptyEco());setPhase('DRAW');setMine(true);setMessage('Your turn. Draw, then act.');
   };
