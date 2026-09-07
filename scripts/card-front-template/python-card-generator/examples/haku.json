@@ -1,0 +1,15 @@
+{
+  "name": "HAKU",
+  "type": "HERO",
+  "role": "SCOUT",
+  "rarity": "ELITE",
+  "effect_title": "ROSTER PROFILE",
+  "effect": "Finds the signal inside the noise.",
+  "atk": 70,
+  "def": 88,
+  "artwork": "haku.jpg",
+  "crop_focus": [
+    0.57,
+    0.21
+  ]
+}

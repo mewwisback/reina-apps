@@ -1,266 +1,99 @@
+'use client';
+
 import Link from 'next/link';
-import { AppShell } from '../../components/layout/app-shell';
+import { useEffect, useRef, useState, type CSSProperties } from 'react';
+import { useRouter } from 'next/navigation';
+import { gsap } from 'gsap';
+import { roster } from './roster';
+import './dashboard.css';
 
-const STAT_CARD_STYLE: React.CSSProperties = {
-  position: 'relative',
-  overflow: 'hidden',
-  background: 'linear-gradient(115deg,#100C14 0%,#100C14 55%,#E8B45C 160%)',
-  clipPath: 'polygon(0 0,100% 0,100% 100%,22px 100%,0 calc(100% - 22px))',
-  padding: '20px 20px 22px',
-  borderBottom: '3px solid #E8B45C',
-};
-
-const CORNER: React.CSSProperties = {
-  position: 'absolute',
-  left: 0,
-  top: 0,
-  width: 13,
-  height: 13,
-  borderTop: '1px solid rgba(245,241,232,.35)',
-  borderLeft: '1px solid rgba(245,241,232,.35)',
-};
-
-const COLLECTION = [
-  { name: 'HAKU', cat: 'SCOUT', rank: 'ELITE', hue: '#E8873C', rankHue: '#E8B45C' },
-  { name: 'SORA', cat: 'STRATEGIST', rank: 'RARE', hue: '#7E8FA6', rankHue: '#B8C0C8' },
-  { name: 'KOMA', cat: 'VANGUARD', rank: 'ELITE', hue: '#E8B45C', rankHue: '#E8B45C' },
-  { name: 'RIN', cat: 'HERALD', rank: 'COMMON', hue: '#E03C4E', rankHue: '#C08552' },
-  { name: 'GEN', cat: 'ARTIFICER', rank: 'RARE', hue: '#9A8B7E', rankHue: '#B8C0C8' },
-  { name: 'YUI', cat: 'CLERIC', rank: 'COMMON', hue: '#F0C08A', rankHue: '#C08552' },
-  { name: 'MIRA', cat: 'WARDEN', rank: 'RARE', hue: '#3FA893', rankHue: '#B8C0C8' },
-  { name: 'KAI', cat: 'SENTINEL', rank: 'RARE', hue: '#5B7FA6', rankHue: '#B8C0C8' },
-  { name: 'NANA', cat: 'MEDIC', rank: 'ELITE', hue: '#E86B7C', rankHue: '#E8B45C' },
-  { name: 'REI', cat: 'BLADE', rank: 'LEGENDARY', hue: '#FFD24C', rankHue: '#E03C4E' },
-];
-
-const MATCHES = [
-  { result: 'WIN', resultHue: '#4FA870', opponent: 'ShadowDrake', mode: 'RANKED', time: '12m ago' },
-  { result: 'WIN', resultHue: '#4FA870', opponent: 'Aeloria', mode: 'RANKED', time: '1h ago' },
-  { result: 'LOSS', resultHue: '#E03C4E', opponent: 'Nyxa88', mode: 'CASUAL', time: '3h ago' },
-  { result: 'WIN', resultHue: '#4FA870', opponent: 'BotCampaign', mode: 'CAMPAIGN', time: 'Yesterday' },
-  { result: 'LOSS', resultHue: '#E03C4E', opponent: 'Voidmancer', mode: 'RANKED', time: 'Yesterday' },
-];
-
-const DECK_PREVIEW = ['#E8873C', '#7E8FA6', '#E8B45C', '#E03C4E', '#3FA8A0', '#8C6FD8'];
+const primary = [['Home', '/dashboard'], ['Collection', '/collection'], ['Deck Builder', '/deck-builder'], ['Shop', '/shop']];
+const secondary = [['Quests', '/quests'], ['Leaderboard', '/leaderboard'], ['Docs', '/docs'], ['Wiki', '/wiki']];
 
 export default function DashboardPage() {
-  return (
-    <AppShell>
-      {/* ===== HERO BANNER ===== */}
-      <div className="product-hero" style={{ position: 'relative', overflow: 'hidden' }}>
-        <div
-          style={{
-            position: 'absolute',
-            inset: 0,
-            background: 'linear-gradient(100deg,#1A0E10 0%,#4C1018 46%,#8C1420 62%,#1A0E10 100%)',
-            clipPath: 'polygon(0 0,100% 0,100% 100%,0 100%,0 0,3% 14%,3% 86%,0 100%)',
-          }}
-        />
-        <div style={{ position: 'absolute', left: 0, top: 0, width: 26, height: 26, borderTop: '2px solid #F5F1E8', borderLeft: '2px solid #F5F1E8', opacity: 0.8 }} />
-        <div style={{ position: 'absolute', right: 0, bottom: 0, width: 26, height: 26, borderBottom: '2px solid #F5F1E8', borderRight: '2px solid #F5F1E8', opacity: 0.8 }} />
-        <div style={{ position: 'relative', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 20, flexWrap: 'wrap', padding: '26px clamp(20px,3.2vw,40px)' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-            <div
-              style={{
-                width: 58,
-                height: 58,
-                flex: 'none',
-                background: 'linear-gradient(160deg,#E8B45C,#0F0C16 68%)',
-                border: '2px solid #E8B45C',
-                clipPath: 'polygon(30% 0,100% 0,100% 70%,70% 100%,0 100%,0 30%)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
-              <span style={{ fontFamily: "'Zen Old Mincho', serif", fontWeight: 900, fontSize: 22, color: '#F5F1E8' }}>K</span>
-            </div>
-            <div>
-              <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9.5, letterSpacing: '.28em', color: 'rgba(245,241,232,.65)' }}>WELCOME BACK, DUELIST</div>
-              <h1 style={{ margin: '6px 0 0', fontSize: 'clamp(22px,2.4vw,30px)', fontWeight: 900, letterSpacing: '-.02em', color: '#F5F1E8', textShadow: '0 0 24px rgba(0,0,0,.5)' }}>Kaiba99</h1>
-              <div style={{ display: 'inline-block', marginTop: 6, fontFamily: "'JetBrains Mono', monospace", fontSize: 9.5, fontWeight: 700, letterSpacing: '.16em', color: '#0F0C16', background: '#E8B45C', padding: '3px 9px', clipPath: 'polygon(0 0,100% 0,90% 100%,0 100%)' }}>GOLD III</div>
-            </div>
-          </div>
-
-          <div style={{ display: 'flex', alignItems: 'center', gap: 22 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 9 }}>
-              <div style={{ width: 17, height: 17, flex: 'none', background: 'linear-gradient(160deg,#E8B45C,#8C6019 75%)', clipPath: 'polygon(50% 0,100% 50%,50% 100%,0 50%)' }} />
-              <div>
-                <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 8, letterSpacing: '.2em', color: 'rgba(245,241,232,.55)' }}>CR</div>
-                <div style={{ fontWeight: 900, fontSize: 19, color: '#E8B45C', lineHeight: 1 }}>2,450</div>
-              </div>
-            </div>
-            <div style={{ width: 1, height: 30, background: 'rgba(245,241,232,.25)', transform: 'skewX(-12deg)' }} />
-            <div style={{ display: 'flex', alignItems: 'center', gap: 9 }}>
-              <div style={{ width: 17, height: 17, flex: 'none', background: 'linear-gradient(160deg,#3FA893,#1F5A50 75%)', clipPath: 'polygon(50% 0,100% 50%,50% 100%,0 50%)' }} />
-              <div>
-                <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 8, letterSpacing: '.2em', color: '#3FA893' }}>USDT</div>
-                <div style={{ fontWeight: 900, fontSize: 19, color: '#F5F1E8', lineHeight: 1 }}>128.40</div>
-              </div>
-            </div>
-            <Link
-              href="/shop"
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                marginLeft: 6,
-                background: '#F5F1E8',
-                color: '#0F0C16',
-                fontSize: 12,
-                fontWeight: 900,
-                letterSpacing: '.14em',
-                padding: '13px 24px 13px 30px',
-                clipPath: 'polygon(14% 0,100% 0,100% 100%,0 100%,0 30%)',
-                textDecoration: 'none',
-              }}
-            >
-              SHOP
-            </Link>
-            <Link
-              href="/arena"
-              className="dashboard-enter-arena"
-              style={{
-                display: 'inline-flex',
-                minHeight: 44,
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: '#F5F1E8',
-                background: '#E03C4E',
-                fontFamily: "'JetBrains Mono', monospace",
-                fontSize: 11,
-                fontWeight: 900,
-                letterSpacing: '.12em',
-                padding: '12px 22px',
-                textDecoration: 'none',
-              }}
-            >
-              ENTER ARENA
-            </Link>
-          </div>
-        </div>
-
-        {/* daily login strip */}
-        <div style={{ position: 'relative', display: 'flex', alignItems: 'center', gap: 10, padding: '0 clamp(20px,3.2vw,40px) 20px', flexWrap: 'wrap' }}>
-          <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 8.5, letterSpacing: '.16em', color: 'rgba(245,241,232,.55)' }}>DAILY LOGIN</div>
-          <div style={{ display: 'flex', gap: 3 }}>
-            {[1, 2, 3, 4, 5, 6, 7].map((d) => {
-              const claimed = d < 4;
-              const current = d === 4;
-              return (
-                <div
-                  key={d}
-                  style={{ width: 9, height: 9, background: claimed ? '#E8B45C' : current ? 'rgba(232,180,92,.55)' : 'rgba(245,241,232,.18)' }}
-                />
-              );
-            })}
-          </div>
-          <button
-            style={{
-              cursor: 'pointer',
-              fontFamily: "'JetBrains Mono', monospace",
-              fontSize: 9.5,
-              fontWeight: 900,
-              letterSpacing: '.06em',
-              color: '#0F0C16',
-              background: '#E8B45C',
-              padding: '5px 10px',
-              clipPath: 'polygon(0 0,100% 0,85% 100%,0 100%)',
-            }}
-          >
-            CLAIM DAY 4
-          </button>
-        </div>
-      </div>
-
-      {/* ===== CONTENT ===== */}
-      <div className="product-content">
-        {/* stat cards */}
-        <div className="dashboard-stats">
-          <div style={STAT_CARD_STYLE}>
-            <div style={CORNER} />
-            <div style={{ position: 'relative', fontFamily: "'JetBrains Mono', monospace", fontSize: 9.5, letterSpacing: '.2em', color: 'rgba(237,231,220,.5)' }}>RANK</div>
-            <div style={{ position: 'relative', fontWeight: 900, fontSize: 26, marginTop: 10, color: '#E8B45C', letterSpacing: '-.01em' }}>GOLD III</div>
-            <div style={{ position: 'relative', fontSize: 11.5, color: 'rgba(237,231,220,.5)', marginTop: 5, fontFamily: "'JetBrains Mono', monospace" }}>+120 MMR THIS SEASON</div>
-          </div>
-
-          <div style={{ ...STAT_CARD_STYLE, background: 'linear-gradient(115deg,#100C14 0%,#100C14 55%,#E0596A 160%)', clipPath: 'polygon(0 0,100% 0,100% calc(100% - 22px),calc(100% - 22px) 100%,0 100%)', borderBottom: '3px solid #E0596A' }}>
-            <div style={CORNER} />
-            <div style={{ position: 'relative', fontFamily: "'JetBrains Mono', monospace", fontSize: 9.5, letterSpacing: '.2em', color: 'rgba(237,231,220,.5)' }}>COLLECTION</div>
-            <div style={{ position: 'relative', fontWeight: 900, fontSize: 30, marginTop: 8, color: '#F5F1E8', letterSpacing: '-.02em', lineHeight: 1 }}>34<span style={{ fontSize: 14, color: 'rgba(237,231,220,.4)' }}>/100</span></div>
-            <div style={{ position: 'relative', marginTop: 9, height: 3, background: 'rgba(237,231,220,.14)' }}>
-              <div style={{ height: '100%', width: '34%', background: '#E0596A' }} />
-            </div>
-          </div>
-
-          <div style={{ ...STAT_CARD_STYLE, background: 'linear-gradient(115deg,#100C14 0%,#100C14 55%,#3FA8A0 160%)', clipPath: 'polygon(0 0,100% 0,100% 100%,18px 100%,0 calc(100% - 18px))', borderBottom: '3px solid #3FA8A0' }}>
-            <div style={CORNER} />
-            <div style={{ position: 'relative', display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-              <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9.5, letterSpacing: '.2em', color: 'rgba(237,231,220,.5)' }}>DAILY QUEST</div>
-              <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, fontWeight: 700, color: '#3FA8A0' }}>50%</div>
-            </div>
-            <div style={{ position: 'relative', fontWeight: 900, fontSize: 15.5, marginTop: 10, color: '#F5F1E8' }}>Win 2 ranked duels</div>
-            <div style={{ position: 'relative', marginTop: 12, height: 6, background: 'rgba(237,231,220,.12)', clipPath: 'polygon(0 0,100% 0,calc(100% - 6px) 100%,0 100%)' }}>
-              <div style={{ height: '100%', width: '50%', background: '#3FA8A0' }} />
-            </div>
-          </div>
-        </div>
-
-        {/* active deck */}
-        <div style={{ marginTop: 16, position: 'relative', background: '#100C14', clipPath: 'polygon(0 0,100% 0,100% 100%,18px 100%,0 calc(100% - 18px))', borderTop: '3px solid #E03C4E', padding: '22px 24px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: 12 }}>
-            <div>
-              <div style={{ display: 'inline-block', fontFamily: "'JetBrains Mono', monospace", fontSize: 9.5, fontWeight: 700, letterSpacing: '.16em', color: '#0F0C16', background: '#E03C4E', padding: '4px 10px', clipPath: 'polygon(0 0,100% 0,88% 100%,0 100%)' }}>ACTIVE DECK</div>
-              <div style={{ fontWeight: 900, fontSize: 22, marginTop: 10, color: '#F5F1E8' }}>Crimson Rush</div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginTop: 6 }}>
-                <div style={{ fontSize: 12.5, color: 'rgba(237,231,220,.55)' }}>24 cards</div>
-                <div style={{ width: 1, height: 12, background: 'rgba(237,231,220,.25)' }} />
-                <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, fontWeight: 700, color: '#4FA870' }}>62% WIN RATE</div>
-              </div>
-            </div>
-            <Link href="/deck-builder" style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, fontWeight: 700, color: '#E0596A', border: '1px solid #E0596A', padding: '9px 16px', clipPath: 'polygon(0 0,100% 0,88% 100%,0 100%)', textDecoration: 'none' }}>
-              EDIT DECK
-            </Link>
-          </div>
-          <div style={{ display: 'flex', gap: 8, marginTop: 18, flexWrap: 'wrap' }}>
-            {DECK_PREVIEW.map((hue, i) => (
-              <div key={i} style={{ width: 48, height: 66, background: `linear-gradient(160deg,${hue},#0F0C16 65%)`, border: `1.5px solid ${hue}`, clipPath: 'polygon(0 0,80% 0,100% 18%,100% 100%,0 100%)' }} />
-            ))}
-          </div>
-        </div>
-
-        {/* your collection */}
-        <div style={{ marginTop: 32, display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-          <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, letterSpacing: '.2em', color: '#E03C4E' }}>YOUR COLLECTION</div>
-          <Link href="/collection" style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: '#E0596A', textDecoration: 'none' }}>VIEW ALL &gt;</Link>
-        </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(100px,1fr))', gap: 10, marginTop: 16 }}>
-          {COLLECTION.map((c) => (
-            <div key={c.name} style={{ position: 'relative', overflow: 'hidden', background: '#100C14', clipPath: 'polygon(0 0,100% 0,100% 88%,88% 100%,0 100%)' }}>
-              <div style={{ height: 34, background: `linear-gradient(115deg,#100C14 0%,#100C14 40%,${c.hue} 140%)` }} />
-              <div style={{ position: 'absolute', left: 0, top: 0, width: 0, height: 0, borderStyle: 'solid', borderWidth: '15px 15px 0 0', borderColor: `${c.rankHue} transparent transparent transparent` }} />
-              <div style={{ padding: '9px 10px 10px' }}>
-                <div style={{ fontWeight: 900, fontSize: 13, color: '#F5F1E8' }}>{c.name}</div>
-                <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 7.5, letterSpacing: '.08em', color: c.hue, marginTop: 3 }}>{c.cat}</div>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* recent duels */}
-        <div style={{ marginTop: 32 }}>
-          <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, letterSpacing: '.2em', color: '#E03C4E' }}>RECENT DUELS</div>
-          <div className="duel-list" style={{ marginTop: 16, border: '1px solid rgba(237,231,220,.14)' }}>
-            {MATCHES.map((m, i) => (
-              <div className="duel-row" key={i} style={{ borderBottom: '1px solid rgba(237,231,220,.1)', borderLeft: `3px solid ${m.resultHue}` }}>
-                <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9.5, fontWeight: 900, letterSpacing: '.12em', color: '#0F0C16', background: m.resultHue, textAlign: 'center', padding: '4px 0', clipPath: 'polygon(0 0,100% 0,88% 100%,0 100%)' }}>{m.result}</div>
-                <div style={{ fontSize: 13, color: 'rgba(237,231,220,.85)' }}>vs <span style={{ fontWeight: 700, color: '#F5F1E8' }}>{m.opponent}</span></div>
-                <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9.5, letterSpacing: '.08em', color: 'rgba(237,231,220,.55)', border: '1px solid rgba(237,231,220,.2)', padding: '3px 8px' }}>{m.mode}</div>
-                <div className="duel-time" style={{ fontFamily: "'JetBrains Mono', monospace", color: 'rgba(237,231,220,.4)' }}>{m.time}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    </AppShell>
-  );
+  const [selected, setSelected] = useState('rei');
+  const [failed, setFailed] = useState<string[]>([]);
+  const hero = roster.find(hero => hero.id === selected)!;
+  const router = useRouter();
+  const root = useRef<HTMLDivElement>(null);
+  const dialog = useRef<HTMLDialogElement>(null);
+  const [panel, setPanel] = useState('Profile');
+  const [reduceMotion, setReduceMotion] = useState(false);
+  const [systemMotion, setSystemMotion] = useState(false);
+  const reduced = reduceMotion || systemMotion;
+  const [entering, setEntering] = useState(false);
+  const entry = useRef<gsap.core.Tween | null>(null);
+  const locked = useRef(false);
+  const recovery = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  useEffect(() => {
+    const media = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const update = () => setSystemMotion(media.matches);
+    update(); media.addEventListener('change', update);
+    const cancel = () => { clearTimeout(recovery.current); entry.current?.kill(); locked.current = false; setEntering(false); if (root.current) gsap.set(root.current.querySelector('.deck-play'), { clearProps: 'transform' }); };
+    const visibility = () => { if (document.hidden) cancel(); };
+    document.addEventListener('visibilitychange', visibility);
+    window.addEventListener('pageshow', cancel);
+    return () => { media.removeEventListener('change', update); document.removeEventListener('visibilitychange', visibility); window.removeEventListener('pageshow', cancel); clearTimeout(recovery.current); entry.current?.kill(); };
+  }, []);
+  const play = () => {
+    if (locked.current) return;
+    locked.current = true; setEntering(true);
+    const navigate = () => { router.push('/arena'); };
+    // ponytail: App Router exposes no navigation promise; allow retry if route stays mounted.
+    recovery.current = setTimeout(() => { if (root.current) { locked.current = false; setEntering(false); gsap.set(root.current.querySelector('.deck-play'), { clearProps: 'transform' }); } }, 4000);
+    if (reduced) navigate();
+    else entry.current = gsap.to(root.current?.querySelector('.deck-play') ?? null, { y: 4, duration: .22, onComplete: navigate });
+  };
+  useEffect(() => {
+    if (reduced || window.matchMedia('(prefers-reduced-motion: reduce)').matches) { entry.current?.progress(1); return; }
+    const context = gsap.context(() => {
+      gsap.fromTo('[data-front][data-selected="true"]', { y: 20, rotationY: -12, scale: .94 }, { y: 0, rotationY: 0, scale: 1, duration: .28, ease: 'power2.out' });
+    }, root);
+    const stop = () => { if (document.hidden) context.revert(); };
+    document.addEventListener('visibilitychange', stop);
+    return () => { context.revert(); document.removeEventListener('visibilitychange', stop); };
+  }, [selected, reduced]);
+  const [moreOpen, setMoreOpen] = useState(false);
+  const moreButton = useRef<HTMLButtonElement>(null);
+  const moreLinks = useRef<HTMLElement>(null);
+  useEffect(() => {
+    if (!moreOpen) return;
+    moreLinks.current?.querySelector('a')?.focus();
+    const close = () => { setMoreOpen(false); moreButton.current?.focus(); };
+    const key = (event: KeyboardEvent) => { if (event.key === 'Escape') close(); };
+    const outside = (event: PointerEvent) => {
+      if (!moreLinks.current?.contains(event.target as Node) && !moreButton.current?.contains(event.target as Node)) close();
+    };
+    const resize = () => { if (window.innerWidth > 900) setMoreOpen(false); };
+    document.addEventListener('keydown', key);
+    document.addEventListener('pointerdown', outside);
+    window.addEventListener('resize', resize);
+    return () => { document.removeEventListener('keydown', key); document.removeEventListener('pointerdown', outside); window.removeEventListener('resize', resize); };
+  }, [moreOpen]);
+  return <div ref={root} className="deck-dashboard" data-reduced-motion={reduced} data-more-open={moreOpen}>
+    <header className="deck-header"><Link className="deck-wordmark" href="/dashboard"><span>R</span>REINA</Link><nav aria-label="Primary navigation">{primary.map(([label, href]) => <Link key={href} href={href} aria-current={href === '/dashboard' ? 'page' : undefined}>{label}</Link>)}</nav><div className="deck-account">{['Profile', 'Settings'].map(name => <button key={name} onClick={() => { setPanel(name); dialog.current?.showModal(); }}>{name}</button>)}</div></header>
+    <div className="deck-context"><strong>DASHBOARD <span>/ HOME</span></strong><nav aria-label="Explore Reina">{secondary.map(([label, href]) => <Link key={href} href={href}>{label}</Link>)}</nav></div>
+    <main className="deck-workbench">
+      <aside className="deck-rail"><p className="deck-meta">ROSTER PREVIEW</p><h1>DECK</h1><label className="deck-meta" htmlFor="roster-hero">FEATURED HERO</label><select id="roster-hero" value={selected} onChange={event => setSelected(event.target.value)}>{roster.map(hero => <option key={hero.id} value={hero.id}>{hero.id.toUpperCase()}</option>)}</select><p className="deck-rail-selected">{hero.id.toUpperCase()} / {hero.role}</p><p>No saved deck connected.</p><Link href="/deck-builder">Open Deck Builder</Link></aside>
+      <section className="deck-table" data-deck-table><p className="deck-meta">HOME / DECK PLAY SPACE</p><h2 data-selected-hero>{hero.id.toUpperCase()}</h2>
+        <div className="deck-fan" aria-label="Visual hero roster">{roster.map((card, index) => {
+          const slot = card.id === selected ? 2 : index === 2 ? roster.findIndex(item => item.id === selected) : index;
+          return <div className="deck-card" key={card.id} data-selected={card.id === selected} style={{ '--slot': slot, '--tilt': `${(slot - 2) * 9}deg`, '--lift': `${Math.abs(slot - 2) * 16}px` } as CSSProperties}>
+            {/* Precompressed, fixed-ratio local art; no image optimizer request required. */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img ref={image => { if (image?.complete && !image.naturalWidth) setFailed(ids => ids.includes(card.id) ? ids : [...ids, card.id]); }} data-front data-selected={card.id === selected} src={`/images/dashboard/${failed.includes(card.id) ? 'back' : card.id}.webp`} onError={() => setFailed(ids => ids.includes(card.id) ? ids : [...ids, card.id])} width={600} height={840} alt={`${card.id.toUpperCase()} ${card.role} visual roster card`} />
+          </div>;
+        })}</div>
+        {failed.length > 0 && <div role="status">{failed.map(id => <button className="deck-retry" key={id} onClick={() => setFailed(ids => ids.filter(item => item !== id))}>Retry {id.toUpperCase()} image</button>)}</div>}
+        <div className="deck-roster" aria-label="Choose featured hero">{roster.map(card => <button key={card.id} aria-label={`Select ${card.id.toUpperCase()}`} aria-pressed={card.id === selected} onClick={() => setSelected(card.id)}><strong>{card.id.toUpperCase()}</strong><small>{card.role}</small></button>)}</div>
+        <div className="deck-profile" aria-live="polite"><p className="deck-meta">ROSTER PROFILE / {hero.rarity}</p><p>{hero.profile}</p><p className="deck-meta">VISUAL ATK {hero.atk} / DEF {hero.def}</p></div>
+        <div className="deck-launch"><p className="deck-boundary">Visual roster only. Arena uses its own cards.</p><div><button className="deck-play" aria-label="PLAY" disabled={entering} onClick={play}><span>PLAY</span><span aria-hidden="true">↗</span></button><p className="deck-meta" role="status">{entering ? 'Opening Arena…' : 'Choose a mode in Arena'}</p></div></div>
+      </section>
+    </main>
+    <dialog ref={dialog} className="deck-dialog" aria-labelledby="deck-panel-title" onClick={event => { if (event.target === dialog.current) dialog.current?.close(); }}><h2 id="deck-panel-title">{panel}</h2>{panel === 'Profile' ? <p>No account profile is connected. This dashboard previews the visual roster, not owned cards or a saved deck.</p> : <><label><input type="checkbox" checked={reduceMotion} onChange={event => setReduceMotion(event.target.checked)} /> Reduce dashboard motion</label><p>Applies while this dashboard is open. Your system’s reduced-motion preference is always respected. No account settings are saved.</p></>}<button onClick={() => dialog.current?.close()}>Close</button></dialog>
+    <div className="deck-mobile-dock">
+      <nav id="deck-more" ref={moreLinks} className="deck-more" aria-label="More destinations" hidden={!moreOpen}>{secondary.map(([label, href]) => <Link key={href} href={href} onClick={() => setMoreOpen(false)}>{label}</Link>)}</nav>
+      <nav className="deck-mobile-nav" aria-label="Mobile navigation">{primary.map(([label, href]) => <Link key={href} href={href} aria-current={href === '/dashboard' ? 'page' : undefined}>{label}</Link>)}<button ref={moreButton} aria-expanded={moreOpen} aria-controls="deck-more" onClick={() => setMoreOpen(open => !open)}>More</button></nav>
+    </div>
+  </div>;
 }

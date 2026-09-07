@@ -31,11 +31,11 @@ test('mode selection requires explicit queue commitment',async({page})=>{
  await expect(page.getByText('Simulated matchmaking · no live players')).toBeVisible();
 });
 
-test('dashboard primary entry preserves link and gives pending feedback',async({page})=>{
+test('dashboard PLAY opens real category selection',async({page})=>{
  await page.goto('/dashboard');
- const link=page.getByRole('link',{name:'ENTER ARENA',exact:true});
- await expect(link).toHaveAttribute('href','/arena');
- await link.click();
+ const play=page.getByRole('button',{name:'PLAY',exact:true});
+   await expect(play).toBeEnabled();
+   await play.click();
  await expect(page.getByRole('heading',{name:'Choose your fight'})).toBeVisible();
  await expect(page.locator('.threshold')).toHaveAttribute('data-entry-state','category');
 });

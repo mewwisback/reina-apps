@@ -1,0 +1,15 @@
+{
+  "name": "REI",
+  "type": "HERO",
+  "role": "BLADE",
+  "rarity": "LEGENDARY",
+  "effect_title": "ROSTER PROFILE",
+  "effect": "The one card every deck is built around.",
+  "atk": 98,
+  "def": 95,
+  "artwork": "rei.jpg",
+  "crop_focus": [
+    0.52,
+    0.3
+  ]
+}

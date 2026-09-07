@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="750" height="1050" viewBox="0 0 750 1050">
+<defs>
+ <linearGradient id="metal" x2="1" y2="1"><stop stop-color="#241820"/><stop offset=".5" stop-color="#0D0B10"/><stop offset="1" stop-color="#291219"/></linearGradient>
+ <linearGradient id="edge" x2="0" y2="1"><stop stop-color="#f0717e"/><stop offset=".45" stop-color="#842431"/><stop offset="1" stop-color="#E03C4E"/></linearGradient>
+ <pattern id="grain" width="8" height="8" patternUnits="userSpaceOnUse"><path d="M0 8L8 0" stroke="#f5f1e8" stroke-opacity=".025"/></pattern>
+</defs>
+<!-- The central portrait window remains transparent. -->
+<path fill="url(#metal)" fill-rule="evenodd" d="M40 8H710L742 40V1010L710 1042H40L8 1010V40Z M42 152V716H708V152Z"/>
+<path d="M40 8H710L742 40V1010L710 1042H40L8 1010V40Z" fill="none" stroke="#060509" stroke-width="12"/>
+<path d="M44 20H706L730 44V1006L706 1030H44L20 1006V44Z" fill="none" stroke="url(#edge)" stroke-width="3"/>
+<path d="M53 32H697L718 53V997L697 1018H53L32 997V53Z" fill="none" stroke="#74313c"/>
+<path d="M42 152H708V716H42Z" fill="none" stroke="#70303b" stroke-width="2"/>
+<!-- Header -->
+<path d="M42 46H708V137H42Z" fill="#100d13"/>
+<path d="M42 137H708" stroke="#E03C4E" stroke-width="3"/>
+
+
+<!-- Compact rarity seal; color never carries rarity alone. -->
+<path d="M659 59L687 87L659 115L631 87Z" fill="#27191d" stroke="#E8B45C"/>
+<path d="M646 88L651 75L659 85L667 75L672 88L668 98H650Z" fill="none" stroke="#E8B45C" stroke-width="2"/>
+<!-- Artwork corner fittings -->
+<g fill="none" stroke="#E03C4E" stroke-width="3"><path d="M42 198V152H90M660 152H708V198M42 670V716H90M660 716H708V670"/></g>
+<g fill="#e03c4e"><path d="M50 160H76L50 186Z"/><path d="M700 160H674L700 186Z"/><path d="M50 708H76L50 682Z"/><path d="M700 708H674L700 682Z"/></g>
+<!-- Rules surface -->
+<path d="M43 732H707V912H43Z" fill="#171118"/>
+<path d="M43 732H707V912H43Z" fill="url(#grain)"/>
+
+<path d="M133 760H688" stroke="#52303a"/>
+
+
+
+<!-- Stable combat-stat locations -->
+<path d="M42 929H708V997H42Z" fill="#0c0a0f" stroke="#58303a"/>
+<path d="M375 942V984" stroke="#58303a"/>
+
+
+
+
+
+</svg>

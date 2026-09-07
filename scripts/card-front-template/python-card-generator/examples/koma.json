@@ -1,0 +1,15 @@
+{
+  "name": "KOMA",
+  "type": "HERO",
+  "role": "VANGUARD",
+  "rarity": "ELITE",
+  "effect_title": "ROSTER PROFILE",
+  "effect": "Keeps the machine moving.",
+  "atk": 65,
+  "def": 95,
+  "artwork": "koma.jpg",
+  "crop_focus": [
+    0.58,
+    0.35
+  ]
+}
