@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { gsap } from 'gsap';
 import { roster } from './roster';
 import './dashboard.css';
+import {ActiveDeckSummary} from '../../components/local-decks';
 
 const primary = [['Home', '/dashboard'], ['Collection', '/collection'], ['Deck Builder', '/deck-builder'], ['Shop', '/shop']];
 const secondary = [['Quests', '/quests'], ['Leaderboard', '/leaderboard'], ['Docs', '/docs'], ['Wiki', '/wiki']];
@@ -74,7 +75,7 @@ export default function DashboardPage() {
     <header className="deck-header"><Link className="deck-wordmark" href="/dashboard"><span>R</span>REINA</Link><nav aria-label="Primary navigation">{primary.map(([label, href]) => <Link key={href} href={href} aria-current={href === '/dashboard' ? 'page' : undefined}>{label}</Link>)}</nav><div className="deck-account">{['Profile', 'Settings'].map(name => <button key={name} onClick={() => { setPanel(name); dialog.current?.showModal(); }}>{name}</button>)}</div></header>
     <div className="deck-context"><strong>DASHBOARD <span>/ HOME</span></strong><nav aria-label="Explore Reina">{secondary.map(([label, href]) => <Link key={href} href={href}>{label}</Link>)}</nav></div>
     <main className="deck-workbench">
-      <aside className="deck-rail"><p className="deck-meta">ROSTER PREVIEW</p><h1>DECK</h1><label className="deck-meta" htmlFor="roster-hero">FEATURED HERO</label><select id="roster-hero" value={selected} onChange={event => setSelected(event.target.value)}>{roster.map(hero => <option key={hero.id} value={hero.id}>{hero.id.toUpperCase()}</option>)}</select><p className="deck-rail-selected">{hero.id.toUpperCase()} / {hero.role}</p><p>No saved deck connected.</p><Link href="/deck-builder">Open Deck Builder</Link></aside>
+      <aside className="deck-rail"><p className="deck-meta">ROSTER PREVIEW</p><h1>DECK</h1><label className="deck-meta" htmlFor="roster-hero">FEATURED HERO</label><select id="roster-hero" value={selected} onChange={event => setSelected(event.target.value)}>{roster.map(hero => <option key={hero.id} value={hero.id}>{hero.id.toUpperCase()}</option>)}</select><p className="deck-rail-selected">{hero.id.toUpperCase()} / {hero.role}</p><ActiveDeckSummary/><Link href="/deck-builder">Open Deck Builder</Link></aside>
       <section className="deck-table" data-deck-table><p className="deck-meta">HOME / DECK PLAY SPACE</p><h2 data-selected-hero>{hero.id.toUpperCase()}</h2>
         <div className="deck-fan" aria-label="Visual hero roster">{roster.map((card, index) => {
           const slot = card.id === selected ? 2 : index === 2 ? roster.findIndex(item => item.id === selected) : index;
@@ -90,7 +91,7 @@ export default function DashboardPage() {
         <div className="deck-launch"><p className="deck-boundary">Visual roster only. Arena uses its own cards.</p><div><button className="deck-play" aria-label="PLAY" disabled={entering} onClick={play}><span>PLAY</span><span aria-hidden="true">↗</span></button><p className="deck-meta" role="status">{entering ? 'Opening Arena…' : 'Choose a mode in Arena'}</p></div></div>
       </section>
     </main>
-    <dialog ref={dialog} className="deck-dialog" aria-labelledby="deck-panel-title" onClick={event => { if (event.target === dialog.current) dialog.current?.close(); }}><h2 id="deck-panel-title">{panel}</h2>{panel === 'Profile' ? <p>No account profile is connected. This dashboard previews the visual roster, not owned cards or a saved deck.</p> : <><label><input type="checkbox" checked={reduceMotion} onChange={event => setReduceMotion(event.target.checked)} /> Reduce dashboard motion</label><p>Applies while this dashboard is open. Your system’s reduced-motion preference is always respected. No account settings are saved.</p></>}<button onClick={() => dialog.current?.close()}>Close</button></dialog>
+    <dialog ref={dialog} className="deck-dialog" aria-labelledby="deck-panel-title" onClick={event => { if (event.target === dialog.current) dialog.current?.close(); }}><h2 id="deck-panel-title">{panel}</h2>{panel === 'Profile' ? <p>No account profile is connected. This dashboard previews the visual roster, not owned cards. Gameplay decks are saved only in this browser.</p> : <><label><input type="checkbox" checked={reduceMotion} onChange={event => setReduceMotion(event.target.checked)} /> Reduce dashboard motion</label><p>Applies while this dashboard is open. Your system’s reduced-motion preference is always respected. No account settings are saved.</p></>}<button onClick={() => dialog.current?.close()}>Close</button></dialog>
     <div className="deck-mobile-dock">
       <nav id="deck-more" ref={moreLinks} className="deck-more" aria-label="More destinations" hidden={!moreOpen}>{secondary.map(([label, href]) => <Link key={href} href={href} onClick={() => setMoreOpen(false)}>{label}</Link>)}</nav>
       <nav className="deck-mobile-nav" aria-label="Mobile navigation">{primary.map(([label, href]) => <Link key={href} href={href} aria-current={href === '/dashboard' ? 'page' : undefined}>{label}</Link>)}<button ref={moreButton} aria-expanded={moreOpen} aria-controls="deck-more" onClick={() => setMoreOpen(open => !open)}>More</button></nav>
