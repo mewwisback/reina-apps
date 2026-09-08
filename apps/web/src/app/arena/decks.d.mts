@@ -1,0 +1,16 @@
+export type CatalogCard = {id:string;name:string;kind:'HERO'|'SPELL'|'TRAP';atk:number;def:number;mark:string;color:string;rarity:'COMMON'|'RARE'|'EPIC'};
+export type Deck = {id:string;name:string;cardIds:string[]};
+export type Library = {version:1;decks:Deck[];activeId:string|null};
+export type Loaded = {library:Library;raw:string|null|undefined;error:string|null};
+export type Snapshot = {id:string|null;name:string;cardIds:string[];notice:string};
+export const CATALOG: readonly CatalogCard[];
+export const STARTER_IDS: string[];
+export const DECK_SIZE: number;
+export const STORAGE_KEY: string;
+export function emptyLibrary(): Library;
+export function validateLibrary(value:unknown): Library;
+export function loadLibrary(storage:Pick<Storage,'getItem'>): Loaded;
+export function assertDraftRevision(library:Library,id:string,revision:string|null): void;
+export function saveLibrary(storage:Pick<Storage,'getItem'|'setItem'>,library:Library,expectedRaw:string|null|undefined): void;
+export function activeSnapshot(loaded:Loaded): Snapshot;
+export function makeCombatDeck(cardIds?:string[],enemy?:boolean): CatalogCard[];

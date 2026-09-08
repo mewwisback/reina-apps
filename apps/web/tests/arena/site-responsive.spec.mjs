@@ -149,7 +149,9 @@ test('dashboard exposes core play action on mobile',async({page})=>{
 test('deck builder renders every selected card in its deck list',async({page})=>{
  await page.setViewportSize({width:390,height:844});
  await page.goto('/deck-builder');
- await expect(page.locator('[data-deck-list-item]')).toHaveCount(8);
+ await page.getByRole('button',{name:'NEW DECK',exact:true}).click();
+ await page.getByRole('button',{name:'LOAD STARTER',exact:true}).click();
+ await expect(page.locator('[data-deck-list-item]')).toHaveCount(20);
 });
 
 for(const [label,width,height] of [['tablet',820,1180],['desktop',1440,900]]){
