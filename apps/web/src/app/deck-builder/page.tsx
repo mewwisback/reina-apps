@@ -54,8 +54,8 @@ export default function DeckBuilderPage() {
   };
   const saved = loaded.library.decks.find(deck => deck.id === draft?.id);
   const ready = loaded.raw !== undefined && !loaded.error;
-  return <AppShell><main className="local-builder">
-    <header className="deck-builder-hero"><p>DECK BUILDER / BROWSER LOCAL</p><h1>Arena decks</h1><p>20 cards for the current Arena format. Repeated cards allowed; no per-card copy limit is defined. Starter has two of each, not a copy limit.</p><p>No account, inventory ownership or cloud sync. Saved order is draw order.</p><Link href="/dashboard">Back to dashboard</Link></header>
+  return <AppShell><div className="local-builder">
+    <header className="builder-intro"><div><p className="destination-kicker">DECK BUILDER / BROWSER LOCAL</p><h1>Arena decks</h1><p>Create, edit and select a local deck.</p><Link href="/dashboard">Back to dashboard</Link></div><aside><strong>20 CARDS. YOUR DRAW ORDER.</strong><p>Repeated cards allowed; no per-card copy limit is defined. Starter has two of each, not a copy limit.</p><p>No account, inventory ownership or cloud sync. Saved order is draw order.</p></aside></header>
     <div className="local-builder-body">
       <p role="status">{message || loaded.error || 'Create a deck or edit a saved deck. Drafts can have 0–20 cards; only 20-card decks can be active.'}</p>
       {loaded.error && <section aria-label="Storage recovery"><p>{loaded.error} Saving is blocked to preserve existing data.</p>{typeof loaded.raw === 'string' && <><a download="reina-decks-recovery.txt" href={`data:text/plain;charset=utf-8,${encodeURIComponent(loaded.raw)}`}>Download stored data</a><button onClick={() => {if (window.confirm('Replace unreadable local decks with an empty library? Download stored data first. This cannot be undone.') && persist(emptyLibrary(), 'Local library reset.')) {setDraft(null); setDirty(false);}}}>RESET LOCAL LIBRARY</button></>}</section>}
@@ -67,5 +67,5 @@ export default function DeckBuilderPage() {
         <section aria-label="Deck cards"><h2>Draw order</h2><p>Tap a card to remove one copy. Additions go last.</p><ol>{draft.cardIds.map((id,index) => {const card=CATALOG.find(card => card.id === id)!; return <li key={index} data-deck-list-item><button aria-label={`Remove ${card.name}, card ${index+1}`} onClick={() => edit({...draft,cardIds:draft.cardIds.filter((_id,i) => i !== index)})}>{index+1}. {card.name} <span>REMOVE</span></button></li>;})}</ol></section></div>
       </>}
     </div>
-  </main></AppShell>;
+  </div></AppShell>;
 }
