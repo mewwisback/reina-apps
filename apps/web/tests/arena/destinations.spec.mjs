@@ -8,7 +8,7 @@ for(const [width,height] of [[320,740],[390,844],[844,390],[1024,768],[1600,900]
    const page=await context.newPage();await page.goto(`http://127.0.0.1:3000/${route}`);await page.evaluate(()=>document.fonts.ready);
    expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
    const geometry=await page.evaluate(()=>({inner:innerWidth,visual:visualViewport.width,scale:visualViewport.scale,font:getComputedStyle(document.querySelector('h1')).fontFamily,loaded:document.fonts.check('16px '+getComputedStyle(document.body).fontFamily.split(',')[0]),small:[...document.querySelectorAll('.destination-header a,.destination-header button,.destination-dock a,.destination-dock button,main button,main input')].filter(n=>n.getClientRects().length).filter(n=>{const r=n.getBoundingClientRect();return r.height<44||r.width<40;}).map(n=>n.textContent)}));
-   expect(geometry.inner).toBe(width);expect(geometry.visual).toBeCloseTo(width,0);expect(geometry.scale).toBe(1);expect(geometry.font).toContain('bodyFont');expect(geometry.loaded).toBe(true);expect(geometry.small).toEqual([]);
+   expect(geometry.inner).toBe(width);expect(geometry.visual).toBeCloseTo(width,0);expect(geometry.scale).toBe(1);expect(geometry.font).toContain('gameFont');expect(geometry.loaded).toBe(true);expect(geometry.small).toEqual([]);
    if(width<=900){
     const more=page.getByRole('button',{name:'More',exact:true});await more.click();
     await expect(page.getByRole('navigation',{name:'More destinations'}).getByRole('link',{name:'Quests'})).toBeFocused();
@@ -38,7 +38,7 @@ for(const [label,options] of [['desktop',{viewport:{width:1600,height:1000}}],['
 
 test('Wiki searches actual Arena catalog separately from visual roster',async({page})=>{
  await page.goto('/wiki');
- await expect(page.getByRole('heading',{name:'Card reference.'})).toBeVisible();
+ await expect(page.getByRole('heading',{name:'Card reference'})).toBeVisible();
  await page.getByRole('textbox',{name:'Search Arena cards'}).fill('rei');
  await expect(page.locator('.reference-entry')).toHaveCount(1);
  await expect(page.locator('.reference-entry')).toContainText('2200');
@@ -51,7 +51,7 @@ test('Wiki searches actual Arena catalog separately from visual roster',async({p
 test('Docs documents current local deck contract in shared shell',async({page})=>{
  await page.goto('/docs');
  await expect(page.locator('[data-destination-shell]')).toBeVisible();
- await expect(page.getByRole('heading',{name:'The field manual.'})).toBeVisible();
+ await expect(page.getByRole('heading',{name:'Field manual'})).toBeVisible();
  await page.getByRole('link',{name:'Saving & recovery',exact:true}).click();
  await expect(page).toHaveURL(/#recovery$/);
  await expect(page.locator('#recovery')).toContainText('another tab');
@@ -59,30 +59,30 @@ test('Docs documents current local deck contract in shared shell',async({page})=
 
 test('Shop is closed without fake transactions',async({page})=>{
  await page.goto('/shop');
- await expect(page.getByRole('heading',{name:'The vault is closed.'})).toBeVisible();
+ await expect(page.getByRole('heading',{name:'Hero packs'})).toBeVisible();
  await expect(page.getByRole('button',{name:/BUY|TOP UP/})).toHaveCount(0);
  await page.getByRole('button',{name:'COSMETICS',exact:true}).click();
- await expect(page.getByRole('heading',{name:'Card backs, not purchases.'})).toBeVisible();
+ await expect(page.getByRole('heading',{name:'Card backs'})).toBeVisible();
 });
 
 test('Leaderboard never presents invented player standings',async({page})=>{
  await page.goto('/leaderboard');
- await expect(page.getByRole('heading',{name:'No standings yet.'})).toBeVisible();
+ await expect(page.getByRole('heading',{name:'Leaderboard'})).toBeVisible();
  await expect(page.getByText('Ranked results are not connected.')).toBeVisible();
  await expect(page.getByText('Kaiba99')).toHaveCount(0);
 });
 
 test('Quests offers practice paths without fabricated claims',async({page})=>{
  await page.goto('/quests');
- await expect(page.getByRole('heading',{name:'Practice before prizes.'})).toBeVisible();
+ await expect(page.getByRole('heading',{name:'Practice quests'})).toBeVisible();
  await expect(page.getByRole('button',{name:'CLAIM',exact:true})).toHaveCount(0);
  await expect(page.getByText('Quest tracking is not connected.')).toBeVisible();
  await expect(page.getByRole('link',{name:'Prepare a deck'})).toHaveAttribute('href','/deck-builder');
 });
 
-test('Deck Builder uses cream worktable and keeps real saved deck controls',async({page})=>{
+test('Deck Builder uses dark worktable and keeps real saved deck controls',async({page})=>{
  await page.goto('/deck-builder');
- await expect(page.locator('.local-builder')).toHaveCSS('background-color','rgb(245, 241, 232)');
+ await expect(page.locator('[data-destination-shell]')).toHaveCSS('background-color','rgb(20, 24, 32)');
  await expect(page.locator('main')).toHaveCount(1);
  await page.getByRole('button',{name:'NEW DECK',exact:true}).click();
  await page.getByRole('button',{name:'LOAD STARTER',exact:true}).click();

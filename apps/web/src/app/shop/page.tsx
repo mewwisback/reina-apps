@@ -5,9 +5,9 @@ import Link from 'next/link';
 import {AppShell} from '../../components/layout/app-shell';
 
 const offers={
- 'HERO PACKS':['The vault is closed.','Packs are not available to purchase or open. No prices, odds or pack inventory are connected to this build.'],
- 'SEASON PASS':['No season pass is active.','There is no paid track, progression or reward claim service in this build.'],
- COSMETICS:['Card backs, not purchases.','This is the approved Reina card-back artwork. It is a visual preview, not an owned or purchasable cosmetic.'],
+ 'HERO PACKS':['Hero packs','Packs are not available to purchase or open. No prices, odds or pack inventory are connected to this build.'],
+ 'SEASON PASS':['Season pass','There is no paid track, progression or reward claim service in this build.'],
+ COSMETICS:['Card backs','This is the approved Reina card-back artwork. It is a visual preview, not an owned or purchasable cosmetic.'],
 };
 export default function ShopPage(){
  const [tab,setTab]=useState<keyof typeof offers>('HERO PACKS');

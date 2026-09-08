@@ -115,9 +115,9 @@ test('account controls explain boundaries and settings provides session motion p
  await expect(page.locator('.deck-dashboard')).toHaveAttribute('data-reduced-motion','true');
 });
 
-test('dashboard replaces fabricated account metrics with cream deck play space',async({page})=>{
+test('dashboard replaces fabricated account metrics with dark deck play space',async({page})=>{
  await page.goto('/dashboard');
- await expect(page.locator('[data-deck-table]')).toHaveCSS('background-color','rgb(245, 241, 232)');
+ await expect(page.locator('[data-deck-table]')).toHaveCSS('background-color','rgb(20, 24, 32)');
  await expect(page.getByRole('heading',{name:'DECK',exact:true})).toBeVisible();
  await expect(page.getByText('Kaiba99')).toHaveCount(0);
  for(const [name,href] of [['Home','/dashboard'],['Collection','/collection'],['Deck Builder','/deck-builder'],['Shop','/shop'],['Quests','/quests'],['Leaderboard','/leaderboard'],['Docs','/docs'],['Wiki','/wiki']]) await expect(page.getByRole('link',{name,exact:true}).first()).toHaveAttribute('href',href);

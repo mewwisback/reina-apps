@@ -18,6 +18,13 @@ const displayFont = localFont({
   display: 'swap',
 });
 
+const gameFont = localFont({
+  src: './fonts/barlow-condensed-bold.ttf',
+  variable: '--font-game',
+  weight: '700',
+  display: 'swap',
+});
+
 const monoFont = localFont({
   src: './fonts/jetbrains-mono-latin.woff2',
   variable: '--font-jetbrains-mono',
@@ -41,7 +48,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en" className={`${bodyFont.variable} ${displayFont.variable} ${monoFont.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`${bodyFont.variable} ${displayFont.variable} ${monoFont.variable} ${gameFont.variable}`} suppressHydrationWarning>
       <body>{children}</body>
     </html>
   );

@@ -5,7 +5,7 @@
 .deck-play:is(:hover,:focus-visible) { background: #ef5061; }
 .deck-play:active { translate: 0 4px; box-shadow: 0 2px 0 #772632; }
 .deck-launch .deck-meta { margin-top: 14px; }
-.deck-dialog { margin: auto; max-width: min(480px,calc(100% - 32px)); padding: 28px; background: #f5f1e8; color: #20181d; border: 2px solid #20181d; }
+.deck-dialog { margin: auto; max-width: min(480px,calc(100% - 32px)); padding: 28px; background: #141820; color: #e7e9ec; border: 2px solid #20181d; }
 .deck-dialog::backdrop { background: #0d0b10b8; }
 .deck-dialog h2 { font-size: 28px; font-weight: 900; }
 .deck-dialog p { margin-block: 18px; }
@@ -42,7 +42,9 @@
 .deck-rail h1 { font-size: 42px; font-weight: 900; }
 .deck-rail a { text-decoration: underline; min-height: 44px; }
 .deck-meta { font: 12px var(--font-mono); letter-spacing: .07em; }
-.deck-table { background: #f5f1e8; color: #20181d; padding: 32px 44px 28px; min-width: 0; }
+.deck-table { background: #141820; color: #e7e9ec; padding: 32px 44px 28px; min-width: 0; }
+.deck-table { position:relative; isolation:isolate; }
+.deck-table::before { content:""; position:absolute; inset:0; z-index:-1; pointer-events:none; background:linear-gradient(0deg,#141820 4%,#141820dd 30%,#30202799 65%,#141820dd),url(/arena/ritual-chamber.webp) center/cover; opacity:.65; }
 .deck-table h2 { font-size: 54px; font-weight: 900; line-height: 1.1; }
 @media(min-width:901px) { .deck-table { position: relative; padding-bottom: 36px; }.deck-profile { padding-right: 270px; }.deck-launch { margin-top: 8px; }.deck-launch > div { position: absolute; right: 44px; bottom: 36px; }.deck-roster { margin-bottom: 12px; } }
 .deck-rail select { border: 1px solid #69505b; background: #171219; padding: 10px; min-height: 48px; width: 100%; }
@@ -57,8 +59,8 @@
 .deck-roster button { min-height: 56px; border-bottom: 3px solid transparent; }
 .deck-roster button[aria-pressed=true] { border-color: #e03c4e; }
 .deck-roster strong { display: block; font-size: 18px; font-weight: 900; }
-.deck-roster small { font: 11px var(--font-mono); color: #68555c; }
-.deck-profile { border-top: 1px solid #35262e44; padding-top: 16px; display: grid; gap: 6px; }
+.deck-roster small { font: 11px var(--font-mono); color: #aeb7c3; }
+.deck-profile { border-top: 1px solid #aeb7c338; padding-top: 16px; display: grid; gap: 6px; }
 .deck-boundary { font-size: 13px; margin-top: 16px; }
 @media(max-width:900px) { .deck-rail > p,.deck-rail > a { display: none; }.deck-fan { --card-width: clamp(100px,29vw,170px); --spread: clamp(34px,9vw,70px); min-height: 255px; margin: 0; }.deck-roster { gap: 3px; margin-bottom: 16px; }.deck-roster strong { font-size: 14px; }.deck-roster small { display: none; }.deck-profile { font-size: 14px; }.deck-meta { font-size: 11px; } }
 @media(max-width:1100px) { .deck-header { padding-inline: 24px; gap: 14px; }.deck-header nav,.deck-account { gap: 14px; } }

@@ -17,9 +17,9 @@ test('shared app shell requires no important overrides',async()=>{
 // Legacy admin sidebar, fabricated shop transactions and metric sizing contracts
 // are replaced by destinations.spec.mjs; all Arena geometry checks remain below.
 for(const route of shellRoutes){
- test(`${route} owns cream lobby shell`,async({page})=>{
+ test(`${route} owns dark lobby shell`,async({page})=>{
   await page.goto(route);
-  await expect(page.locator('[data-destination-shell]')).toHaveCSS('background-color','rgb(245, 241, 232)');
+  await expect(page.locator('[data-destination-shell]')).toHaveCSS('background-color','rgb(20, 24, 32)');
   await expect(page.locator('[data-app-sidebar]')).toHaveCount(0);
  });
 }
