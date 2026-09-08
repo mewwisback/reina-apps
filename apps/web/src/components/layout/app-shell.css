@@ -22,10 +22,15 @@
 .destination-header,.destination-context,.destination-dock,.manual-layout>nav,.standings-stage { --focus-ring:#e8b45c; }
 .destination-shell :is(button,a,summary) { touch-action:manipulation; }
 .destination-header { background:#0d0b10; color:#ede7dc; min-height:88px; padding:0 44px; display:flex; align-items:center; justify-content:space-between; gap:24px; }
-.destination-header nav,.destination-account,.destination-context nav { display:flex; gap:28px; }
+.destination-header nav,.destination-account,.destination-context nav { display:flex; gap:12px; }
 .destination-header :is(a,button),.destination-context a { min-height:48px; display:flex; align-items:center; font-weight:700; }
 .destination-header nav a { min-width:44px; justify-content:center; min-height:88px; border-bottom:3px solid transparent; }
-.destination-shell a[aria-current] { border-color:#e03c4e; }
+.destination-shell a[aria-current] { border-color:#e03c4e; background:#39252e; color:#fff; }
+.destination-header nav a,.destination-context nav a { padding-inline:16px; }
+.destination-header nav a:is(:hover,:focus-visible),.destination-context nav a:is(:hover,:focus-visible),.destination-dock :is(a,button):is(:hover,:focus-visible) { background:#302733; }
+.destination-context>strong { border-left:3px solid #e03c4e; padding-left:12px; text-transform:uppercase; }
+.destination-shell dialog label { display:flex; align-items:center; gap:12px; min-height:48px; }
+.destination-shell dialog input { width:22px; height:22px; accent-color:#e03c4e; }
 .destination-brand { gap:12px; font:700 23px var(--font-display); letter-spacing:.24em; }
 .destination-brand span { display:grid; place-items:center; width:34px; height:34px; background:#e03c4e; color:#0d0b10; font:900 22px var(--font-body); letter-spacing:0; clip-path:polygon(30% 0,100% 0,100% 70%,70% 100%,0 100%,0 30%); }
 .destination-context { background:#171219; color:#ede7dc; min-height:64px; display:flex; align-items:center; gap:42px; padding:0 44px; border-top:1px solid #ede7dc28; }
