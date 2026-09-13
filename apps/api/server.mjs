@@ -36,11 +36,12 @@ export function validateDeck(input) {
  return result();
 }
 
-export function createServer() {
+export function createServer({allowUntrustedDiagnostics=false}={}) {
  const server=http.createServer((req,res)=>{
   const reply=(status,data)=>{res.writeHead(status,{'content-type':'application/json','cache-control':'no-store'});res.end(JSON.stringify(data));};
   if(req.method==='GET'&&req.url==='/health') return reply(200,{status:'ok',scope:'stateless-deck-consistency'});
   if(req.method!=='POST'||req.url!=='/v1/decks/validate') return reply(404,{error:'Not found'});
+  if(allowUntrustedDiagnostics!==true) {req.resume();return reply(503,{error:'Trusted inventory service unavailable',ownershipVerified:false});}
   if(req.headers['content-type']?.split(';')[0].trim().toLowerCase()!=='application/json') {req.resume();return reply(415,{error:'Expected application/json'});}
   let size=0,tooLarge=false;const chunks=[];
   req.on('data',chunk=>{size+=chunk.length;if(size>65536){if(!tooLarge){tooLarge=true;chunks.length=0;reply(413,{error:'Payload exceeds 65536 bytes'});}return;}chunks.push(chunk);});

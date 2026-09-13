@@ -10,7 +10,9 @@ node --test apps/api/server.test.mjs
 curl http://127.0.0.1:3100/health
 ```
 
-`POST /v1/decks/validate`, `Content-Type: application/json`, maximum 65536 bytes:
+By default, `POST /v1/decks/validate` returns 503 until trusted identity/inventory services exist. The CLI does not enable diagnostics. Tests explicitly use `createServer({allowUntrustedDiagnostics:true})`; this is untrusted consistency checking only, never authorization.
+
+Diagnostic contract: `POST /v1/decks/validate`, `Content-Type: application/json`, maximum 65536 bytes:
 
 ```json
 {
