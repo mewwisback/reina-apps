@@ -18,7 +18,9 @@ test('real PostgreSQL migration and identity constraints', {timeout:60000},async
   const version=await client.query('SHOW server_version');assert.match(version.rows[0].server_version,/^17\./);
   const sql=await readFile(new URL('../migrations/0001_accounts.sql',import.meta.url),'utf8');
   const migrations=[{id:'0001_accounts',sql}];
-  assert.equal(await migrate(client,migrations),1);
+  const bootstrapPeer=postgres.getPgClient();await bootstrapPeer.connect();
+  try{assert.deepEqual((await Promise.all([migrate(client,migrations),migrate(bootstrapPeer,migrations)])).sort(),[0,1]);}
+  finally{await bootstrapPeer.end();}
   assert.equal(await migrate(client,migrations),0);
   const other=postgres.getPgClient();await other.connect();
   try{
