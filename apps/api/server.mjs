@@ -36,12 +36,16 @@ export function validateDeck(input) {
  return result();
 }
 
-export function createServer({allowUntrustedDiagnostics=false}={}) {
+export function createServer({allowUntrustedDiagnostics=false,store=null}={}) {
  const server=http.createServer((req,res)=>{
   const reply=(status,data)=>{res.writeHead(status,{'content-type':'application/json','cache-control':'no-store'});res.end(JSON.stringify(data));};
   if(req.method==='GET'&&req.url==='/health') return reply(200,{status:'ok',scope:'stateless-deck-consistency'});
   if(req.method!=='POST'||req.url!=='/v1/decks/validate') return reply(404,{error:'Not found'});
-  if(allowUntrustedDiagnostics!==true) {req.resume();return reply(503,{error:'Trusted inventory service unavailable',ownershipVerified:false});}
+  if(!store&&allowUntrustedDiagnostics!==true) {req.resume();return reply(503,{error:'Trusted inventory service unavailable',ownershipVerified:false});}
+  if(store){
+   try{if(!store.account(req.headers.authorization?.replace(/^Bearer /,''))){req.resume();return reply(401,{error:'Invalid session'});}}
+   catch{req.resume();return reply(503,{error:'Trusted inventory service unavailable'});}
+  }
   if(req.headers['content-type']?.split(';')[0].trim().toLowerCase()!=='application/json') {req.resume();return reply(415,{error:'Expected application/json'});}
   let size=0,tooLarge=false;const chunks=[];
   req.on('data',chunk=>{size+=chunk.length;if(size>65536){if(!tooLarge){tooLarge=true;chunks.length=0;reply(413,{error:'Payload exceeds 65536 bytes'});}return;}chunks.push(chunk);});
@@ -50,7 +54,15 @@ export function createServer({allowUntrustedDiagnostics=false}={}) {
    if(tooLarge)return;
    let input;
    try{input=JSON.parse(Buffer.concat(chunks).toString('utf8'));}catch{return reply(400,{error:'Invalid JSON'});}
-   const result=validateDeck(input);reply(result.valid?200:422,result);
+   try {
+    if(store){
+     if(!object(input)||Object.keys(input).some(key=>!['main','extra'].includes(key)))return reply(400,{error:'Only main and extra are accepted'});
+     const accountId=store.account(req.headers.authorization?.replace(/^Bearer /,''));
+     if(!accountId)return reply(401,{error:'Invalid session'});
+     input={...input,...store.snapshot(accountId)};
+    }
+    const result=validateDeck(input);reply(result.valid?200:422,{...result,ownershipVerified:!!store&&result.valid});
+   }catch{reply(503,{error:'Trusted inventory service unavailable'});}
   });
  });
  server.requestTimeout=10000;server.headersTimeout=10000;

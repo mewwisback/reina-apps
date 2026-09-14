@@ -27,6 +27,14 @@ This abbreviated example deliberately fails validation: Main Deck must have exac
 
 Responses: 200 valid, 422 invalid, 400 malformed JSON, 413 oversized, 415 unsupported media type, 404 unknown route. Results always include `ownershipVerified: false`: submitted catalog and inventory are untrusted claims. This endpoint must never authorize ranked entry, purchases, or asset transfers.
 
+## Trusted Store Slice
+
+`openStore(path)` from `store.mjs` uses native `node:sqlite` (Node >=22.13; exercised on Node 26.8.1). Tables enforce inventory uniqueness, foreign keys, and nonnegative integer counts. `createServer({store})` accepts only `main`/`extra`; it resolves catalog and inventory from the database using an expiring, revocable Bearer session. Tokens are random 256-bit values stored only as SHA-256 hashes. Valid results indicate ownership at validation time, not a reserved match snapshot.
+
+Session issuance is an internal function only. No email/Twitter login provider, public session-creation endpoint, catalog seeding, or starter grant is supplied. The CLI remains fail-closed without a store. DB paths must point to private service storage; never commit databases. Tests use synthetic fixtures only.
+
+Run all tests: `node --test apps/api/*.test.mjs`.
+
 ## Next Steps
 
 Replace submitted catalog and inventory with authenticated server-side records before integration. Add persistence, transaction-safe ownership, versioned deck snapshots, and auth only in reviewed follow-ups. Canonical card definitions remain undecided. No fake production catalog is bundled.

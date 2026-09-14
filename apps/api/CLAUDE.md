@@ -1,21 +1,21 @@
 # Backend Development
 
 ## Overview
-REINA stateless deck-validation API. Node.js >=22, native ESM HTTP and tests, no dependencies. Workspace package manager: pnpm 9.15.0.
+REINA deck-validation API with optional SQLite store. Node.js >=22.13, native ESM HTTP and tests, no dependencies. Workspace package manager: pnpm 9.15.0.
 ## Commands
 - Setup: no installation required for this service.
 - Dev: `node apps/api/server.mjs`
-- Test: `node --test apps/api/server.test.mjs`
+- Test: `node --test apps/api/*.test.mjs`
 - Syntax: `node --check apps/api/server.mjs`
 - Build: none; native ESM.
 ## Conventions
 Validate external JSON before processing: `Number.isSafeInteger(value)`.
 ## Boundaries
 **NEVER** commit secrets or `.env`, alter production config, or treat submitted inventory as verified ownership.
-**ALWAYS** keep this endpoint stateless until authenticated inventory storage exists.
+**ALWAYS** resolve inventory from the trusted store when configured. Session issuance requires verified identity; provider login remains unimplemented.
 **IMPORTANT** localhost only by default; public deployment requires authentication and rate limiting.
 ## Dependencies
-Node.js standard library: HTTP, assertions, test runner.
+Node.js standard library: HTTP, SQLite, crypto, assertions, test runner.
 ## Config
 No required environment variables. Local port 3100. Client supplies catalog/inventory for consistency checks only; canonical catalog is not approved yet.
 ## Error Handling
