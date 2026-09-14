@@ -18,4 +18,4 @@ Health reports liveness only, not database readiness. Unknown routes return 404.
 - Docker permission denied: use authorized PostgreSQL host; never change socket permissions.
 - Missing dependencies: run npm ci.
 - Port conflict: stop only the owned process.
-- Migration test requires real PostgreSQL; typecheck is not a substitute.
+- npm test starts disposable native PostgreSQL 17 via embedded-postgres 17.10.0-beta.17 (dev-only); localhost port 15439 must be free. Cluster is stopped and removed afterward. No Docker permission change required.

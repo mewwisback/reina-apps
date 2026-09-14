@@ -12,6 +12,6 @@ GET /health reports liveness and databaseReady=false. No auth or ownership route
 
 Fastify injection regression passed after a failing 404 baseline. TypeScript check passed. npm install audit reported zero vulnerabilities at execution time.
 
-Real PostgreSQL migration/constraint execution is BLOCKED: Docker socket access is denied, and PostgreSQL binaries are absent from PATH. An embedded PostgreSQL version lookup also failed. Do not treat SQL or Drizzle compilation as database verification. The migration is unverified and must not be applied to production.
+Docker remains inaccessible, but the database test now runs real PostgreSQL 17 through pinned dev-only embedded-postgres 17.10.0-beta.17, without Docker or system service changes. It creates a disposable cluster on localhost:15439, applies the SQL migration, inserts/reads through Drizzle, verifies duplicate provider-subject rejection (23505) and missing account rejection (23503), then stops and removes the cluster. This is native PostgreSQL, not an in-memory SQL emulator. The fixed test port must be free; do not run this suite concurrently on the same host.
 
-To complete: provide an authorized local PostgreSQL instance or approved connection, run migration against a disposable DB, verify foreign-key and provider-subject uniqueness rejection, then add durable integration tests and migration tracking. No deployed infrastructure, frontend changes, or production readiness claimed.
+Fresh gates: 2 tests passed and TypeScript passed on Node 26.8.1. Migration tracking, upgrades, PostgreSQL concurrency tests and Node 24 verification remain pending. No deployed infrastructure, frontend changes, or production readiness claimed.
