@@ -20,10 +20,17 @@ test('real PostgreSQL migration and identity constraints', {timeout:60000},async
   const migrations=[{id:'0001_accounts',sql}];
   assert.equal(await migrate(client,migrations),1);
   assert.equal(await migrate(client,migrations),0);
+  const other=postgres.getPgClient();await other.connect();
+  try{
+   const upgrade=[...migrations,{id:'0002_concurrent',sql:'CREATE TABLE concurrent_probe(id integer);'}];
+   const outcomes=await Promise.all([migrate(client,upgrade),migrate(other,upgrade)]);
+   assert.deepEqual(outcomes.sort(),[0,1]);
+   migrations.push(upgrade[1]!);
+  }finally{await other.end();}
   await assert.rejects(migrate(client,[{id:'0001_accounts',sql:sql+'\n-- changed'}]),/checksum/);
-  await assert.rejects(migrate(client,[...migrations,{id:'0002_bad',sql:'CREATE TABLE rollback_probe(id integer); SELECT missing_column;'}]));
+  await assert.rejects(migrate(client,[...migrations,{id:'0003_bad',sql:'CREATE TABLE rollback_probe(id integer); SELECT missing_column;'}]));
   assert.equal((await client.query("SELECT to_regclass('rollback_probe') AS name")).rows[0].name,null);
-  assert.equal(await migrate(client,[...migrations,{id:'0002_good',sql:'CREATE TABLE upgrade_probe(id integer);'}]),1);
+  assert.equal(await migrate(client,[...migrations,{id:'0003_good',sql:'CREATE TABLE upgrade_probe(id integer);'}]),1);
   const db=drizzle(client);
   const [account]=await db.insert(accounts).values({}).returning();
   await db.insert(authIdentities).values({accountId:account!.id,provider:'test',subject:'synthetic-user'});
