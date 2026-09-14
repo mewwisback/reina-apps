@@ -35,6 +35,12 @@ Session issuance is an internal function only. No email/Twitter login provider, 
 
 Run all tests: `node --test apps/api/*.test.mjs`.
 
+## Atomic Inventory Operations
+
+Internal `applyInventory(accountId, operationId, changes)` applies up to 100 unique card deltas in one `BEGIN IMMEDIATE` transaction. An identical retry returns `replayed: true` without changing counts; a reused ID with different normalized content fails. Insufficient cards, overflow, or foreign-key violations roll back all changes and the operation record. This function has no public HTTP route: only trusted services may determine deltas.
+
+This is not currency settlement, deck-lock enforcement, starter generation, or NFT transfer logic. A purchase must eventually commit currency and inventory together, not call this function after an unrelated balance debit. Tests currently establish atomic rollback and sequential replay behavior, not multi-process contention or crash recovery.
+
 ## Next Steps
 
 Replace submitted catalog and inventory with authenticated server-side records before integration. Add persistence, transaction-safe ownership, versioned deck snapshots, and auth only in reviewed follow-ups. Canonical card definitions remain undecided. No fake production catalog is bundled.
