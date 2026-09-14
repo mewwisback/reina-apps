@@ -1,4 +1,19 @@
-import {DatabaseSync} from 'node:sqlite';
+import {DatabaseSync,backup} from 'node:sqlite';
+import {mkdtemp,link,rm,chmod} from 'node:fs/promises';
+import {dirname,join} from 'node:path';
+export async function backupStore(store,destination) {
+ if(typeof destination!=='string'||!destination)throw new Error('Invalid backup destination');
+ const directory=await mkdtemp(join(dirname(destination),'.reina-backup-'));
+ const temporary=join(directory,'snapshot.sqlite');
+ try{
+  await backup(store.db,temporary);
+  await chmod(temporary,0o600);
+  const check=new DatabaseSync(temporary,{readOnly:true});
+  try{if(check.prepare('PRAGMA integrity_check').get().integrity_check!=='ok')throw new Error('Backup integrity check failed');}finally{check.close();}
+  // Atomic no-clobber publication on the same filesystem; existing destinations remain untouched.
+  await link(temporary,destination);
+ }finally{await rm(directory,{recursive:true,force:true});}
+}
 import {randomBytes,createHash} from 'node:crypto';
 const hash=token=>createHash('sha256').update(token).digest('hex');
 export function openStore(path) {

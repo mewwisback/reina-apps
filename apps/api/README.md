@@ -41,6 +41,12 @@ Internal `applyInventory(accountId, operationId, changes)` applies up to 100 uni
 
 This is not currency settlement, deck-lock enforcement, starter generation, or NFT transfer logic. A purchase must eventually commit currency and inventory together, not call this function after an unrelated balance debit. Tests establish rollback, persistence after reopen, concurrent replay and competing debits across eight independent worker connections, plus rollback after a child process exits inside an uncommitted transaction. SQLite integrity_check passes after recovery. This does not establish power-loss, filesystem-failure, multi-host, or production-load durability.
 
+## Verified Backups
+
+Internal `backupStore(store, destination)` uses SQLite online backup, checks integrity, sets mode 0600, and publishes through a same-filesystem no-clobber hard link. Parent directory must already exist and be private. Existing destination files are never replaced. Temporary snapshots are cleaned after success or failure. Requires Node >=22.16 for native SQLite backup; exercised on Node 26.8.1.
+
+Restore verification opens the backup as a separate database and checks inventory plus idempotency records. Never overwrite a running database. Backups contain account and session records: restoring an old backup can restore revoked sessions; invalidate sessions before serving a restored database. No automatic production restore, schedule, off-host replication, or power-loss durability is claimed.
+
 ## Next Steps
 
 Replace submitted catalog and inventory with authenticated server-side records before integration. Add persistence, transaction-safe ownership, versioned deck snapshots, and auth only in reviewed follow-ups. Canonical card definitions remain undecided. No fake production catalog is bundled.
