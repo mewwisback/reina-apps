@@ -43,7 +43,7 @@ export function createServer({allowUntrustedDiagnostics=false,store=null}={}) {
   if(req.method!=='POST'||req.url!=='/v1/decks/validate') return reply(404,{error:'Not found'});
   if(!store&&allowUntrustedDiagnostics!==true) {req.resume();return reply(503,{error:'Trusted inventory service unavailable',ownershipVerified:false});}
   if(store){
-   try{if(!store.account(req.headers.authorization?.replace(/^Bearer /,''))){req.resume();return reply(401,{error:'Invalid session'});}}
+   try{if(!store.account(req.headers.authorization?.match(/^Bearer ([a-f0-9]{64})$/i)?.[1])){req.resume();return reply(401,{error:'Invalid session'});}}
    catch{req.resume();return reply(503,{error:'Trusted inventory service unavailable'});}
   }
   if(req.headers['content-type']?.split(';')[0].trim().toLowerCase()!=='application/json') {req.resume();return reply(415,{error:'Expected application/json'});}
@@ -57,7 +57,7 @@ export function createServer({allowUntrustedDiagnostics=false,store=null}={}) {
    try {
     if(store){
      if(!object(input)||Object.keys(input).some(key=>!['main','extra'].includes(key)))return reply(400,{error:'Only main and extra are accepted'});
-     const accountId=store.account(req.headers.authorization?.replace(/^Bearer /,''));
+     const accountId=store.account(req.headers.authorization?.match(/^Bearer ([a-f0-9]{64})$/i)?.[1]);
      if(!accountId)return reply(401,{error:'Invalid session'});
      input={...input,...store.snapshot(accountId)};
     }

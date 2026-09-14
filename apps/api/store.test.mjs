@@ -15,6 +15,8 @@ test('trusted sessions isolate inventory and reject client ownership claims',asy
   const body={main:Array.from({length:15},(_,i)=>[`h${i}`,`h${i}`]).flat(),extra:[]};
   const send=(token,data=body)=>fetch(`http://127.0.0.1:${server.address().port}/v1/decks/validate`,{method:'POST',headers:{'content-type':'application/json',authorization:`Bearer ${token}`},body:JSON.stringify(data)});
   assert.equal((await send('unknown')).status,401);
+  const raw=await fetch(`http://127.0.0.1:${server.address().port}/v1/decks/validate`,{method:'POST',headers:{'content-type':'application/json',authorization:a},body:JSON.stringify(body)});
+  assert.equal(raw.status,401);
   assert.equal((await send(b)).status,422);
   const ok=await send(a); assert.equal(ok.status,200);assert.equal((await ok.json()).ownershipVerified,true);
   assert.equal((await send(b,{...body,inventory:[{cardId:'h0',count:999}]})).status,400);
