@@ -39,5 +39,19 @@ test('real PostgreSQL migration and identity constraints', {timeout:60000},async
   await assert.rejects(client.query('INSERT INTO auth_identities(account_id,provider,subject) VALUES ($1,$2,$3)',[account!.id,'test','synthetic-user']),{code:'23505'});
   await assert.rejects(client.query("INSERT INTO auth_identities(account_id,provider,subject) VALUES ('00000000-0000-0000-0000-000000000000','test','missing')"),{code:'23503'});
   assert.equal((await db.select().from(authIdentities)).length,1);
+  const inventorySql=await readFile(new URL('../migrations/0002_inventory.sql',import.meta.url),'utf8');
+  const fullHistory=[...migrations,{id:'0003_good',sql:'CREATE TABLE upgrade_probe(id integer);'},{id:'0004_inventory_test',sql:inventorySql}];
+  assert.equal(await migrate(client,fullHistory),1);
+  assert.equal(await migrate(client,fullHistory),0);
+  const card=(await client.query("INSERT INTO card_definitions(category) VALUES ('Hero') RETURNING id")).rows[0].id;
+  await client.query('INSERT INTO inventory_items(owner_account_id,card_id) VALUES ($1,$2)',[account!.id,card]);
+  await assert.rejects(client.query("INSERT INTO card_definitions(category) VALUES ('Support')"),{code:'23514'});
+  await assert.rejects(client.query("UPDATE inventory_items SET state='invalid'"),{code:'23514'});
+  await client.query("INSERT INTO operations(account_id,operation_key,request_hash) VALUES ($1,'grant-1',$2)",[account!.id,'a'.repeat(64)]);
+  await assert.rejects(client.query("INSERT INTO operations(account_id,operation_key,request_hash) VALUES ($1,'grant-1',$2)",[account!.id,'b'.repeat(64)]),{code:'23505'});
+  await client.query('BEGIN');
+  await client.query('INSERT INTO inventory_items(owner_account_id,card_id) VALUES ($1,$2)',[account!.id,card]);
+  await client.query('ROLLBACK');
+  assert.equal((await client.query('SELECT count(*)::int AS n FROM inventory_items')).rows[0].n,1);
  }finally{if(connected)await client.end();if(started)await postgres.stop();await rm(dir,{recursive:true,force:true});}
 });
