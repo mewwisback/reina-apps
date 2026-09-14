@@ -7,6 +7,7 @@ import {randomBytes} from 'node:crypto';
 import EmbeddedPostgres from 'embedded-postgres';
 import {drizzle} from 'drizzle-orm/node-postgres';
 import {accounts,authIdentities} from './schema.js';
+import {migrate} from './migrate.js';
 test('real PostgreSQL migration and identity constraints', {timeout:60000},async()=>{
  const dir=await mkdtemp(join(tmpdir(),'reina-pg-'));
  const postgres=new EmbeddedPostgres({databaseDir:join(dir,'db'),port:15439,user:'postgres',password:randomBytes(24).toString('hex'),persistent:false,postgresFlags:['-h','127.0.0.1'],onLog:()=>{},onError:()=>{}});
@@ -15,7 +16,14 @@ test('real PostgreSQL migration and identity constraints', {timeout:60000},async
   await postgres.initialise();await postgres.start();started=true;
   await client.connect();connected=true;
   const version=await client.query('SHOW server_version');assert.match(version.rows[0].server_version,/^17\./);
-  await client.query(await readFile(new URL('../migrations/0001_accounts.sql',import.meta.url),'utf8'));
+  const sql=await readFile(new URL('../migrations/0001_accounts.sql',import.meta.url),'utf8');
+  const migrations=[{id:'0001_accounts',sql}];
+  assert.equal(await migrate(client,migrations),1);
+  assert.equal(await migrate(client,migrations),0);
+  await assert.rejects(migrate(client,[{id:'0001_accounts',sql:sql+'\n-- changed'}]),/checksum/);
+  await assert.rejects(migrate(client,[...migrations,{id:'0002_bad',sql:'CREATE TABLE rollback_probe(id integer); SELECT missing_column;'}]));
+  assert.equal((await client.query("SELECT to_regclass('rollback_probe') AS name")).rows[0].name,null);
+  assert.equal(await migrate(client,[...migrations,{id:'0002_good',sql:'CREATE TABLE upgrade_probe(id integer);'}]),1);
   const db=drizzle(client);
   const [account]=await db.insert(accounts).values({}).returning();
   await db.insert(authIdentities).values({accountId:account!.id,provider:'test',subject:'synthetic-user'});

@@ -1,4 +1,3 @@
-BEGIN;
 CREATE TABLE accounts (
  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
  created_at timestamptz NOT NULL DEFAULT now()
@@ -10,4 +9,3 @@ CREATE TABLE auth_identities (
  subject text NOT NULL
 );
 CREATE UNIQUE INDEX identity_provider_subject ON auth_identities(provider, subject);
-COMMIT;
