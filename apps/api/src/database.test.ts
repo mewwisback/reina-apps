@@ -8,6 +8,7 @@ import EmbeddedPostgres from 'embedded-postgres';
 import {drizzle} from 'drizzle-orm/node-postgres';
 import {accounts,authIdentities} from './schema.js';
 import {migrate} from './migrate.js';
+import {consumeItems} from './inventory.js';
 test('real PostgreSQL migration and identity constraints', {timeout:60000},async()=>{
  const dir=await mkdtemp(join(tmpdir(),'reina-pg-'));
  const postgres=new EmbeddedPostgres({databaseDir:join(dir,'db'),port:15439,user:'postgres',password:randomBytes(24).toString('hex'),persistent:false,postgresFlags:['-h','127.0.0.1'],onLog:()=>{},onError:()=>{}});
@@ -53,5 +54,16 @@ test('real PostgreSQL migration and identity constraints', {timeout:60000},async
   await client.query('INSERT INTO inventory_items(owner_account_id,card_id) VALUES ($1,$2)',[account!.id,card]);
   await client.query('ROLLBACK');
   assert.equal((await client.query('SELECT count(*)::int AS n FROM inventory_items')).rows[0].n,1);
+  const racingItem=(await client.query('INSERT INTO inventory_items(owner_account_id,card_id) VALUES ($1,$2) RETURNING id',[account!.id,card])).rows[0].id;
+  const contender=postgres.getPgClient();await contender.connect();
+  try{assert.deepEqual((await Promise.all([consumeItems(client,account!.id,'race',[racingItem]),consumeItems(contender,account!.id,'race',[racingItem])])).sort(),[false,true]);}finally{await contender.end();}
+  const item=(await client.query("SELECT id FROM inventory_items WHERE state='available'")).rows[0].id;
+  const [outsider]=await db.insert(accounts).values({}).returning();
+  await assert.rejects(consumeItems(client,outsider!.id,'consume',[item]),/Unavailable/);
+  assert.equal(await consumeItems(client,account!.id,'consume',[item]),false);
+  assert.equal(await consumeItems(client,account!.id,'consume',[item]),true);
+  await assert.rejects(consumeItems(client,account!.id,'different',[item]),/Unavailable/);
+  assert.equal((await client.query('SELECT state FROM inventory_items WHERE id=$1',[item])).rows[0].state,'consumed');
+  assert.equal((await client.query("SELECT count(*)::int AS n FROM operations WHERE operation_key='different'")).rows[0].n,0);
  }finally{if(connected)await client.end();if(started)await postgres.stop();await rm(dir,{recursive:true,force:true});}
 });

@@ -8,6 +8,10 @@ Runtime target: Node 24 LTS; current verification used Node 26.8.1. Exact packag
 
 GET /health reports liveness and databaseReady=false. No auth or ownership routes are exposed. Drizzle schema and SQL migration define accounts and unique provider-subject identities. Provider login is not implemented.
 
+## Internal Inventory Primitive
+
+`consumeItems` accepts a dedicated PostgreSQL client and a trusted account identity. It locks the account and item rows, verifies ownership and available state, updates items and records a scoped operation hash in one transaction. Identical concurrent retries apply once; changed payloads conflict. No HTTP mutation endpoint is exposed. This is not duplicate conversion: currency credit, saved-deck references, authentication and admin authorization are still required before use by a product workflow.
+
 ## Verification and Blocker
 
 Fastify injection regression passed after a failing 404 baseline. TypeScript check passed. npm install audit reported zero vulnerabilities at execution time.
