@@ -58,6 +58,13 @@ test('real PostgreSQL migration and identity constraints', {timeout:60000},async
   const contender=postgres.getPgClient();await contender.connect();
   try{assert.deepEqual((await Promise.all([consumeItems(client,account!.id,'race',[racingItem]),consumeItems(contender,account!.id,'race',[racingItem])])).sort(),[false,true]);}finally{await contender.end();}
   const item=(await client.query("SELECT id FROM inventory_items WHERE state='available'")).rows[0].id;
+  await assert.rejects(consumeItems(client,account!.id,'race',[item]),/conflict/);
+  await client.query("UPDATE inventory_items SET state='locked' WHERE id=$1",[item]);
+  await assert.rejects(consumeItems(client,account!.id,'locked-attempt',[item]),/Unavailable/);
+  await client.query("UPDATE inventory_items SET state='available' WHERE id=$1",[item]);
+  await assert.rejects(consumeItems(client,account!.id,'duplicate',[item,item]),/Invalid/);
+  await assert.rejects(consumeItems(client,account!.id,'mixed',[item,'00000000-0000-0000-0000-000000000000']),/Unavailable/);
+  assert.equal((await client.query('SELECT state FROM inventory_items WHERE id=$1',[item])).rows[0].state,'available');
   const [outsider]=await db.insert(accounts).values({}).returning();
   await assert.rejects(consumeItems(client,outsider!.id,'consume',[item]),/Unavailable/);
   assert.equal(await consumeItems(client,account!.id,'consume',[item]),false);
